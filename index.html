@@ -681,7 +681,7 @@ function showSec(id, el) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById('sec-'+id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
-  (el || event.target).classList.add('active');
+  if(el) el.classList.add('active');
   document.getElementById('sidebar').classList.remove('open');
   if(id==='resumen' && !charts.resumen) initResumen();
   if(id==='comparativo' && !charts.comp) initComp();
