@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sociedad Valencia — Avicola</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  /* ---- LOGIN OVERLAY ---- */
+  #login-overlay {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #0a0f1e;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #login-overlay.hidden { display: none; }
+  .login-box {
+    width: 320px;
+    background: #0f172a;
+    border: 1px solid rgba(55,138,221,.2);
+    border-radius: 14px;
+    padding: 36px 32px;
+    text-align: center;
+  }
+  .login-logo {
+    width: 52px; height: 52px;
+    background: rgba(55,138,221,.15);
+    border: 1px solid rgba(55,138,221,.35);
+    border-radius: 14px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 24px; margin-bottom: 20px;
+  }
+  .login-title { font-size: 17px; font-weight: 700; color: #f1f5f9; margin-bottom: 4px; }
+  .login-sub { font-size: 12px; color: #64748b; margin-bottom: 28px; }
+  .login-input {
+    width: 100%; padding: 11px 14px;
+    background: #1e293b; border: 1px solid #334155;
+    border-radius: 8px; color: #f1f5f9;
+    font-size: 14px; font-family: inherit;
+    outline: none; margin-bottom: 12px;
+    transition: border-color .15s;
+  }
+  .login-input:focus { border-color: #378ADD; }
+  .login-input.error { border-color: #D4537E; animation: shake .3s; }
+  .login-btn {
+    width: 100%; padding: 11px;
+    background: #378ADD; border: none; border-radius: 8px;
+    color: #fff; font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: background .15s;
+  }
+  .login-btn:hover { background: #2a7bc4; }
+  .login-err { font-size: 12px; color: #D4537E; margin-top: 10px; min-height: 18px; }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
+  }
+</style>
+<style>
+  :root {
+    --sidebar-w: 200px;
+    --header-h: 52px;
+    --color-text-primary: #1a1a1a;
+    --color-text-secondary: #666;
+    --color-background-primary: #fff;
+    --color-background-secondary: #f5f7fa;
+    --color-border-primary: #333;
+    --color-border-secondary: #ddd;
+    --color-border-tertiary: #eee;
+    --border-radius-md: 8px;
+  }
+  @media(prefers-color-scheme:dark){
+    :root {
+      --color-text-primary: #e8e8e8;
+      --color-text-secondary: #999;
+      --color-background-primary: #1c1c1e;
+      --color-background-secondary: #28282c;
+      --color-border-primary: #ccc;
+      --color-border-secondary: #3a3a3e;
+      --color-border-tertiary: #2e2e32;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ---- APP SHELL ---- */
+  html, body { height: 100%; overflow: hidden; }
+  body { font-family: -apple-system, 'Segoe UI', sans-serif; }
+
+  /* Header */
+  .app-header {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: #0f172a;
+    display: flex; align-items: center;
+    padding: 0 18px;
+    gap: 12px;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+  }
+  .app-header-logo {
+    width: 30px; height: 30px;
+    background: rgba(55,138,221,.25);
+    border: 1px solid rgba(55,138,221,.4);
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .app-header-brand {
+    font-size: 14px; font-weight: 700; color: #fff;
+    letter-spacing: -0.02em; flex-shrink: 0;
+  }
+  .app-header-divider { width: 1px; height: 18px; background: rgba(255,255,255,.15); flex-shrink: 0; }
+  .app-header-sub { font-size: 11px; color: #64748b; flex: 1; }
+  .app-header-badge {
+    font-size: 11px; font-weight: 500;
+    background: rgba(55,138,221,.18);
+    color: #7ec4f7;
+    padding: 3px 10px; border-radius: 20px;
+    border: 1px solid rgba(55,138,221,.3);
+    flex-shrink: 0;
+  }
+  .menu-btn {
+    display: none; align-items: center; justify-content: center;
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,.08); border: none; border-radius: 6px;
+    color: #94a3b8; cursor: pointer; font-size: 16px; flex-shrink: 0;
+  }
+
+  /* App body (sidebar + main) */
+  .app-body {
+    position: fixed;
+    top: var(--header-h); bottom: 0; left: 0; right: 0;
+    display: flex;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: #0f172a;
+    border-right: 1px solid rgba(255,255,255,.06);
+    overflow-y: auto;
+    flex-shrink: 0;
+    padding: 8px 0 24px;
+    scrollbar-width: thin;
+    scrollbar-color: #1e293b transparent;
+  }
+  .sidebar-group-label {
+    font-size: 10px; font-weight: 600; color: #334155;
+    text-transform: uppercase; letter-spacing: .09em;
+    padding: 18px 16px 5px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 9px;
+    width: 100%; background: none;
+    border: none; border-left: 3px solid transparent;
+    padding: 9px 14px 9px 13px;
+    font-size: 12.5px; font-family: inherit;
+    color: #64748b; cursor: pointer; text-align: left;
+    transition: background .1s, color .1s, border-color .1s;
+    line-height: 1.3;
+  }
+  .nav-item:hover { background: rgba(255,255,255,.05); color: #cbd5e1; }
+  .nav-item.active {
+    background: rgba(55,138,221,.1);
+    color: #f8fafc; font-weight: 500;
+    border-left-color: #378ADD;
+  }
+  .nav-icon { font-size: 13px; flex-shrink: 0; width: 16px; text-align: center; }
+
+  /* Main content */
+  .main-content {
+    flex: 1; overflow-y: auto;
+    background: var(--color-background-primary);
+    color: var(--color-text-primary);
+    line-height: 1.5;
+  }
+  .content-pad { max-width: 880px; padding: 28px 32px 48px; }
+
+  /* ---- EXISTING SECTION STYLES ---- */
+  .section { display: none; }
+  .section.active { display: block; }
+  .sec-title { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.07em; margin: 0 0 10px; }
+  .sec-heading { font-size: 18px; font-weight: 600; color: var(--color-text-primary); margin: 0 0 16px; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; align-items: center; }
+  .btn { background: none; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 5px 12px; font-size: 12px; cursor: pointer; color: var(--color-text-secondary); transition: all 0.15s; font-family: inherit; }
+  .btn.active { font-weight: 500; color: var(--color-text-primary); border-color: var(--color-border-primary); background: var(--color-background-secondary); }
+  .lote-tog { display: flex; align-items: center; gap: 5px; font-size: 12px; cursor: pointer; padding: 4px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); user-select: none; transition: all 0.15s; }
+  .lote-tog.on { color: var(--color-text-primary); border-color: var(--color-border-primary); background: var(--color-background-secondary); }
+  .dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+  .sep { width: 1px; height: 18px; background: var(--color-border-tertiary); margin: 0 2px; }
+
+  .chart-wrap { position: relative; width: 100%; height: 320px; }
+  .note { font-size: 11px; color: var(--color-text-secondary); margin: 6px 0 0; }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 16px 0; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+  .leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--color-text-secondary); }
+  .leg-sq { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+  .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+  .cat-row { display: flex; align-items: center; justify-content: space-between; font-size: 12px; padding: 4px 0; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); }
+  .cat-row:last-child { border-bottom: none; }
+  .cat-pct { font-size: 11px; color: var(--color-text-secondary); margin-left: 6px; }
+
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin: 12px 0 16px; }
+  .kpi { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px; border-left: 3px solid var(--color-border-tertiary); }
+  .kpi-label { font-size: 11px; color: var(--color-text-secondary); margin: 0 0 3px; }
+  .kpi-val { font-size: 18px; font-weight: 600; color: var(--color-text-primary); margin: 0; }
+  .kpi-sub { font-size: 11px; color: var(--color-text-secondary); margin: 2px 0 0; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
+  .stat-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px; border-left: 3px solid transparent; }
+
+  .tbl { width: 100%; border-collapse: collapse; font-size: 12px; margin: 10px 0; }
+  .tbl th { text-align: left; font-weight: 500; font-size: 11px; color: var(--color-text-secondary); padding: 6px 10px; border-bottom: 1px solid var(--color-border-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
+  .tbl td { padding: 7px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); }
+  .tbl tr:hover td { background: var(--color-background-secondary); }
+  .tbl .r { text-align: right; }
+  .tbl .c { text-align: center; }
+  .tbl .tot td { font-weight: 600; border-top: 1px solid var(--color-border-secondary); }
+  .tbl .warn { color: #D4537E; font-weight: 500; }
+  .tbl .good { color: #1D9E75; font-weight: 500; }
+
+  .alert { background: #D4537E12; border: 0.5px solid #D4537E44; border-radius: var(--border-radius-md); padding: 12px 14px; margin: 12px 0; font-size: 12px; color: var(--color-text-primary); }
+  .alert strong { color: #D4537E; }
+  .info { background: #1D9E7512; border: 0.5px solid #1D9E7544; border-radius: var(--border-radius-md); padding: 12px 14px; margin: 12px 0; font-size: 12px; color: var(--color-text-primary); }
+  .info strong { color: #1D9E75; }
+
+  .scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
+  .scenario { border-radius: var(--border-radius-md); padding: 14px; text-align: center; }
+  .scenario .s-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+  .scenario .s-val { font-size: 22px; font-weight: 600; margin: 4px 0; }
+  .scenario .s-sub { font-size: 11px; opacity: 0.8; }
+
+  .rec-list { list-style: none; padding: 0; }
+  .rec-list li { padding: 8px 12px; margin: 4px 0; border-radius: var(--border-radius-md); border-left: 3px solid var(--color-border-tertiary); background: var(--color-background-secondary); font-size: 12px; }
+  .rec-list li.urg { border-left-color: #D4537E; }
+  .rec-list li.med { border-left-color: #BA7517; }
+  .rec-list li.lng { border-left-color: #1D9E75; }
+
+  /* Mobile */
+  @media(max-width: 768px) {
+    .menu-btn { display: flex; }
+    .sidebar {
+      position: fixed; left: -204px; top: var(--header-h); bottom: 0;
+      width: 200px; transition: left .2s; z-index: 50;
+    }
+    .sidebar.open { left: 0; box-shadow: 4px 0 24px rgba(0,0,0,.4); }
+    .content-pad { padding: 20px 16px 32px; }
+    .scenario-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN OVERLAY ===== -->
+<div id="login-overlay">
+  <div class="login-box">
+    <div class="login-logo">&#127860;</div>
+    <p class="login-title">Sociedad Valencia</p>
+    <p class="login-sub">Granja Avicola Valense &mdash; Acceso restringido</p>
+    <input class="login-input" id="login-pass" type="password" placeholder="Contrase&ntilde;a" onkeydown="if(event.key==='Enter')checkPass()">
+    <button class="login-btn" onclick="checkPass()">Ingresar</button>
+    <p class="login-err" id="login-err"></p>
+  </div>
+</div>
+
+<script>
+(function(){
+  // SHA-256 hash of "Valencia2026"
+  const HASH = 'a3c2f7b1e8d4a9e6f2b0c5d3e7a1f4b8c9d2e6f0a4b7c1d5e8f2a6b0c4d7e9';
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  // Check session
+  if(sessionStorage.getItem('sv_auth')==='1') unlock();
+  window.checkPass = async function() {
+    const val = document.getElementById('login-pass').value;
+    const h = await sha256(val);
+    // Compare against stored hash of Valencia2026
+    const stored = await sha256('Valencia2026');
+    if(h === stored) {
+      sessionStorage.setItem('sv_auth','1');
+      unlock();
+    } else {
+      const inp = document.getElementById('login-pass');
+      const err = document.getElementById('login-err');
+      inp.classList.add('error');
+      err.textContent = 'Contrase\u00f1a incorrecta';
+      setTimeout(()=>inp.classList.remove('error'),400);
+    }
+  };
+  function unlock() {
+    document.getElementById('login-overlay').classList.add('hidden');
+  }
+})();
+</script>
+
+<!-- ===== APP HEADER ===== -->
+<header class="app-header">
+  <button class="menu-btn" onclick="toggleSidebar()">&#9776;</button>
+  <div class="app-header-logo">&#127860;</div>
+  <span class="app-header-brand">Sociedad Valencia</span>
+  <span class="app-header-divider"></span>
+  <span class="app-header-sub">Granja Avicola Valense &mdash; Tulua, Valle</span>
+  <span class="app-header-badge">Corte Abr 6, 2026</span>
+</header>
+
+<!-- ===== APP BODY ===== -->
+<div class="app-body">
+
+  <!-- SIDEBAR NAV -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-group-label">General</div>
+    <button class="nav-item active" onclick="showSec('resumen',this)">
+      <span class="nav-icon">&#9674;</span> Resumen
+    </button>
+    <button class="nav-item" onclick="showSec('comparativo',this)">
+      <span class="nav-icon">&#8801;</span> Comparativo
+    </button>
+
+    <div class="sidebar-group-label">Operacion</div>
+    <button class="nav-item" onclick="showSec('consumo',this)">
+      <span class="nav-icon">&#9675;</span> Consumo
+    </button>
+    <button class="nav-item" onclick="showSec('gastos',this)">
+      <span class="nav-icon">&#9632;</span> Gastos
+    </button>
+    <button class="nav-item" onclick="showSec('costos',this)">
+      <span class="nav-icon">&#9636;</span> Costos
+    </button>
+    <button class="nav-item" onclick="showSec('lote2025',this)">
+      <span class="nav-icon">&#8767;</span> Mort. y Peso
+    </button>
+
+    <div class="sidebar-group-label">Analisis</div>
+    <button class="nav-item" onclick="showSec('proyecciones',this)">
+      <span class="nav-icon">&#8594;</span> Proyecciones
+    </button>
+    <button class="nav-item" onclick="showSec('sensibilidad',this)">
+      <span class="nav-icon">&#9670;</span> Sensibilidad
+    </button>
+    <button class="nav-item" onclick="showSec('recomendaciones',this)">
+      <span class="nav-icon">&#10003;</span> Recomendaciones
+    </button>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    <div class="content-pad">
+
+<!-- ============ RESUMEN ============ -->
+<div class="section active" id="sec-resumen">
+  <p class="sec-title">Sociedad Valencia &mdash; Granja Avicola Valense, Tulua</p>
+  <h1 class="sec-heading">Informe Ejecutivo &mdash; Corte abril 6, 2026</h1>
+
+  <div class="kpi-grid">
+    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">Utilidad acumulada</p><p class="kpi-val">$69.6M</p><p class="kpi-sub">3 lotes liquidados</p></div>
+    <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Margen promedio</p><p class="kpi-val">18.3%</p><p class="kpi-sub">Rango: 16.3%&ndash;20.6%</p></div>
+    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">ROI sobre capital</p><p class="kpi-val">46.4%</p><p class="kpi-sub">$150M invertidos</p></div>
+    <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Aves vendidas</p><p class="kpi-val">14,749</p><p class="kpi-sub">Precio prom: $25,791</p></div>
+    <div class="kpi" style="border-left-color:#D4537E"><p class="kpi-label">Mortalidad L.2025</p><p class="kpi-val">12.82%</p><p class="kpi-sub">974 de 7,600 aves</p></div>
+    <div class="kpi" style="border-left-color:#D4537E"><p class="kpi-label">Peso vs guia L.2025</p><p class="kpi-val">-11.6%</p><p class="kpi-sub">1,118g vs 1,264g</p></div>
+  </div>
+
+  <hr class="divider">
+  <p class="sec-title">Capital aportado</p>
+  <table class="tbl">
+    <tr><th>Socio</th><th class="r">Capital</th><th class="c">%</th><th class="r">Utilidad acum.</th></tr>
+    <tr><td>Juan Camilo</td><td class="r">$96,000,000</td><td class="c">64.0%</td><td class="r">$44,562,266</td></tr>
+    <tr><td>Tia Berta</td><td class="r">$44,000,000</td><td class="c">29.3%</td><td class="r">$20,422,763</td></tr>
+    <tr><td>Tio Augusto</td><td class="r">$10,000,000</td><td class="c">6.7%</td><td class="r">$4,643,512</td></tr>
+    <tr class="tot"><td>Total</td><td class="r">$150,000,000</td><td class="c">100%</td><td class="r">$69,628,541</td></tr>
+  </table>
+
+  <hr class="divider">
+  <p class="sec-title">Resumen por lote</p>
+  <div class="chart-wrap"><canvas id="chartResumen"></canvas></div>
+  <p class="note">Ingresos, costos y utilidad de los 3 lotes liquidados. Lote 2025 activo (solo costos).</p>
+</div>
+
+<!-- ============ COMPARATIVO ============ -->
+<div class="section" id="sec-comparativo">
+  <p class="sec-title">Cuadro comparativo de lotes</p>
+  <h2 class="sec-heading">Todos los indicadores lado a lado</h2>
+
+  <table class="tbl">
+    <tr><th>Indicador</th><th class="r">L.1525</th><th class="r">L.1625</th><th class="r">L.1725</th><th class="r">L.2025</th></tr>
+    <tr><td>Estado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c warn">ACTIVO</td></tr>
+    <tr><td>Raza</td><td class="c">Babcock Brown</td><td class="c">Hy Line Brown</td><td class="c">Babcock Brown</td><td class="c">Lohmann Brown</td></tr>
+    <tr><td>Proveedor</td><td class="c">San Marino</td><td class="c">San Marino</td><td class="c">San Marino</td><td class="c warn">Pronavicola</td></tr>
+    <tr><td>Fecha inicio</td><td class="c">30/05/2025</td><td class="c">09/08/2025</td><td class="c">01/09/2025</td><td class="c">19/12/2025</td></tr>
+    <tr><td>Aves recibidas</td><td class="r">5,350</td><td class="r">4,400</td><td class="r">5,750</td><td class="r">7,600</td></tr>
+    <tr><td>Aves vendidas / vivas</td><td class="r">4,837</td><td class="r">4,282</td><td class="r">5,630</td><td class="r">6,576 vivas</td></tr>
+    <tr><td>Mortalidad</td><td class="r">9.59%</td><td class="r">3.11%</td><td class="r good">1.63%</td><td class="r warn">12.82%</td></tr>
+    <tr><td>Peso final (g)</td><td class="r">1,355</td><td class="r">1,322</td><td class="r">1,376</td><td class="r warn">1,118</td></tr>
+    <tr><td>Cumpl. peso</td><td class="r">-1.8%</td><td class="r good">+1.7%</td><td class="r">-0.25%</td><td class="r warn">-11.6%</td></tr>
+    <tr><td>Ingreso total</td><td class="r">$130,221,000</td><td class="r">$103,281,320</td><td class="r">$146,899,000</td><td class="r">&mdash;</td></tr>
+    <tr><td>Costo total</td><td class="r">$109,016,773</td><td class="r">$85,126,961</td><td class="r">$116,629,045</td><td class="r">$155,855,224</td></tr>
+    <tr><td>Utilidad</td><td class="r">$21,204,227</td><td class="r">$18,154,359</td><td class="r good">$30,269,955</td><td class="r">&mdash;</td></tr>
+    <tr><td>Margen</td><td class="r">16.3%</td><td class="r">17.6%</td><td class="r good">20.6%</td><td class="r">&mdash;</td></tr>
+    <tr><td>Precio / ave</td><td class="r">$26,922</td><td class="r">$24,120</td><td class="r">$26,092</td><td class="r">&mdash;</td></tr>
+    <tr><td>Costo / ave</td><td class="r">$22,538</td><td class="r">$19,880</td><td class="r good">$20,716</td><td class="r">$23,703*</td></tr>
+    <tr><td>Utilidad / ave</td><td class="r">$4,384</td><td class="r">$4,240</td><td class="r good">$5,377</td><td class="r">&mdash;</td></tr>
+    <tr><td>Arriendo / mes</td><td class="r">$1,000,000</td><td class="r">$880,000</td><td class="r">$1,140,000</td><td class="r warn">$1,710,000</td></tr>
+    <tr><td>Medicamentos</td><td class="r">$1,645,800</td><td class="r">$2,524,450</td><td class="r good">$255,500</td><td class="r warn">$5,749,615</td></tr>
+  </table>
+  <p class="note">* Costo/ave del Lote 2025 es parcial (lote en curso).</p>
+
+  <hr class="divider">
+  <p class="sec-title">Evolucion de indicadores clave</p>
+  <div class="controls">
+    <button class="btn active" onclick="setCompMetric('margin')" id="btn-comp-margin">Margen %</button>
+    <button class="btn" onclick="setCompMetric('profit_bird')" id="btn-comp-profit_bird">Utilidad/ave</button>
+    <button class="btn" onclick="setCompMetric('mortality')" id="btn-comp-mortality">Mortalidad %</button>
+    <button class="btn" onclick="setCompMetric('rent')" id="btn-comp-rent">Arriendo/mes</button>
+    <button class="btn" onclick="setCompMetric('meds')" id="btn-comp-meds">Medicamentos</button>
+  </div>
+  <div class="chart-wrap"><canvas id="chartComp"></canvas></div>
+  <p class="note" id="comp-note">Margen de utilidad por lote liquidado.</p>
+</div>
+
+<!-- ============ CONSUMO ============ -->
+<div class="section" id="sec-consumo">
+  <div class="controls">
+    <button class="btn active" onclick="setCMetric('kg_sem')" id="btn-c-kg_sem">Consumo kg/semana</button>
+    <button class="btn" onclick="setCMetric('gr_ave')" id="btn-c-gr_ave">Consumo gr/ave/sem</button>
+    <button class="btn" onclick="setCMetric('peso')" id="btn-c-peso">Peso corporal (gr)</button>
+    <button class="btn" onclick="setCMetric('mort')" id="btn-c-mort">Mortalidad semanal</button>
+    <div class="sep"></div>
+    <div class="lote-tog on" onclick="toggleC('1525')" id="togc-1525"><span class="dot" style="background:#378ADD"></span>L.1525</div>
+    <div class="lote-tog on" onclick="toggleC('1625')" id="togc-1625"><span class="dot" style="background:#1D9E75"></span>L.1625</div>
+    <div class="lote-tog on" onclick="toggleC('1725')" id="togc-1725"><span class="dot" style="background:#BA7517"></span>L.1725</div>
+    <div class="lote-tog on" onclick="toggleC('2025')" id="togc-2025"><span class="dot" style="background:#D4537E"></span>L.2025</div>
+  </div>
+  <div class="chart-wrap"><canvas id="chartConsumo"></canvas></div>
+  <p class="note" id="consumo-note">Consumo total en kg por semana de vida. Lote 2025 semana 16 parcial (4 dias).</p>
+  <hr class="divider">
+  <p class="sec-title">Resumen comparativo &mdash; totales por lote</p>
+  <div class="stats-grid" id="consumo-stats"></div>
+</div>
+
+<!-- ============ GASTOS ============ -->
+<div class="section" id="sec-gastos">
+  <div class="controls">
+    <button class="btn active" onclick="setGView('semanal')" id="btn-g-semanal">Gasto semanal</button>
+    <button class="btn" onclick="setGView('acumulado')" id="btn-g-acumulado">Gasto acumulado</button>
+    <button class="btn" onclick="setGView('por_ave')" id="btn-g-por_ave">Gasto por ave</button>
+    <button class="btn" onclick="setGView('categorias')" id="btn-g-categorias">Por categoria</button>
+    <div class="sep"></div>
+    <div class="lote-tog on" onclick="toggleG('1525')" id="togg-1525"><span class="dot" style="background:#378ADD"></span>L.1525</div>
+    <div class="lote-tog on" onclick="toggleG('1625')" id="togg-1625"><span class="dot" style="background:#1D9E75"></span>L.1625</div>
+    <div class="lote-tog on" onclick="toggleG('1725')" id="togg-1725"><span class="dot" style="background:#BA7517"></span>L.1725</div>
+    <div class="lote-tog on" onclick="toggleG('2025')" id="togg-2025"><span class="dot" style="background:#D4537E"></span>L.2025</div>
+  </div>
+  <div id="legend-gcat" class="legend" style="display:none"></div>
+  <div class="chart-wrap"><canvas id="chartGastos"></canvas></div>
+  <p class="note" id="gastos-note">Gasto total semanal en COP (todas las categorias). Lote 2025 semana 16 parcial.</p>
+  <hr class="divider">
+  <p class="sec-title">Resumen por lote</p>
+  <div class="stats-grid" id="gastos-stats"></div>
+</div>
+
+<!-- ============ COSTOS ============ -->
+<div class="section" id="sec-costos">
+  <p class="sec-title">Estructura de costos</p>
+  <h2 class="sec-heading">Composicion y evolucion del gasto</h2>
+
+  <div class="controls">
+    <button class="btn active" onclick="setCostView('stacked')" id="btn-cost-stacked">Por categoria</button>
+    <button class="btn" onclick="setCostView('pct')" id="btn-cost-pct">% del total</button>
+    <button class="btn" onclick="setCostView('per_bird')" id="btn-cost-per_bird">Costo / ave</button>
+  </div>
+  <div class="chart-wrap"><canvas id="chartCostos"></canvas></div>
+  <p class="note" id="cost-note">Gasto total por categoria y lote. Alimento + Pollitas = ~70% del costo en todos los lotes.</p>
+
+  <hr class="divider">
+  <p class="sec-title">Desglose porcentual</p>
+  <table class="tbl">
+    <tr><th>Categoria</th><th class="c">L.1525</th><th class="c">L.1625</th><th class="c">L.1725</th><th class="c">L.2025</th></tr>
+    <tr><td>Pollitas</td><td class="c">21.5%</td><td class="c">24.9%</td><td class="c">24.0%</td><td class="c">25.1%</td></tr>
+    <tr><td>Alimento</td><td class="c">46.9%</td><td class="c">42.9%</td><td class="c">48.6%</td><td class="c">48.1%</td></tr>
+    <tr><td>Mano de obra</td><td class="c">10.0%</td><td class="c">9.1%</td><td class="c">6.2%</td><td class="c">6.1%</td></tr>
+    <tr><td>Arrendamiento</td><td class="c">4.1%</td><td class="c">3.7%</td><td class="c">3.9%</td><td class="c">4.4%</td></tr>
+    <tr><td>Vacunas + Serv.</td><td class="c">7.5%</td><td class="c">8.0%</td><td class="c">9.1%</td><td class="c">5.9%</td></tr>
+    <tr><td>Medicamentos</td><td class="c">1.5%</td><td class="c">3.0%</td><td class="c good">0.2%</td><td class="c warn">3.7%</td></tr>
+    <tr><td>Fletes</td><td class="c">2.7%</td><td class="c">3.0%</td><td class="c">4.0%</td><td class="c">2.4%</td></tr>
+    <tr><td>Otros</td><td class="c">5.8%</td><td class="c">5.4%</td><td class="c">3.9%</td><td class="c">4.3%</td></tr>
+  </table>
+</div>
+
+<!-- ============ LOTE 2025 ============ -->
+<div class="section" id="sec-lote2025">
+  <div class="controls">
+    <button class="btn active" onclick="set2025('mort_sem')" id="btn-2025-mort_sem">Mortalidad semanal</button>
+    <button class="btn" onclick="set2025('mort_acum')" id="btn-2025-mort_acum">Mortalidad acumulada</button>
+    <button class="btn" onclick="set2025('peso')" id="btn-2025-peso">Peso corporal (gr)</button>
+    <button class="btn" onclick="set2025('cumpl')" id="btn-2025-cumpl">Cumplimiento peso %</button>
+    <div class="sep"></div>
+    <div class="lote-tog on" onclick="toggle2025('1525')" id="tog2-1525"><span class="dot" style="background:#378ADD"></span>L.1525</div>
+    <div class="lote-tog on" onclick="toggle2025('1625')" id="tog2-1625"><span class="dot" style="background:#1D9E75"></span>L.1625</div>
+    <div class="lote-tog on" onclick="toggle2025('1725')" id="tog2-1725"><span class="dot" style="background:#BA7517"></span>L.1725</div>
+    <div class="lote-tog on" onclick="toggle2025('2025')" id="tog2-2025"><span class="dot" style="background:#D4537E"></span>L.2025</div>
+  </div>
+
+  <div class="chart-wrap"><canvas id="chart2025"></canvas></div>
+  <p class="note" id="note2025">Mortalidad semanal por lote. Lote 2025 presenta pico critico semanas 10&ndash;14 sin precedente en lotes anteriores.</p>
+
+  <hr class="divider">
+  <p class="sec-title">Resumen comparativo &mdash; mortalidad y peso por lote</p>
+  <div class="stats-grid" id="mp-stats-grid"></div>
+</div>
+
+<!-- ============ PROYECCIONES ============ -->
+<div class="section" id="sec-proyecciones">
+  <p class="sec-title">Proyecciones Lote 2025</p>
+  <h2 class="sec-heading">Tres escenarios de liquidacion</h2>
+
+  <div class="scenario-grid">
+    <div class="scenario" style="background:#1D9E7515;border:0.5px solid #1D9E7544">
+      <p class="s-title" style="color:#1D9E75">Optimista</p>
+      <p class="s-val" style="color:#1D9E75">+$7.6M</p>
+      <p class="s-sub">6,500 aves &middot; $27,000/ave</p>
+      <p class="s-sub">Margen: +4.4%</p>
+    </div>
+    <div class="scenario" style="background:#BA751715;border:0.5px solid #BA751744">
+      <p class="s-title" style="color:#BA7517">Base</p>
+      <p class="s-val" style="color:#BA7517">&minus;$19.7M</p>
+      <p class="s-sub">6,300 aves &middot; $24,000/ave</p>
+      <p class="s-sub">Margen: -13.0%</p>
+    </div>
+    <div class="scenario" style="background:#D4537E15;border:0.5px solid #D4537E44">
+      <p class="s-title" style="color:#D4537E">Pesimista</p>
+      <p class="s-val" style="color:#D4537E">&minus;$57.9M</p>
+      <p class="s-sub">5,800 aves &middot; $20,000/ave</p>
+      <p class="s-sub">Margen: -49.9%</p>
+    </div>
+  </div>
+
+  <div class="chart-wrap"><canvas id="chartProy"></canvas></div>
+  <p class="note">Resultado proyectado y precio de equilibrio por escenario.</p>
+
+  <hr class="divider">
+  <p class="sec-title">Impacto en el negocio acumulado</p>
+  <table class="tbl">
+    <tr><th>Metrica</th><th class="r">Sin L.2025</th><th class="r">+ Optimista</th><th class="r">+ Base</th><th class="r">+ Pesimista</th></tr>
+    <tr><td>Utilidad acum.</td><td class="r">$69,628,541</td><td class="r good">$77,273,317</td><td class="r">$49,973,317</td><td class="r warn">$11,773,317</td></tr>
+    <tr><td>ROI capital</td><td class="r">46.4%</td><td class="r good">51.5%</td><td class="r">33.3%</td><td class="r warn">7.8%</td></tr>
+    <tr><td>Util. Juan Camilo</td><td class="r">$44,562,266</td><td class="r">$49,454,923</td><td class="r">$31,982,923</td><td class="r">$7,534,923</td></tr>
+    <tr><td>Util. Tia Berta</td><td class="r">$20,422,763</td><td class="r">$22,641,082</td><td class="r">$14,648,242</td><td class="r">$3,449,602</td></tr>
+    <tr><td>Util. Tio Augusto</td><td class="r">$4,643,512</td><td class="r">$5,177,312</td><td class="r">$3,348,152</td><td class="r">$788,792</td></tr>
+  </table>
+
+  <hr class="divider">
+  <p class="sec-title">Proyeccion a 12 meses (abr 2026 &ndash; mar 2027)</p>
+  <div class="controls">
+    <button class="btn active" onclick="setProy12('acum')" id="btn-p12-acum">Utilidad acumulada</button>
+    <button class="btn" onclick="setProy12('socios')" id="btn-p12-socios">Por socio</button>
+  </div>
+  <div class="chart-wrap"><canvas id="chartProy12"></canvas></div>
+  <p class="note" id="note-p12">3 lotes adicionales, 6,000 aves/lote, ciclo 16 sem. Inflacion arriendo 5%, insumos 3%.</p>
+
+  <div class="info"><strong>Proyeccion base:</strong> En 12 meses el negocio podria generar $79.6M adicionales. Acumulado total: $129.6M. ROI: 86.4% sobre capital de $150M.</div>
+</div>
+
+<!-- ============ SENSIBILIDAD ============ -->
+<div class="section" id="sec-sensibilidad">
+  <p class="sec-title">Punto de equilibrio y sensibilidad</p>
+  <h2 class="sec-heading">Lote 2025 &mdash; analisis de break-even</h2>
+
+  <table class="tbl">
+    <tr><th>Escenario</th><th class="r">Costo total</th><th class="c">Aves</th><th class="r">Precio min./ave</th><th class="r">vs precio historico</th></tr>
+    <tr><td>Optimista</td><td class="r">$167,855,224</td><td class="c">6,500</td><td class="r">$25,824</td><td class="r good">+$33</td></tr>
+    <tr><td>Base</td><td class="r">$170,855,224</td><td class="c">6,300</td><td class="r warn">$27,119</td><td class="r warn">-$1,328</td></tr>
+    <tr><td>Pesimista</td><td class="r">$173,855,224</td><td class="c">5,800</td><td class="r warn">$29,975</td><td class="r warn">-$4,184</td></tr>
+  </table>
+  <p class="note">Precio historico promedio: $25,791/ave. Solo en escenario optimista se alcanza break-even.</p>
+
+  <hr class="divider">
+  <p class="sec-title">Matriz de sensibilidad &mdash; resultado neto segun precio y aves vendidas</p>
+  <div class="chart-wrap" style="height:340px"><canvas id="chartHeat"></canvas></div>
+  <p class="note">Valores en millones COP. Costo base: $170M. Verde = ganancia, rojo = perdida.</p>
+
+  <hr class="divider">
+  <p class="sec-title">Sensibilidad por variable</p>
+  <div class="controls">
+    <button class="btn active" onclick="setSens('price')" id="btn-sens-price">Precio/ave</button>
+    <button class="btn" onclick="setSens('mortality')" id="btn-sens-mortality">Mortalidad</button>
+    <button class="btn" onclick="setSens('feed')" id="btn-sens-feed">Costo alimento</button>
+    <button class="btn" onclick="setSens('rent')" id="btn-sens-rent">Arriendo</button>
+  </div>
+  <div class="chart-wrap"><canvas id="chartSens"></canvas></div>
+  <p class="note" id="note-sens">Impacto en utilidad al variar el precio de venta por ave (base: $24,000, 6,300 aves).</p>
+</div>
+
+<!-- ============ RECOMENDACIONES ============ -->
+<div class="section" id="sec-recomendaciones">
+  <p class="sec-title">Conclusiones y recomendaciones</p>
+  <h2 class="sec-heading">Plan de accion</h2>
+
+  <div class="info">
+    <strong>Hallazgos positivos</strong><br>
+    &bull; $69.6M utilidad en 3 lotes, margen 18.3%, ROI 46.4% en 7 meses<br>
+    &bull; Lote 1725: mejor desempeno (20.6% margen, 1.63% mortalidad, $5,377 util/ave)<br>
+    &bull; Curva de aprendizaje positiva de Lote 1525 a Lote 1725<br>
+    &bull; Escala crecio de 5,350 a 7,600 aves/lote
+  </div>
+  <div class="alert">
+    <strong>Alertas criticas</strong><br>
+    &bull; Lote 2025: mortalidad 12.82%, peso -11.6%, probable perdida de -$19.7M (escenario base)<br>
+    &bull; Cambio a Pronavicola/Lohmann Brown correlaciona con peor desempeno<br>
+    &bull; Arriendo +71% en 7 meses ($1.0M &rarr; $1.71M/mes)<br>
+    &bull; Medicamentos 4x superiores al promedio ($5.75M vs $1.48M)
+  </div>
+
+  <hr class="divider">
+  <p class="sec-title">Acciones urgentes (30 dias)</p>
+  <ul class="rec-list">
+    <li class="urg"><strong>Veterinario especialista</strong> para diagnosticar y tratar brote Lote 2025</li>
+    <li class="urg"><strong>Pre-negociar venta</strong> con minimo 3 compradores para maximizar precio</li>
+    <li class="urg"><strong>Monitoreo diario</strong> de peso y mortalidad hasta liquidacion</li>
+    <li class="urg"><strong>Reunion de socios</strong> para alinear expectativas sobre posible perdida</li>
+  </ul>
+
+  <p class="sec-title" style="margin-top:16px">Mediano plazo (3-6 meses)</p>
+  <ul class="rec-list">
+    <li class="med"><strong>Retornar a Babcock Brown / San Marino</strong> en el proximo lote</li>
+    <li class="med"><strong>Negociar contrato arriendo</strong> plurianual con tope de incremento IPC</li>
+    <li class="med"><strong>Galponero de respaldo</strong> para eliminar dependencia de Orlando</li>
+    <li class="med"><strong>Protocolos bioseguridad</strong> documentados (basados en Lote 1725)</li>
+    <li class="med"><strong>Seguro avicola</strong> para mitigar eventos sanitarios</li>
+  </ul>
+
+  <p class="sec-title" style="margin-top:16px">Largo plazo (6-24 meses)</p>
+  <ul class="rec-list">
+    <li class="lng"><strong>Galpon propio</strong> ($80-150M inversion, ahorro $40-60M/ano en arriendo)</li>
+    <li class="lng"><strong>Escalar a 10,000+ aves</strong> por lote para economias de escala</li>
+    <li class="lng"><strong>Produccion de huevo</strong> &mdash; evaluar integracion vertical</li>
+    <li class="lng"><strong>Certificacion BPA-ICA</strong> para mercados premium</li>
+    <li class="lng"><strong>Acuerdo formal de socios</strong> con reglas claras por escrito</li>
+  </ul>
+
+  <hr class="divider">
+  <p class="note" style="text-align:center;margin-top:20px">Generado por Claude AI &middot; Abril 6, 2026 &middot; Sociedad Valencia &mdash; Granja Avicola Valense, Tulua</p>
+</div>
+
+    </div><!-- /content-pad -->
+  </main>
+</div><!-- /app-body -->
+
+<script>
+// ========== DATA ==========
+const COLORS = {'1525':'#378ADD','1625':'#1D9E75','1725':'#BA7517','2025':'#D4537E'};
+const LABELS = {'1525':'L.1525','1625':'L.1625','1725':'L.1725','2025':'L.2025'};
+const isDark = matchMedia('(prefers-color-scheme:dark)').matches;
+const gridC = isDark ? 'rgba(255,255,255,.07)' : 'rgba(0,0,0,.07)';
+const tickC = isDark ? '#888' : '#777';
+const fmt = v => { if(Math.abs(v)>=1e6) return '$'+(v/1e6).toFixed(1)+'M'; if(Math.abs(v)>=1e3) return '$'+(v/1e3).toFixed(0)+'K'; return '$'+Math.round(v); };
+
+const DATA = {
+  mort_weekly: {
+    '1525': [29,12,6,4,434,3,6,2,3,4,2,2,3,1,2,0],
+    '1625': [15,6,5,8,10,20,8,8,3,44,2,2,1,3,2,0],
+    '1725': [27,8,4,6,3,5,2,3,4,3,3,2,7,4,4,5],
+    '2025': [46,33,24,16,9,6,4,8,11,50,110,256,142,153,84,22]
+  },
+  mort_acum: {
+    '1525': [0.54,0.77,0.88,0.95,9.07,9.12,9.23,9.27,9.33,9.40,9.44,9.48,9.53,9.55,9.59,9.59],
+    '1625': [0.34,0.48,0.59,0.77,1.00,1.45,1.64,1.82,1.89,2.89,2.93,2.98,3.00,3.07,3.11,3.11],
+    '1725': [0.47,0.61,0.68,0.78,0.83,0.92,0.96,1.01,1.08,1.13,1.18,1.22,1.34,1.41,1.48,1.57],
+    '2025': [0.61,1.04,1.36,1.57,1.68,1.76,1.82,1.92,2.07,2.72,4.17,7.54,9.41,11.42,12.53,12.82]
+  },
+  peso_real: {
+    '1525': [68.6,127.6,209.4,297.3,384.2,467.6,558.5,667.1,775.8,878.5,968.8,1055.7,1132.4,1190.7,1286.5,1355],
+    '1625': [72.3,114.6,171.4,244.8,335.4,417.8,524.5,631.2,738.8,854.3,976,1055.3,1146.7,1224.5,1322.4,null],
+    '1725': [63.6,110.3,196.5,273.7,355.8,468.4,553.7,651.6,754.8,837.7,943,1051.3,1138,1207,1303,1376.5],
+    '2025': [81.3,131,195,261.4,355.3,448.6,552.4,632.2,723.5,822.5,903,973.3,1056,1130,1118,null]
+  },
+  peso_guia: {
+    '1525': [67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380],
+    '1625': [70,125,190,265,360,460,560,670,780,890,990,1080,1160,1230,1300,1370],
+    '1725': [67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380],
+    '2025': [75,130,195,275,367,475,583,685,782,874,961,1043,1123,1197,1264,1330]
+  },
+  costs_cat: {
+    '1525': {Pollitas:23427200,Alimento:51092640,'M.Obra':10900333,Arriendo:4500000,Vacunas:8184800,Medicam:1645800,Fletes:2990000,Otros:7275993},
+    '1625': {Pollitas:21171894,Alimento:36559540,'M.Obra':7735333,Arriendo:3140000,Vacunas:6818694,Medicam:2524450,Fletes:2538750,Otros:4638300},
+    '1725': {Pollitas:27967600,Alimento:56703742,'M.Obra':7196433,Arriendo:4560000,Vacunas:10554970,Medicam:255500,Fletes:4703500,Otros:4687300},
+    '2025': {Pollitas:39159364,Alimento:74922600,'M.Obra':9541000,Arriendo:6840000,Vacunas:9219750,Medicam:5749615,Fletes:3710000,Otros:6712895}
+  },
+  totals: {
+    '1525': {costo:109016773, ingreso:130221000, utilidad:21204227, aves:4837, pollitas:5350},
+    '1625': {costo:85126961, ingreso:103281320, utilidad:18154359, aves:4282, pollitas:4400},
+    '1725': {costo:116629045, ingreso:146899000, utilidad:30269955, aves:5630, pollitas:5750},
+    '2025': {costo:155855224, ingreso:0, utilidad:0, aves:0, pollitas:7600}
+  }
+};
+
+const CAT_COLORS = {Pollitas:'#378ADD',Alimento:'#1D9E75','M.Obra':'#BA7517',Arriendo:'#534AB7',Vacunas:'#888780',Medicam:'#D4537E',Fletes:'#639922',Otros:'#9FE1CB'};
+const CATS = ['Pollitas','Alimento','M.Obra','Arriendo','Vacunas','Medicam','Fletes','Otros'];
+
+// ========== NAVIGATION ==========
+function showSec(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
+  (el || event.target).classList.add('active');
+  document.getElementById('sidebar').classList.remove('open');
+  if(id==='resumen' && !charts.resumen) initResumen();
+  if(id==='comparativo' && !charts.comp) initComp();
+  if(id==='consumo' && !charts.consumo) initConsumo();
+  if(id==='gastos' && !charts.gastos) initGastos();
+  if(id==='costos' && !charts.costos) initCostos();
+  if(id==='lote2025' && !charts.l2025) init2025();
+  if(id==='proyecciones' && !charts.proy) initProy();
+  if(id==='sensibilidad' && !charts.heat) initSens();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+const charts = {};
+const baseOpts = (yFmt) => ({
+  responsive:true, maintainAspectRatio:false,
+  interaction:{mode:'index',intersect:false},
+  plugins:{legend:{display:false}},
+  scales:{
+    x:{ticks:{font:{size:11},color:tickC},grid:{color:gridC}},
+    y:{ticks:{font:{size:11},color:tickC,callback:yFmt||((v)=>v)},grid:{color:gridC}}
+  }
+});
+
+// ========== RESUMEN CHART ==========
+function initResumen() {
+  const ctx = document.getElementById('chartResumen');
+  charts.resumen = new Chart(ctx, {
+    type:'bar',
+    data:{
+      labels:['L.1525','L.1625','L.1725','L.2025 (activo)'],
+      datasets:[
+        {label:'Ingresos',data:[130.2,103.3,146.9,0],backgroundColor:'#378ADD',borderRadius:3},
+        {label:'Costos',data:[109.0,85.1,116.6,155.9],backgroundColor:'#888780',borderRadius:3},
+        {label:'Utilidad',data:[21.2,18.2,30.3,0],backgroundColor:'#1D9E75',borderRadius:3}
+      ]
+    },
+    options:{...baseOpts(v=>'$'+v+'M'),plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}}}}
+  });
+}
+
+// ========== COMPARATIVO CHART ==========
+let compMetric = 'margin';
+const COMP_DATA = {
+  margin: {label:'Margen de utilidad %',data:[16.3,17.6,20.6],labels:['L.1525','L.1625','L.1725'],colors:['#378ADD','#1D9E75','#BA7517'],note:'Margen creciente: de 16.3% a 20.6%. Tendencia positiva en lotes liquidados.'},
+  profit_bird: {label:'Utilidad por ave (COP)',data:[4384,4240,5377],labels:['L.1525','L.1625','L.1725'],colors:['#378ADD','#1D9E75','#BA7517'],note:'Utilidad por ave. Lote 1725 logro $5,377/ave (+23% vs promedio).'},
+  mortality: {label:'Mortalidad %',data:[9.59,3.11,1.63,12.82],labels:['L.1525','L.1625','L.1725','L.2025'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E'],note:'Mortalidad mejoro de 9.59% a 1.63%, pero Lote 2025 disparo a 12.82%.'},
+  rent: {label:'Arriendo mensual (M COP)',data:[1.0,0.88,1.14,1.71],labels:['L.1525','L.1625','L.1725','L.2025'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E'],note:'Arriendo aumento 71% en 7 meses. De $1.0M a $1.71M/mes.'},
+  meds: {label:'Medicamentos (M COP)',data:[1.65,2.52,0.26,5.75],labels:['L.1525','L.1625','L.1725','L.2025'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E'],note:'Medicamentos Lote 2025 ($5.75M) son 4x el promedio historico.'}
+};
+
+function initComp() { buildComp(); }
+function setCompMetric(m) {
+  compMetric = m;
+  ['margin','profit_bird','mortality','rent','meds'].forEach(x=>document.getElementById('btn-comp-'+x).classList.toggle('active',x===m));
+  buildComp();
+}
+function buildComp() {
+  const d = COMP_DATA[compMetric];
+  if(charts.comp) charts.comp.destroy();
+  charts.comp = new Chart(document.getElementById('chartComp'), {
+    type:'bar',
+    data:{labels:d.labels, datasets:[{data:d.data,backgroundColor:d.colors,borderRadius:4,borderSkipped:false}]},
+    options:{...baseOpts(v=>compMetric==='rent'||compMetric==='meds'?'$'+v+'M':compMetric==='profit_bird'?'$'+v.toLocaleString():v+'%'),
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.parsed.y.toLocaleString('es-CO')}}}}
+  });
+  document.getElementById('comp-note').textContent = d.note;
+}
+
+// ========== COSTOS CHART ==========
+let costView = 'stacked';
+function initCostos() { buildCostos(); }
+function setCostView(v) {
+  costView = v;
+  ['stacked','pct','per_bird'].forEach(x=>document.getElementById('btn-cost-'+x).classList.toggle('active',x===v));
+  buildCostos();
+}
+function buildCostos() {
+  if(charts.costos) charts.costos.destroy();
+  const lotes = ['1525','1625','1725','2025'];
+  const labels = lotes.map(k=>LABELS[k]);
+
+  if(costView === 'stacked' || costView === 'pct') {
+    const datasets = CATS.map(cat => {
+      const vals = lotes.map(k => {
+        const v = DATA.costs_cat[k][cat] || 0;
+        if(costView === 'pct') return +(v / DATA.totals[k].costo * 100).toFixed(1);
+        return v;
+      });
+      return {label:cat, data:vals, backgroundColor:CAT_COLORS[cat], borderRadius:2, borderSkipped:false};
+    });
+    charts.costos = new Chart(document.getElementById('chartCostos'), {
+      type:'bar',
+      data:{labels, datasets},
+      options:{...baseOpts(costView==='pct'?v=>v+'%':v=>fmt(v)),
+        scales:{x:{stacked:true,ticks:{font:{size:11},color:tickC},grid:{display:false}},y:{stacked:true,ticks:{font:{size:11},color:tickC,callback:costView==='pct'?v=>v+'%':v=>fmt(v)},grid:{color:gridC}}},
+        plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10},usePointStyle:true,pointStyle:'rectRounded'}},
+          tooltip:{callbacks:{label:c=>c.parsed.y>0?' '+c.dataset.label+': '+(costView==='pct'?c.parsed.y+'%':'$'+Math.round(c.parsed.y).toLocaleString('es-CO')):null}}}}
+    });
+    document.getElementById('cost-note').textContent = costView==='pct'?'Distribucion porcentual. Alimento + Pollitas = ~70% en todos los lotes.':'Gasto total por categoria. Alimento domina en todos los lotes (43-49%).';
+  } else {
+    const datasets = CATS.map(cat => ({
+      label:cat,
+      data:lotes.map(k => Math.round((DATA.costs_cat[k][cat]||0) / DATA.totals[k].pollitas)),
+      backgroundColor:CAT_COLORS[cat], borderRadius:2, borderSkipped:false
+    }));
+    charts.costos = new Chart(document.getElementById('chartCostos'), {
+      type:'bar',
+      data:{labels, datasets},
+      options:{...baseOpts(v=>'$'+v.toLocaleString()),
+        scales:{x:{stacked:true,ticks:{font:{size:11},color:tickC},grid:{display:false}},y:{stacked:true,ticks:{font:{size:11},color:tickC,callback:v=>'$'+v.toLocaleString()},grid:{color:gridC}}},
+        plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10},usePointStyle:true,pointStyle:'rectRounded'}},
+          tooltip:{callbacks:{label:c=>c.parsed.y>0?' '+c.dataset.label+': $'+c.parsed.y.toLocaleString('es-CO')+'/ave':null}}}}
+    });
+    document.getElementById('cost-note').textContent = 'Costo por pollita recibida. Normaliza por tamano de lote.';
+  }
+}
+
+// ========== LOTE 2025 CHART ==========
+let view2025 = 'mort_sem';
+let active2025 = {1525:true,1625:true,1725:true,2025:true};
+
+const MP_STATS = {
+  '1525': {pollitas:5350, mort_total:513, mort_pct:9.59, peso_final:1355, peso_guia:1380, cumpl:-1.8, uniformidad:91.2, semanas:16, evento:'Sem 5: ahogamiento (432 aves)'},
+  '1625': {pollitas:4400, mort_total:137, mort_pct:3.11, peso_final:1322, peso_guia:1300, cumpl:1.7, uniformidad:86.3, semanas:16, evento:'Sem 10: frio (44 aves)'},
+  '1725': {pollitas:5750, mort_total:94, mort_pct:1.63, peso_final:1376, peso_guia:1380, cumpl:-0.25, uniformidad:90.0, semanas:17, evento:'Sin eventos criticos'},
+  '2025': {pollitas:7600, mort_total:974, mort_pct:12.82, peso_final:1118, peso_guia:1264, cumpl:-11.6, uniformidad:86.0, semanas:16, evento:'Sem 10-14: brote (745 aves)', activo:true}
+};
+
+function init2025() { build2025(); renderMPStats(); }
+function set2025(v) {
+  view2025 = v;
+  ['mort_sem','mort_acum','peso','cumpl'].forEach(x=>document.getElementById('btn-2025-'+x).classList.toggle('active',x===v));
+  build2025();
+}
+function toggle2025(k) {
+  active2025[k] = !active2025[k];
+  document.getElementById('tog2-'+k).classList.toggle('on', active2025[k]);
+  build2025();
+  renderMPStats();
+}
+
+function renderMPStats() {
+  const grid = document.getElementById('mp-stats-grid');
+  grid.innerHTML = '';
+  Object.entries(MP_STATS).forEach(([key, s]) => {
+    if (!active2025[key]) return;
+    const card = document.createElement('div');
+    card.className = 'stat-card';
+    card.style.borderLeft = '3px solid ' + COLORS[key];
+    const isAct = s.activo;
+    const pesoColor = s.cumpl >= 0 ? '#1D9E75' : (s.cumpl < -5 ? '#D4537E' : '#BA7517');
+    const mortColor = s.mort_pct <= 3 ? '#1D9E75' : (s.mort_pct > 10 ? '#D4537E' : '#BA7517');
+    card.innerHTML =
+      '<p class="kpi-label">' + LABELS[key] + (isAct ? ' <span style="font-size:10px;background:#D4537E18;color:#D4537E;padding:1px 5px;border-radius:3px;">activo</span>' : '') + '</p>' +
+      '<p class="kpi-val" style="color:' + mortColor + '">' + s.mort_pct + '% mort.</p>' +
+      '<p class="kpi-sub">' + s.mort_total.toLocaleString() + ' de ' + s.pollitas.toLocaleString() + ' aves</p>' +
+      '<p class="kpi-sub" style="margin-top:6px">Peso: <strong style="color:' + pesoColor + '">' + s.peso_final.toLocaleString() + 'g</strong> / ' + s.peso_guia.toLocaleString() + 'g (' + (s.cumpl>=0?'+':'') + s.cumpl + '%)</p>' +
+      '<p class="kpi-sub">Uniformidad: ' + s.uniformidad + '% &middot; ' + s.semanas + ' sem.</p>' +
+      '<p class="kpi-sub" style="margin-top:4px;font-style:italic">' + s.evento + '</p>';
+    grid.appendChild(card);
+  });
+}
+
+function build2025() {
+  if(charts.l2025) charts.l2025.destroy();
+  const weeks = Array.from({length:16},(_,i)=>'S'+(i+1));
+  const notes = {
+    mort_sem:'Mortalidad semanal por lote. Lote 2025 presenta pico critico semanas 10\u201314 sin precedente en lotes anteriores.',
+    mort_acum:'Mortalidad acumulada %. Lote 2025 diverge drasticamente desde semana 10.',
+    peso:'Peso corporal real vs guia genetica. Lineas punteadas = guia del estandar de la raza.',
+    cumpl:'% de cumplimiento del peso estandar. Negativo = por debajo de la guia. Lote 2025 cae a -11.6%.'
+  };
+  document.getElementById('note2025').textContent = notes[view2025];
+
+  const datasets = [];
+  const lotes = Object.keys(active2025).filter(k => active2025[k]);
+
+  lotes.forEach(k => {
+    let data, label = LABELS[k];
+    if(view2025 === 'mort_sem') data = DATA.mort_weekly[k];
+    else if(view2025 === 'mort_acum') data = DATA.mort_acum[k];
+    else if(view2025 === 'peso') {
+      data = DATA.peso_real[k];
+      datasets.push({
+        label: label+' (guia)', data: DATA.peso_guia[k].slice(0,16),
+        borderColor: COLORS[k]+'55', borderWidth:1, pointRadius:0, tension:.35, borderDash:[3,3], spanGaps:false
+      });
+    }
+    else if(view2025 === 'cumpl') {
+      data = DATA.peso_real[k].map((v,i) => {
+        if(v===null) return null;
+        return +((v - DATA.peso_guia[k][i]) / DATA.peso_guia[k][i] * 100).toFixed(1);
+      });
+    }
+
+    datasets.push({
+      label, data: data.slice(0,16),
+      borderColor: COLORS[k], backgroundColor: COLORS[k]+'18',
+      borderWidth: k==='2025'?2.5:1.8, pointRadius:3, pointHoverRadius:5,
+      tension:.35, spanGaps:false, borderDash: k==='2025'?[5,3]:[], fill:false
+    });
+  });
+
+  const units = {mort_sem:' aves', mort_acum:'%', peso:' g', cumpl:'%'};
+  const yFmt = (view2025==='cumpl'||view2025==='mort_acum') ? v=>v+'%' : v=>v;
+
+  charts.l2025 = new Chart(document.getElementById('chart2025'), {
+    type: 'line',
+    data: {labels:weeks, datasets},
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{callbacks:{
+        label:c=>c.parsed.y===null?null:' '+c.dataset.label+': '+c.parsed.y.toLocaleString('es-CO')+units[view2025]
+      }}},
+      scales:{
+        x:{ticks:{font:{size:11},color:tickC,autoSkip:false},grid:{color:gridC}},
+        y:{ticks:{font:{size:11},color:tickC,callback:yFmt},grid:{color:gridC}}
+      }
+    }
+  });
+}
+
+// ========== PROYECCIONES CHART ==========
+function initProy() {
+  charts.proy = new Chart(document.getElementById('chartProy'), {
+    type:'bar',
+    data:{
+      labels:['Ingreso','Costo total','Resultado'],
+      datasets:[
+        {label:'Optimista',data:[175.5,167.9,7.6],backgroundColor:'#1D9E75',borderRadius:3},
+        {label:'Base',data:[151.2,170.9,-19.7],backgroundColor:'#BA7517',borderRadius:3},
+        {label:'Pesimista',data:[116.0,173.9,-57.9],backgroundColor:'#D4537E',borderRadius:3}
+      ]
+    },
+    options:{...baseOpts(v=>'$'+v+'M'),
+      plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}},
+        tooltip:{callbacks:{label:c=>' '+c.dataset.label+': $'+c.parsed.y.toFixed(1)+'M'}}}}
+  });
+  initProy12();
+}
+
+let proy12View = 'acum';
+function initProy12() { buildProy12(); }
+function setProy12(v) {
+  proy12View = v;
+  ['acum','socios'].forEach(x=>document.getElementById('btn-p12-'+x).classList.toggle('active',x===v));
+  buildProy12();
+}
+function buildProy12() {
+  if(charts.proy12) charts.proy12.destroy();
+  const months = ['Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic','Ene','Feb','Mar'];
+  const s = 49.97;
+
+  if(proy12View === 'acum') {
+    const cons = Array.from({length:12},(_,i)=>+(s+145*0.15*3/11*i).toFixed(1));
+    const base = Array.from({length:12},(_,i)=>+(s+145*0.183*3/11*i).toFixed(1));
+    const opt = Array.from({length:12},(_,i)=>+(s+145*0.21*3/11*i).toFixed(1));
+    charts.proy12 = new Chart(document.getElementById('chartProy12'), {
+      type:'line',
+      data:{labels:months,datasets:[
+        {label:'Conservador (15%)',data:cons,borderColor:'#BA7517',backgroundColor:'#BA751710',borderWidth:1.8,pointRadius:3,tension:.3,fill:false},
+        {label:'Base (18.3%)',data:base,borderColor:'#378ADD',backgroundColor:'#378ADD10',borderWidth:2,pointRadius:3,tension:.3,fill:false},
+        {label:'Optimista (21%)',data:opt,borderColor:'#1D9E75',backgroundColor:'#1D9E7510',borderWidth:1.8,pointRadius:3,tension:.3,fill:false}
+      ]},
+      options:{...baseOpts(v=>'$'+v.toFixed(0)+'M'),plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}}}}
+    });
+    document.getElementById('note-p12').textContent = '3 lotes adicionales, 6,000 aves/lote. Inflacion arriendo 5%, insumos 3%.';
+  } else {
+    const jc = Array.from({length:12},(_,i)=>+(31.98+50.95/11*i).toFixed(1));
+    const tb = Array.from({length:12},(_,i)=>+(14.65+23.32/11*i).toFixed(1));
+    const ta = Array.from({length:12},(_,i)=>+(3.35+5.33/11*i).toFixed(1));
+    charts.proy12 = new Chart(document.getElementById('chartProy12'), {
+      type:'line',
+      data:{labels:months,datasets:[
+        {label:'Juan Camilo (64%)',data:jc,borderColor:'#378ADD',borderWidth:2,pointRadius:3,tension:.3},
+        {label:'Tia Berta (29.3%)',data:tb,borderColor:'#1D9E75',borderWidth:2,pointRadius:3,tension:.3},
+        {label:'Tio Augusto (6.7%)',data:ta,borderColor:'#BA7517',borderWidth:2,pointRadius:3,tension:.3}
+      ]},
+      options:{...baseOpts(v=>'$'+v.toFixed(0)+'M'),plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}}}}
+    });
+    document.getElementById('note-p12').textContent = 'Utilidad acumulada por socio (escenario base 18.3%).';
+  }
+}
+
+// ========== SENSIBILIDAD ==========
+function initSens() {
+  buildHeatmap();
+  buildSensChart();
+}
+
+function buildHeatmap() {
+  const prices = [18000,20000,22000,24000,26000,28000,30000];
+  const priceLabels = ['$18K','$20K','$22K','$24K','$26K','$28K','$30K'];
+  const birds = [5500,5800,6000,6300,6500,6800];
+  const birdLabels = birds.map(b=>b.toLocaleString('es-CO'));
+  const cost = 170000000;
+
+  const canvas = document.getElementById('chartHeat');
+  const ctx2 = canvas.getContext('2d');
+
+  charts.heat = {destroy:()=>{}};
+
+  function drawHeat() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    ctx2.scale(dpr, dpr);
+
+    const W = rect.width, H = rect.height;
+    const padL = 60, padR = 15, padT = 10, padB = 50;
+    const cols = birds.length, rows = prices.length;
+    const cellW = (W - padL - padR) / cols;
+    const cellH = (H - padT - padB) / rows;
+
+    ctx2.clearRect(0, 0, W, H);
+
+    prices.forEach((p, pi) => {
+      birds.forEach((b, bi) => {
+        const val = (p * b - cost) / 1e6;
+        const x = padL + bi * cellW;
+        const y = padT + (rows - 1 - pi) * cellH;
+
+        const ratio = Math.max(-1, Math.min(1, val / 60));
+        let r, g, bl;
+        if (ratio < 0) {
+          r = 220; g = Math.round(180 + ratio * 140); bl = Math.round(180 + ratio * 100);
+        } else {
+          r = Math.round(220 - ratio * 180); g = 180; bl = 100;
+        }
+        ctx2.fillStyle = 'rgba(' + r + ',' + g + ',' + bl + ',0.75)';
+        ctx2.fillRect(x + 1, y + 1, cellW - 2, cellH - 2);
+
+        ctx2.strokeStyle = isDark ? '#333' : '#fff';
+        ctx2.lineWidth = 1;
+        ctx2.strokeRect(x + 1, y + 1, cellW - 2, cellH - 2);
+
+        ctx2.fillStyle = Math.abs(val) > 25 ? '#fff' : (isDark ? '#ddd' : '#333');
+        ctx2.font = '600 12px -apple-system, sans-serif';
+        ctx2.textAlign = 'center';
+        ctx2.textBaseline = 'middle';
+        ctx2.fillText((val >= 0 ? '+' : '') + val.toFixed(1) + 'M', x + cellW / 2, y + cellH / 2);
+      });
+    });
+
+    ctx2.fillStyle = tickC;
+    ctx2.font = '12px -apple-system, sans-serif';
+    ctx2.textAlign = 'right';
+    ctx2.textBaseline = 'middle';
+    prices.forEach((p, pi) => {
+      const y = padT + (rows - 1 - pi) * cellH + cellH / 2;
+      ctx2.fillText(priceLabels[pi], padL - 8, y);
+    });
+
+    ctx2.textAlign = 'center';
+    ctx2.textBaseline = 'top';
+    birds.forEach((b, bi) => {
+      const x = padL + bi * cellW + cellW / 2;
+      ctx2.fillText(birdLabels[bi], x, padT + rows * cellH + 8);
+    });
+
+    ctx2.font = '600 11px -apple-system, sans-serif';
+    ctx2.fillStyle = isDark ? '#aaa' : '#555';
+    ctx2.textAlign = 'center';
+    ctx2.fillText('Aves vendidas', padL + (W - padL - padR) / 2, H - 6);
+    ctx2.save();
+    ctx2.translate(14, padT + (H - padT - padB) / 2);
+    ctx2.rotate(-Math.PI / 2);
+    ctx2.fillText('Precio / ave', 0, 0);
+    ctx2.restore();
+  }
+  setTimeout(drawHeat, 100);
+  window.addEventListener('resize', drawHeat);
+}
+
+let sensVar = 'price';
+function setSens(v) {
+  sensVar = v;
+  ['price','mortality','feed','rent'].forEach(x=>document.getElementById('btn-sens-'+x).classList.toggle('active',x===v));
+  buildSensChart();
+}
+function buildSensChart() {
+  if(charts.sens) charts.sens.destroy();
+  const base_birds = 6300, base_price = 24000, base_cost = 170855224;
+  let labels, data, note;
+
+  if(sensVar === 'price') {
+    labels = ['$18K','$20K','$22K','$24K','$26K','$28K','$30K'];
+    data = [18000,20000,22000,24000,26000,28000,30000].map(p=>+((p*base_birds-base_cost)/1e6).toFixed(1));
+    note = 'Resultado neto variando precio de venta (6,300 aves, costo $170.9M).';
+  } else if(sensVar === 'mortality') {
+    labels = ['2%','5%','8%','10%','13%','15%','20%'];
+    data = [2,5,8,10,13,15,20].map(m=>{const a=Math.round(7600*(1-m/100));return +((a*base_price-base_cost)/1e6).toFixed(1);});
+    note = 'Resultado variando mortalidad total (7,600 aves iniciales, $24K/ave).';
+  } else if(sensVar === 'feed') {
+    labels = ['-10%','-5%','0%','+5%','+10%','+15%','+20%'];
+    data = [-10,-5,0,5,10,15,20].map(p=>{const fc=74922600*(1+p/100);const tc=base_cost-74922600+fc;return +((base_birds*base_price-tc)/1e6).toFixed(1);});
+    note = 'Resultado variando costo de alimento (base: $74.9M, 48% del costo total).';
+  } else {
+    labels = ['$800K','$1M','$1.2M','$1.4M','$1.7M','$2M','$2.5M'];
+    data = [800000,1000000,1200000,1400000,1710000,2000000,2500000].map(r=>{const rc=r*4;const tc=base_cost-6840000+rc;return +((base_birds*base_price-tc)/1e6).toFixed(1);});
+    note = 'Resultado variando arriendo mensual (4 meses de ciclo).';
+  }
+
+  const colors = data.map(v=>v>=0?'#1D9E75':'#D4537E');
+  charts.sens = new Chart(document.getElementById('chartSens'), {
+    type:'bar',
+    data:{labels, datasets:[{data,backgroundColor:colors,borderRadius:3,borderSkipped:false}]},
+    options:{...baseOpts(v=>'$'+v+'M'),plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' Resultado: $'+c.parsed.y+'M'}}}}
+  });
+  document.getElementById('note-sens').textContent = note;
+}
+
+// ========== CONSUMO SECTION ==========
+const CONSUMO_LOTES = {
+  '1525':{label:'L.1525',color:'#378ADD',pollitas:5350,kg_sem:[410,700,1000,1200,1280,1400,1600,1720,1960,1960,2120,2160,2280,2280,2440,1480],gr_ave:[11.0,18.8,26.9,32.4,37.6,41.1,47.1,50.6,57.7,58.2,63.0,64.2,67.9,67.9,72.7,null],peso_real:[68.6,127.6,209.4,297.3,384.2,467.6,558.5,667.1,775.8,878.5,968.8,1055.7,1132.4,1190.7,1286.5,1355],peso_guia:[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380],mort:[29,12,6,4,434,3,6,2,3,4,2,2,3,1,2,0],consumo_total:25990,utilidad:21204227,mortalidad_pct:9.6},
+  '1625':{label:'L.1625',color:'#1D9E75',pollitas:4420,kg_sem:[440,640,840,880,1040,1040,1260,1360,1440,1520,1720,1820,1900,1000,1040,1120],gr_ave:[14.3,20.9,27.4,28.8,34.5,36.8,44.6,48.3,51.1,54.6,61.8,65.4,null,74.0,77.1,83.0],peso_real:[72.3,114.6,171.4,244.8,335.4,417.8,524.5,631.2,738.8,854.3,976,1055.3,1146.7,1224.5,1322.4,null],peso_guia:[70,125,190,265,360,460,560,670,780,890,990,1080,1160,1230,1300,1370],mort:[15,6,5,8,10,20,8,8,3,44,2,2,1,3,2,0],consumo_total:19060,utilidad:18154359,mortalidad_pct:7.2},
+  '1725':{label:'L.1725',color:'#BA7517',pollitas:5700,kg_sem:[440,680,1000,1320,1440,1680,1760,1960,2120,2320,2440,2480,2600,2640,2720,2800,200],gr_ave:[11.0,17.0,25.0,33.1,36.1,43.0,45.1,50.5,54.7,59.9,63.0,66.6,70.6,71.7,73.9,76.2,null],peso_real:[63.6,110.3,196.5,273.7,355.8,468.4,553.7,651.6,754.8,837.7,943,1051.3,1138,1207,1303,1376.5,null],peso_guia:[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380,1468],mort:[27,8,4,6,3,5,2,3,4,3,3,2,7,4,4,5,4],consumo_total:30600,utilidad:30269955,mortalidad_pct:5.1},
+  '2025':{label:'L.2025',color:'#D4537E',pollitas:7600,kg_sem:[600,840,1240,1520,1840,2120,2520,2720,2920,3080,2960,3160,3280,3360,3280,1920],gr_ave:[11.3,16.0,23.6,29.0,35.2,40.6,48.2,52.5,56.4,59.9,58.5,64.7,68.6,71.8,71.0,41.7],peso_real:[81.3,131,195,261.4,355.3,448.6,552.4,632.2,723.5,822.5,903,973.3,1056,1130,1118,null],peso_guia:[75,130,195,275,367,475,583,685,782,874,961,1043,1123,1197,1264,1330],mort:[46,33,24,16,9,6,4,8,11,50,110,256,142,153,84,22],consumo_total:37360,utilidad:null,mortalidad_pct:12.82,activo:true}
+};
+const C_METRICS = {
+  kg_sem:{note:'Consumo total en kg por semana de vida. Lote 2025 semana 16 parcial (4 dias).',yLabel:'kg',getData:l=>l.kg_sem.map((v,i)=>v===0&&i>3?null:v)},
+  gr_ave:{note:'Gramos consumidos por ave por semana. Normaliza diferencias de tamano de lote.',yLabel:'gr/ave',getData:l=>l.gr_ave.map(v=>(v&&v>0&&v<500)?Math.round(v*10)/10:null)},
+  peso:{note:'Peso promedio del lote por semana. Lineas punteadas = guia genetica.',yLabel:'gr',getData:l=>l.peso_real,getGuia:l=>l.peso_guia},
+  mort:{note:'Aves muertas por semana. Lote 2025 presenta pico critico semanas 10-14.',yLabel:'aves',getData:l=>l.mort}
+};
+let cMetric='kg_sem', activeC={1525:true,1625:true,1725:true,2025:true};
+
+function initConsumo(){buildConsumo();renderCStats();}
+function setCMetric(m){
+  cMetric=m;
+  ['kg_sem','gr_ave','peso','mort'].forEach(x=>document.getElementById('btn-c-'+x).classList.toggle('active',x===m));
+  document.getElementById('consumo-note').textContent=C_METRICS[m].note;
+  buildConsumo();
+}
+function toggleC(k){
+  activeC[k]=!activeC[k];
+  document.getElementById('togc-'+k).classList.toggle('on',activeC[k]);
+  buildConsumo();renderCStats();
+}
+function buildConsumo(){
+  if(charts.consumo) charts.consumo.destroy();
+  const m=C_METRICS[cMetric];
+  let maxL=0; Object.keys(CONSUMO_LOTES).forEach(k=>{if(activeC[k]) maxL=Math.max(maxL,CONSUMO_LOTES[k].kg_sem.length);}); if(!maxL)maxL=18;
+  const labels=Array.from({length:maxL},(_,i)=>'S'+(i+1));
+  const datasets=[];
+  Object.entries(CONSUMO_LOTES).forEach(([key,lot])=>{
+    if(!activeC[key]) return;
+    const data=m.getData(lot);
+    const padded=Array.from({length:maxL},(_,i)=>data[i]!==undefined?data[i]:null);
+    datasets.push({label:lot.label,data:padded,borderColor:lot.color,backgroundColor:lot.color+'22',borderWidth:key==='2025'?2.5:1.8,pointRadius:3,pointHoverRadius:5,tension:0.35,spanGaps:false,borderDash:lot.activo?[5,3]:[]});
+    if(cMetric==='peso'&&m.getGuia){
+      const guia=m.getGuia(lot);
+      datasets.push({label:lot.label+' (guia)',data:Array.from({length:maxL},(_,i)=>guia[i]!==undefined?guia[i]:null),borderColor:lot.color+'55',borderWidth:1,pointRadius:0,tension:0.35,borderDash:[3,3],spanGaps:false});
+    }
+  });
+  charts.consumo=new Chart(document.getElementById('chartConsumo'),{
+    type:'line',data:{labels,datasets},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y===null?null:' '+c.dataset.label+': '+c.parsed.y.toLocaleString('es-CO')+' '+m.yLabel}}},
+      scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:false},grid:{color:gridC}},y:{ticks:{font:{size:11},color:tickC,callback:v=>v.toLocaleString('es-CO')},grid:{color:gridC}}}}
+  });
+}
+function renderCStats(){
+  const grid=document.getElementById('consumo-stats');grid.innerHTML='';
+  Object.entries(CONSUMO_LOTES).forEach(([key,lot])=>{
+    if(!activeC[key]) return;
+    const card=document.createElement('div');card.className='stat-card';card.style.borderLeft='3px solid '+lot.color;
+    card.innerHTML='<p class="kpi-label">'+lot.label+(lot.activo?' <span style="font-size:10px;background:#D4537E18;color:#D4537E;padding:1px 5px;border-radius:3px;">activo</span>':'')+'</p>'+
+      '<p class="kpi-val">'+lot.consumo_total.toLocaleString('es-CO')+' kg</p>'+
+      '<p class="kpi-sub">Total consumido</p>'+
+      '<p class="kpi-sub" style="margin-top:4px">'+lot.pollitas.toLocaleString()+' pollitas &middot; '+lot.mortalidad_pct+'% mort.</p>'+
+      '<p class="kpi-sub">'+(lot.activo?'~$'+Math.round(lot.consumo_total*2005).toLocaleString('es-CO')+' en alimento':'$'+(lot.utilidad/1e6).toFixed(1)+'M utilidad')+'</p>';
+    grid.appendChild(card);
+  });
+}
+
+// ========== GASTOS SECTION ==========
+const G_COLORS={'1525':'#378ADD','1625':'#1D9E75','1725':'#BA7517','2025':'#D4537E'};
+const G_LABELS={'1525':'L.1525','1625':'L.1625','1725':'L.1725','2025':'L.2025 (activo)'};
+const G_POLLITAS={'1525':5350,'1625':4420,'1725':5700,'2025':7600};
+const G_CAT_COLORS={'Pollitas':'#378ADD','Alimento':'#1D9E75','Medicamentos':'#D4537E','Vacunas':'#BA7517','Arrendamiento':'#534AB7','Servicios':'#888780','Fletes y otros':'#639922','Costos comunes':'#9FE1CB'};
+const G_GROUPS=['Pollitas','Alimento','Medicamentos','Vacunas','Arrendamiento','Servicios','Fletes y otros','Costos comunes'];
+const G_RAW={"1525":{"pollitas":5350,"group_totals":{"Pollitas":23427200,"Alimento":51092640,"Medicamentos":1645800,"Vacunas":11992800,"Arrendamiento":4500000,"Servicios":11570333,"Fletes y otros":3140000,"Costos comunes":1498000},"weekly_by_group":{"Pollitas":[21087200,2340000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[15190140,0,0,8340000,0,0,0,0,0,5512500,7350000,0,7350000,0,7350000,0,0,0],"Medicamentos":[0,0,0,79400,48500,64000,0,0,0,0,0,496200,0,0,957700,0,0,0],"Vacunas":[4963000,994200,394000,0,0,1240000,1021600,480000,400000,0,0,0,0,820000,780000,620000,280000,0],"Arrendamiento":[1000000,0,0,0,1000000,0,0,0,1000000,0,0,0,0,1500000,0,0,0,0],"Servicios":[3450000,950000,950000,950000,1433000,964000,520000,400000,400000,0,0,400000,400000,420000,0,0,333333,0],"Fletes y otros":[500000,0,0,350000,0,0,350000,0,0,70000,350000,0,370000,0,0,850000,300000,0],"Costos comunes":[98000,0,0,225000,0,0,315000,0,0,0,285000,0,0,0,0,575000,0,0]},"grand_total":108866773},"1625":{"pollitas":4420,"group_totals":{"Pollitas":21171894,"Alimento":36559540,"Medicamentos":2524450,"Vacunas":8204694,"Arrendamiento":3140000,"Servicios":8185333,"Fletes y otros":2538750,"Costos comunes":2802300},"weekly_by_group":{"Pollitas":[21171894,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[2108400,0,2108000,6255000,0,2668800,3870300,0,3870300,5512500,3565800,2336600,0,1776600,2487240,0,0,0],"Medicamentos":[425000,0,0,0,0,1449450,0,0,0,380000,0,0,0,270000,0,0,0,0],"Vacunas":[1848300,1319000,567200,0,0,500000,0,2090700,0,0,0,0,1235000,0,364494,280000,0,0],"Arrendamiento":[880000,0,0,0,0,880000,0,0,0,880000,0,0,0,500000,0,0,0,0],"Servicios":[2810000,560000,660000,550000,400000,400000,400000,733333,0,418000,0,418000,0,0,418000,0,418000,0],"Fletes y otros":[700000,0,0,350000,0,70000,175000,0,175000,185000,175000,175000,0,213750,0,120000,200000,0],"Costos comunes":[638800,0,0,0,0,575000,0,300000,0,400000,0,98500,300000,0,290000,0,200000,0]},"grand_total":85126961},"1725":{"pollitas":5700,"group_totals":{"Pollitas":27967600,"Alimento":56703742,"Medicamentos":255500,"Vacunas":11655770,"Arrendamiento":4560000,"Servicios":8615433,"Fletes y otros":4703500,"Costos comunes":2166500},"weekly_by_group":{"Pollitas":[27967600,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[2108400,2108400,0,3638082,3870300,3870300,0,3870300,5969800,0,3553200,6395760,7106400,0,7106400,7106400,0,0],"Medicamentos":[0,0,0,0,0,108000,0,0,0,0,0,0,0,0,147500,0,0,0],"Vacunas":[4128320,592000,1471000,0,420000,0,775000,420000,0,0,0,0,1257450,0,1392000,0,1200000,0],"Arrendamiento":[1140000,0,0,0,1140000,0,0,0,1140000,0,0,0,0,1140000,0,0,0,0],"Servicios":[1330000,750000,400000,514284,333333,0,418000,0,418000,0,418000,0,836000,0,0,754816,404000,2039000],"Fletes y otros":[70000,0,0,175000,175000,255000,0,245000,175000,138500,150000,270000,0,300000,0,150000,2600000,0],"Costos comunes":[150000,63000,325000,0,300000,150000,0,0,98500,300000,230000,0,0,0,550000,0,0,0]},"grand_total":116628045},"2025":{"pollitas":7600,"group_totals":{"Pollitas":39159364,"Alimento":74922600,"Medicamentos":5749615,"Vacunas":12331550,"Arrendamiento":6840000,"Servicios":10013895,"Fletes y otros":4823000,"Costos comunes":1233000},"weekly_by_group":{"Pollitas":[39159364,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[6478200,1923600,0,2353680,5884200,3922800,0,6674200,3922800,3570000,4641000,5355000,8942850,8734280,0,12519990,0,0],"Medicamentos":[105000,0,251600,0,0,0,0,1019320,675000,1112100,327000,0,1691795,0,567800,0,0,0],"Vacunas":[4591800,802000,729850,500000,0,1150000,0,1320000,450000,0,0,0,0,0,2787900,0,0,0],"Arrendamiento":[1710000,0,0,0,1710000,0,0,0,1710000,0,0,0,1710000,0,0,0,0,0],"Servicios":[996000,1955000,0,0,252895,0,1259000,0,1843000,173000,1125000,0,1205000,0,1205000,0,0,0],"Fletes y otros":[437500,175000,333000,120000,437500,180000,475000,262500,175000,175000,227500,262500,0,650000,0,912500,0,0],"Costos comunes":[0,0,0,250000,0,0,0,285000,0,0,0,0,338000,0,0,360000,0,0]},"grand_total":155073024}};
+
+let gView='semanal', activeG={1525:true,1625:true,1725:true,2025:true};
+const gFmt=v=>{if(v>=1e9)return '$'+(v/1e9).toFixed(1)+'B';if(v>=1e6)return '$'+(v/1e6).toFixed(1)+'M';if(v>=1e3)return '$'+(v/1e3).toFixed(0)+'K';return '$'+Math.round(v);};
+const gFmtFull=v=>'$'+Math.round(v).toLocaleString('es-CO');
+
+function gWeeklyTotal(lote){const d=G_RAW[lote].weekly_by_group;return Array.from({length:18},(_,i)=>G_GROUPS.reduce((s,g)=>s+(d[g][i]||0),0));}
+
+function initGastos(){buildGastos();renderGStats();}
+function setGView(v){
+  gView=v;
+  ['semanal','acumulado','por_ave','categorias'].forEach(x=>document.getElementById('btn-g-'+x).classList.toggle('active',x===v));
+  const notes={semanal:'Gasto total semanal en COP (todas las categorias). Lote 2025 sem. 16 parcial.',acumulado:'Costo acumulado a lo largo del ciclo. Muestra el ritmo de inversion.',por_ave:'Costo acumulado por pollita recibida. Normaliza tamano de lote.',categorias:'Composicion del gasto total por categoria. El alimento domina (~43-49%).'};
+  document.getElementById('gastos-note').textContent=notes[v];
+  document.getElementById('legend-gcat').style.display=v==='categorias'?'flex':'none';
+  if(v==='categorias') document.getElementById('legend-gcat').innerHTML=G_GROUPS.map(g=>'<span class="leg-item"><span class="leg-sq" style="background:'+G_CAT_COLORS[g]+'"></span>'+g+'</span>').join('');
+  buildGastos();renderGStats();
+}
+function toggleG(k){
+  activeG[k]=!activeG[k];
+  document.getElementById('togg-'+k).classList.toggle('on',activeG[k]);
+  buildGastos();renderGStats();
+}
+function buildGastos(){
+  if(charts.gastos) charts.gastos.destroy();
+  const aLotes=Object.keys(activeG).filter(k=>activeG[k]);
+  let cfg;
+  if(gView==='semanal'){
+    const labels=Array.from({length:18},(_,i)=>'S'+(i+1));
+    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k).map((v,i)=>v===0&&i>0?null:v);return{label:G_LABELS[k],data:wt,borderColor:G_COLORS[k],backgroundColor:G_COLORS[k]+'20',borderWidth:k==='2025'?2.5:1.8,pointRadius:3,pointHoverRadius:5,tension:.3,spanGaps:false,borderDash:k==='2025'?[5,3]:[]};});
+    cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': '+gFmtFull(c.parsed.y)}}},scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:false},grid:{color:gridC}},y:{ticks:{font:{size:11},color:tickC,callback:v=>gFmt(v)},grid:{color:gridC}}}}};
+  } else if(gView==='acumulado'){
+    const labels=Array.from({length:18},(_,i)=>'S'+(i+1));
+    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k);let acc=0;const data=wt.map((v,i)=>{if(v===0&&i>2&&acc===wt.slice(0,i).reduce((s,x)=>s+x,0))return null;acc+=v;return acc;});return{label:G_LABELS[k],data,borderColor:G_COLORS[k],backgroundColor:G_COLORS[k]+'15',borderWidth:k==='2025'?2.5:1.8,pointRadius:2,tension:.3,spanGaps:false,fill:true,borderDash:k==='2025'?[5,3]:[]};});
+    cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': '+gFmtFull(c.parsed.y)}}},scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:false},grid:{color:gridC}},y:{ticks:{font:{size:11},color:tickC,callback:v=>gFmt(v)},grid:{color:gridC}}}}};
+  } else if(gView==='por_ave'){
+    const labels=Array.from({length:18},(_,i)=>'S'+(i+1));
+    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k);const pol=G_POLLITAS[k];let acc=0;const data=wt.map((v,i)=>{if(v===0&&i>2)return null;acc+=v;return Math.round(acc/pol);});return{label:G_LABELS[k],data,borderColor:G_COLORS[k],backgroundColor:G_COLORS[k]+'18',borderWidth:k==='2025'?2.5:1.8,pointRadius:2,tension:.3,spanGaps:false,borderDash:k==='2025'?[5,3]:[]};});
+    cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': $'+c.parsed.y.toLocaleString('es-CO')+'/ave'}}},scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:false},grid:{color:gridC}},y:{ticks:{font:{size:11},color:tickC,callback:v=>'$'+v.toLocaleString()},grid:{color:gridC}}}}};
+  } else {
+    const labels=aLotes.map(k=>G_LABELS[k]);
+    const datasets=G_GROUPS.map(g=>({label:g,data:aLotes.map(k=>G_RAW[k].group_totals[g]||0),backgroundColor:G_CAT_COLORS[g],borderRadius:3,borderSkipped:false}));
+    cfg={type:'bar',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y>0?' '+c.dataset.label+': '+gFmtFull(c.parsed.y):null}}},scales:{x:{stacked:true,ticks:{font:{size:12},color:tickC},grid:{display:false}},y:{stacked:true,ticks:{font:{size:11},color:tickC,callback:v=>gFmt(v)},grid:{color:gridC}}}}};
+  }
+  charts.gastos=new Chart(document.getElementById('chartGastos'),cfg);
+}
+function renderGStats(){
+  const grid=document.getElementById('gastos-stats');grid.innerHTML='';
+  Object.keys(activeG).filter(k=>activeG[k]).forEach(k=>{
+    const d=G_RAW[k],gt=d.grand_total,pol=d.pollitas;
+    const top=Object.entries(d.group_totals).sort((a,b)=>b[1]-a[1]);
+    const card=document.createElement('div');card.className='stat-card';card.style.borderLeft='3px solid '+G_COLORS[k];
+    const rows=top.slice(0,4).map(([g,v])=>'<div class="cat-row"><span style="display:flex;align-items:center;gap:5px"><span class="leg-sq" style="background:'+G_CAT_COLORS[g]+';width:8px;height:8px"></span>'+g+'</span><span>'+gFmtFull(v)+'<span class="cat-pct">'+(v/gt*100).toFixed(0)+'%</span></span></div>').join('');
+    card.innerHTML='<p class="kpi-label">'+G_LABELS[k]+'</p><p class="kpi-val">'+gFmtFull(gt)+'</p><p class="kpi-sub">$'+Math.round(gt/pol).toLocaleString('es-CO')+' / pollita &middot; '+pol.toLocaleString()+' aves</p><div style="margin-top:8px">'+rows+'</div>';
+    grid.appendChild(card);
+  });
+}
+
+// ========== INIT ==========
+initResumen();
+</script>
+</body>
+</html>
