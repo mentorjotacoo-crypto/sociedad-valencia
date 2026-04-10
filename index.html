@@ -237,17 +237,69 @@
   .rec-list li.med { border-left-color: #BA7517; }
   .rec-list li.lng { border-left-color: #1D9E75; }
 
-  /* Mobile */
+  /* Sidebar backdrop */
+  .sidebar-backdrop {
+    display: none;
+    position: fixed; inset: 0; z-index: 40;
+    background: rgba(0,0,0,.45);
+  }
+  .sidebar-backdrop.show { display: block; }
+
+  /* ---- MOBILE ---- */
   @media(max-width: 768px) {
     .menu-btn { display: flex; }
+
+    /* Sidebar deslizante */
     .sidebar {
-      position: fixed; left: -204px; top: var(--header-h); bottom: 0;
-      width: 200px; transition: left .2s; z-index: 50;
+      position: fixed; left: -210px; top: var(--header-h); bottom: 0;
+      width: 200px; transition: left .22s ease; z-index: 50;
     }
-    .sidebar.open { left: 0; box-shadow: 4px 0 24px rgba(0,0,0,.4); }
-    .content-pad { padding: 20px 16px 32px; }
-    .scenario-grid { grid-template-columns: 1fr; }
+    .sidebar.open { left: 0; box-shadow: 6px 0 28px rgba(0,0,0,.5); }
+
+    /* Header: ocultar texto secundario en pantallas chicas */
+    .app-header-divider,
+    .app-header-sub { display: none; }
+    .app-header-badge { font-size: 10px; padding: 3px 8px; }
+
+    /* Contenido */
+    .content-pad { padding: 16px 14px 40px; }
+    .sec-heading { font-size: 15px; }
+
+    /* KPIs: 2 columnas */
     .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .kpi { padding: 10px; }
+    .kpi-val { font-size: 16px; }
+
+    /* Charts más bajos */
+    .chart-wrap { height: 230px; }
+
+    /* Stats en columna */
+    .stats-grid { grid-template-columns: 1fr; }
+
+    /* Escenarios en columna */
+    .scenario-grid { grid-template-columns: 1fr; }
+
+    /* Cat-grid en columna */
+    .cat-grid { grid-template-columns: 1fr; }
+
+    /* Tablas: scroll horizontal */
+    .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .tbl { min-width: 420px; }
+    .tbl th, .tbl td { padding: 6px 8px; font-size: 11px; }
+
+    /* Controles: scroll horizontal en vez de wrap */
+    .controls { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
+    .controls::-webkit-scrollbar { display: none; }
+
+    /* Legend: scroll horizontal */
+    .legend { flex-wrap: nowrap; overflow-x: auto; }
+    .legend::-webkit-scrollbar { display: none; }
+  }
+
+  /* Teléfonos muy pequeños */
+  @media(max-width: 400px) {
+    .kpi-grid { grid-template-columns: 1fr; }
+    .chart-wrap { height: 200px; }
   }
 </style>
 </head>
@@ -296,6 +348,9 @@
   }
 })();
 </script>
+
+<!-- Sidebar backdrop (mobile) -->
+<div id="sidebar-backdrop" class="sidebar-backdrop" onclick="closeSidebar()"></div>
 
 <!-- ===== APP HEADER ===== -->
 <header class="app-header">
@@ -375,7 +430,7 @@
   <p class="sec-title">Cuadro comparativo de lotes</p>
   <h2 class="sec-heading">Todos los indicadores lado a lado</h2>
 
-  <table class="tbl">
+  <div class="tbl-wrap"><table class="tbl">
     <tr><th>Indicador</th><th class="r">L.1525</th><th class="r">L.1625</th><th class="r">L.1725</th><th class="r">L.2025</th></tr>
     <tr><td>Estado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c warn">ACTIVO</td></tr>
     <tr><td>Raza</td><td class="c">Babcock Brown</td><td class="c">Hy Line Brown</td><td class="c">Babcock Brown</td><td class="c">Lohmann Brown</td></tr>
@@ -395,7 +450,7 @@
     <tr><td>Utilidad / ave</td><td class="r">$4,384</td><td class="r">$4,240</td><td class="r good">$5,377</td><td class="r">&mdash;</td></tr>
     <tr><td>Arriendo / mes</td><td class="r">$1,000,000</td><td class="r">$880,000</td><td class="r">$1,140,000</td><td class="r warn">$1,710,000</td></tr>
     <tr><td>Medicamentos</td><td class="r">$1,645,800</td><td class="r">$2,524,450</td><td class="r good">$255,500</td><td class="r warn">$5,749,615</td></tr>
-  </table>
+  </table></div>
   <p class="note">* Costo/ave del Lote 2025 es parcial (lote en curso).</p>
 
   <hr class="divider">
@@ -467,7 +522,7 @@
 
   <hr class="divider">
   <p class="sec-title">Desglose porcentual</p>
-  <table class="tbl">
+  <div class="tbl-wrap"><table class="tbl">
     <tr><th>Categoria</th><th class="c">L.1525</th><th class="c">L.1625</th><th class="c">L.1725</th><th class="c">L.2025</th></tr>
     <tr><td>Pollitas</td><td class="c">21.5%</td><td class="c">24.9%</td><td class="c">24.0%</td><td class="c">25.1%</td></tr>
     <tr><td>Alimento</td><td class="c">46.9%</td><td class="c">42.9%</td><td class="c">48.6%</td><td class="c">48.1%</td></tr>
@@ -477,7 +532,7 @@
     <tr><td>Medicamentos</td><td class="c">1.5%</td><td class="c">3.0%</td><td class="c good">0.2%</td><td class="c warn">3.7%</td></tr>
     <tr><td>Fletes</td><td class="c">2.7%</td><td class="c">3.0%</td><td class="c">4.0%</td><td class="c">2.4%</td></tr>
     <tr><td>Otros</td><td class="c">5.8%</td><td class="c">5.4%</td><td class="c">3.9%</td><td class="c">4.3%</td></tr>
-  </table>
+  </table></div>
 </div>
 
 <!-- ============ LOTE 2025 ============ -->
@@ -533,14 +588,14 @@
 
   <hr class="divider">
   <p class="sec-title">Impacto en el negocio acumulado</p>
-  <table class="tbl">
+  <div class="tbl-wrap"><table class="tbl">
     <tr><th>Metrica</th><th class="r">Sin L.2025</th><th class="r">+ Optimista</th><th class="r">+ Base</th><th class="r">+ Pesimista</th></tr>
     <tr><td>Utilidad acum.</td><td class="r">$69,628,541</td><td class="r good">$77,273,317</td><td class="r">$49,973,317</td><td class="r warn">$11,773,317</td></tr>
     <tr><td>ROI capital</td><td class="r">46.4%</td><td class="r good">51.5%</td><td class="r">33.3%</td><td class="r warn">7.8%</td></tr>
     <tr><td>Util. Juan Camilo</td><td class="r">$44,562,266</td><td class="r">$49,454,923</td><td class="r">$31,982,923</td><td class="r">$7,534,923</td></tr>
     <tr><td>Util. Tia Berta</td><td class="r">$20,422,763</td><td class="r">$22,641,082</td><td class="r">$14,648,242</td><td class="r">$3,449,602</td></tr>
     <tr><td>Util. Tio Augusto</td><td class="r">$4,643,512</td><td class="r">$5,177,312</td><td class="r">$3,348,152</td><td class="r">$788,792</td></tr>
-  </table>
+  </table></div>
 
   <hr class="divider">
   <p class="sec-title">Proyeccion a 12 meses (abr 2026 &ndash; mar 2027)</p>
@@ -559,12 +614,12 @@
   <p class="sec-title">Punto de equilibrio y sensibilidad</p>
   <h2 class="sec-heading">Lote 2025 &mdash; analisis de break-even</h2>
 
-  <table class="tbl">
+  <div class="tbl-wrap"><table class="tbl">
     <tr><th>Escenario</th><th class="r">Costo total</th><th class="c">Aves</th><th class="r">Precio min./ave</th><th class="r">vs precio historico</th></tr>
     <tr><td>Optimista</td><td class="r">$167,855,224</td><td class="c">6,500</td><td class="r">$25,824</td><td class="r good">+$33</td></tr>
     <tr><td>Base</td><td class="r">$170,855,224</td><td class="c">6,300</td><td class="r warn">$27,119</td><td class="r warn">-$1,328</td></tr>
     <tr><td>Pesimista</td><td class="r">$173,855,224</td><td class="c">5,800</td><td class="r warn">$29,975</td><td class="r warn">-$4,184</td></tr>
-  </table>
+  </table></div>
   <p class="note">Precio historico promedio: $25,791/ave. Solo en escenario optimista se alcanza break-even.</p>
 
   <hr class="divider">
@@ -696,7 +751,7 @@ function showSec(id, el) {
   document.getElementById('sec-'+id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
   if(el) el.classList.add('active');
-  document.getElementById('sidebar').classList.remove('open');
+  closeSidebar();
   if(id==='resumen' && !charts.resumen) initResumen();
   if(id==='comparativo' && !charts.comp) initComp();
   if(id==='consumo' && !charts.consumo) initConsumo();
@@ -708,7 +763,12 @@ function showSec(id, el) {
 }
 
 function toggleSidebar() {
-  document.getElementById('sidebar').classList.toggle('open');
+  const open = document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-backdrop').classList.toggle('show', open);
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-backdrop').classList.remove('show');
 }
 
 const charts = {};
