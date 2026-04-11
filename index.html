@@ -237,32 +237,57 @@
   .rec-list li.med { border-left-color: #BA7517; }
   .rec-list li.lng { border-left-color: #1D9E75; }
 
-  /* Sidebar backdrop */
-  .sidebar-backdrop {
+  /* ---- BOTTOM NAV BAR (mobile only) ---- */
+  .mob-nav {
     display: none;
-    position: fixed; inset: 0; z-index: 40;
-    background: rgba(0,0,0,.45);
   }
-  .sidebar-backdrop.show { display: block; }
 
   /* ---- MOBILE ---- */
   @media(max-width: 768px) {
-    .menu-btn { display: flex; }
+    /* Ocultar sidebar y menú hamburguesa — usamos barra inferior */
+    .sidebar { display: none !important; }
+    .menu-btn { display: none !important; }
 
-    /* Sidebar deslizante */
-    .sidebar {
-      position: fixed; left: -210px; top: var(--header-h); bottom: 0;
-      width: 200px; transition: left .22s ease; z-index: 50;
+    /* Barra de tabs en la parte inferior */
+    .mob-nav {
+      display: flex;
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #0f172a;
+      border-top: 1px solid rgba(255,255,255,.08);
+      z-index: 200;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
-    .sidebar.open { left: 0; box-shadow: 6px 0 28px rgba(0,0,0,.5); }
+    .mob-nav::-webkit-scrollbar { display: none; }
+    .mob-tab {
+      flex: 0 0 auto;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 2px;
+      padding: 8px 14px 10px;
+      background: none; border: none;
+      color: #64748b; font-size: 10px; font-family: inherit;
+      cursor: pointer; white-space: nowrap;
+      border-top: 2px solid transparent;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      transition: color .12s, border-color .12s;
+    }
+    .mob-tab .mob-icon { font-size: 16px; line-height: 1; }
+    .mob-tab.active {
+      color: #7ec4f7;
+      border-top-color: #378ADD;
+    }
 
-    /* Header: ocultar texto secundario en pantallas chicas */
+    /* Ajustar app-body: sidebar ya no existe, solo main */
+    .app-body { bottom: 44px; }
+
+    /* Header compacto */
     .app-header-divider,
     .app-header-sub { display: none; }
     .app-header-badge { font-size: 10px; padding: 3px 8px; }
 
     /* Contenido */
-    .content-pad { padding: 16px 14px 40px; }
+    .content-pad { padding: 16px 14px 32px; }
     .sec-heading { font-size: 15px; }
 
     /* KPIs: 2 columnas */
@@ -287,7 +312,7 @@
     .tbl { min-width: 420px; }
     .tbl th, .tbl td { padding: 6px 8px; font-size: 11px; }
 
-    /* Controles: scroll horizontal en vez de wrap */
+    /* Controles: scroll horizontal */
     .controls { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
     .controls::-webkit-scrollbar { display: none; }
 
@@ -300,6 +325,7 @@
   @media(max-width: 400px) {
     .kpi-grid { grid-template-columns: 1fr; }
     .chart-wrap { height: 200px; }
+    .mob-tab { padding: 8px 10px 10px; font-size: 9px; }
   }
 </style>
 </head>
@@ -361,6 +387,19 @@
   <span class="app-header-sub">Granja Avicola Valense &mdash; Tulua, Valle</span>
   <span class="app-header-badge">Corte Abr 6, 2026</span>
 </header>
+
+<!-- ===== BOTTOM TAB NAV (mobile) ===== -->
+<nav class="mob-nav" id="mob-nav">
+  <button class="mob-tab active" onclick="showSec('resumen',this)"><span class="mob-icon">&#9674;</span>Resumen</button>
+  <button class="mob-tab" onclick="showSec('comparativo',this)"><span class="mob-icon">&#8801;</span>Comparativo</button>
+  <button class="mob-tab" onclick="showSec('consumo',this)"><span class="mob-icon">&#9675;</span>Consumo</button>
+  <button class="mob-tab" onclick="showSec('gastos',this)"><span class="mob-icon">&#9632;</span>Gastos</button>
+  <button class="mob-tab" onclick="showSec('costos',this)"><span class="mob-icon">&#9636;</span>Costos</button>
+  <button class="mob-tab" onclick="showSec('lote2025',this)"><span class="mob-icon">&#8767;</span>Mort/Peso</button>
+  <button class="mob-tab" onclick="showSec('proyecciones',this)"><span class="mob-icon">&#8594;</span>Proyecc.</button>
+  <button class="mob-tab" onclick="showSec('sensibilidad',this)"><span class="mob-icon">&#9670;</span>Sensib.</button>
+  <button class="mob-tab" onclick="showSec('recomendaciones',this)"><span class="mob-icon">&#10003;</span>Recom.</button>
+</nav>
 
 <!-- ===== APP BODY ===== -->
 <div class="app-body">
@@ -749,8 +788,12 @@ const CATS = ['Pollitas','Alimento','M.Obra','Arriendo','Vacunas','Medicam','Fle
 function showSec(id, el) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById('sec-'+id).classList.add('active');
+  // Sidebar nav
   document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
-  if(el) el.classList.add('active');
+  if(el && el.classList.contains('nav-item')) el.classList.add('active');
+  // Mobile bottom nav
+  document.querySelectorAll('.mob-tab').forEach(t => t.classList.remove('active'));
+  if(el && el.classList.contains('mob-tab')) el.classList.add('active');
   closeSidebar();
   if(id==='resumen' && !charts.resumen) initResumen();
   if(id==='comparativo' && !charts.comp) initComp();
