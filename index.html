@@ -459,12 +459,12 @@
   <p class="sec-title">Sociedad Valencia &mdash; Granja Avicola Valense, Tulua</p>
   <h1 class="sec-heading">Informe Ejecutivo &mdash; <span id="corte-heading">Corte julio 10, 2026</span></h1>
 
-  <div class="info"><strong>Lote 2025 liquidado en positivo:</strong> pese al brote sanitario (13.22% mortalidad), cerr&oacute; con utilidad de <strong>+$14.5M</strong> gracias a un precio r&eacute;cord de $26,960/ave &mdash; super&oacute; incluso el escenario optimista proyectado (+$7.6M).</div>
+  <div class="info"><strong>Lote 2025 liquidado en positivo:</strong> pese al brote sanitario (13.22% mortalidad), cerr&oacute; con utilidad de <strong>+$14.5M</strong> ($9.4M netos para la sociedad) gracias a un precio r&eacute;cord de $26,960/ave &mdash; super&oacute; incluso el escenario optimista proyectado (+$7.6M).</div>
 
   <div class="kpi-grid">
-    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">Utilidad acumulada</p><p class="kpi-val">$84.1M</p><p class="kpi-sub">4 lotes liquidados</p></div>
-    <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Margen agregado</p><p class="kpi-val">15.0%</p><p class="kpi-sub">Rango: 8.1%&ndash;20.6%</p></div>
-    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">ROI sobre capital</p><p class="kpi-val">56.1%</p><p class="kpi-sub">$150M invertidos</p></div>
+    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">Utilidad bruta acum.</p><p class="kpi-val">$84.1M</p><p class="kpi-sub">4 lotes &middot; margen 15.0%</p></div>
+    <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Neta sociedad</p><p class="kpi-val">$66.8M</p><p class="kpi-sub">Tras socio 1 (17.5% / 35%)</p></div>
+    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">ROI neto</p><p class="kpi-val">44.6%</p><p class="kpi-sub">$150M invertidos &middot; bruto 56.1%</p></div>
     <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Aves vendidas</p><p class="kpi-val">21,396</p><p class="kpi-sub">Precio prom: $26,155</p></div>
     <div class="kpi" style="border-left-color:#7E57C2"><p class="kpi-label">Lote 2526 (activo)</p><p class="kpi-val" id="kpi-2526-val">Sem 8</p><p class="kpi-sub" id="kpi-2526-sub">3,098 aves &middot; mort. 3.19%</p></div>
     <div class="kpi" style="border-left-color:#26A69A"><p class="kpi-label">Lote 2626 (activo)</p><p class="kpi-val" id="kpi-2626-val">Sem 3</p><p class="kpi-sub" id="kpi-2626-sub">4,371 aves &middot; mort. 0.73%</p></div>
@@ -473,7 +473,19 @@
   <hr class="divider">
   <p class="sec-title">Resumen por lote</p>
   <div class="chart-wrap"><canvas id="chartResumen"></canvas></div>
-  <p class="note">Ingresos, costos y utilidad de los 4 lotes liquidados. Lotes 2526 y 2626 activos (solo costos a la fecha).</p>
+  <p class="note">Ingresos, costos y utilidad bruta de los 4 lotes liquidados. Lotes 2526 y 2626 activos (solo costos a la fecha).</p>
+
+  <hr class="divider">
+  <p class="sec-title">Distribucion de utilidades por lote</p>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th>Lote</th><th class="r">Utilidad bruta</th><th class="c">% Socio 1</th><th class="r">Socio 1 (operador)</th><th class="r">Neta sociedad</th></tr>
+    <tr><td>L.1525</td><td class="r">$21,204,227</td><td class="c">17.5%</td><td class="r">$3,710,740</td><td class="r">$17,493,487</td></tr>
+    <tr><td>L.1625</td><td class="r">$18,154,359</td><td class="c">17.5%</td><td class="r">$3,177,013</td><td class="r">$14,977,346</td></tr>
+    <tr><td>L.1725</td><td class="r">$30,269,955</td><td class="c">17.5%</td><td class="r">$5,297,242</td><td class="r good">$24,972,713</td></tr>
+    <tr><td>L.2025</td><td class="r">$14,460,216</td><td class="c warn">35%</td><td class="r">$5,061,076</td><td class="r">$9,399,140</td></tr>
+    <tr class="tot"><td>TOTAL</td><td class="r">$84,088,757</td><td class="c"></td><td class="r">$17,246,071</td><td class="r">$66,842,686</td></tr>
+  </table></div>
+  <p class="note">El socio 1 (operador) participa con 17.5% de la utilidad en los lotes 1525&ndash;1725 y con <strong>35% desde el L.2025 en adelante</strong>. La utilidad neta de la sociedad se reparte entre los socios capitalistas seg&uacute;n aporte: Juan Camilo 64%, Tia Berta 29.3%, Tio Augusto 6.7%.</p>
 </div>
 
 <!-- ============ COMPARATIVO ============ -->
@@ -494,8 +506,10 @@
     <tr><td>Cumpl. peso</td><td class="r">-1.8%</td><td class="r good">+1.7%</td><td class="r">-0.25%</td><td class="r warn">-2.7%</td><td class="r" id="cmp-2526-cumpl">-0.5%</td><td class="r" id="cmp-2626-cumpl">-4.1%</td></tr>
     <tr><td>Ingreso total</td><td class="r">$130,221,000</td><td class="r">$103,281,320</td><td class="r">$146,899,000</td><td class="r">$179,202,500</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
     <tr><td>Costo total</td><td class="r">$109,016,773</td><td class="r">$85,126,961</td><td class="r">$116,629,045</td><td class="r">$164,742,284</td><td class="r" id="cmp-2526-costo">$40,747,609*</td><td class="r" id="cmp-2626-costo">$34,131,861*</td></tr>
-    <tr><td>Utilidad</td><td class="r">$21,204,227</td><td class="r">$18,154,359</td><td class="r good">$30,269,955</td><td class="r">$14,460,216</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-    <tr><td>Margen</td><td class="r">16.3%</td><td class="r">17.6%</td><td class="r good">20.6%</td><td class="r warn">8.1%</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
+    <tr><td>Utilidad bruta</td><td class="r">$21,204,227</td><td class="r">$18,154,359</td><td class="r good">$30,269,955</td><td class="r">$14,460,216</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
+    <tr><td>Particip. socio 1</td><td class="c">17.5%</td><td class="c">17.5%</td><td class="c">17.5%</td><td class="c warn">35%</td><td class="c warn">35%</td><td class="c warn">35%</td></tr>
+    <tr><td>Utilidad neta sociedad</td><td class="r">$17,493,487</td><td class="r">$14,977,346</td><td class="r good">$24,972,713</td><td class="r">$9,399,140</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
+    <tr><td>Margen (bruto)</td><td class="r">16.3%</td><td class="r">17.6%</td><td class="r good">20.6%</td><td class="r warn">8.1%</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
     <tr><td>Precio / ave</td><td class="r">$26,922</td><td class="r">$24,120</td><td class="r">$26,092</td><td class="r good">$26,960</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
     <tr><td>Costo / ave</td><td class="r">$22,538</td><td class="r">$19,880</td><td class="r good">$20,716</td><td class="r warn">$24,784</td><td class="r" id="cmp-2526-costoave">$12,734*</td><td class="r" id="cmp-2626-costoave">$7,757*</td></tr>
     <tr><td>Utilidad / ave</td><td class="r">$4,384</td><td class="r">$4,240</td><td class="r good">$5,377</td><td class="r warn">$2,175</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
@@ -654,13 +668,15 @@
   <p class="sec-title">Impacto real en el negocio acumulado</p>
   <div class="tbl-wrap"><table class="tbl">
     <tr><th>Metrica</th><th class="r">Sin L.2025</th><th class="r">Real con L.2025</th></tr>
-    <tr><td>Utilidad acum.</td><td class="r">$69,628,541</td><td class="r good">$84,088,757</td></tr>
-    <tr><td>ROI capital</td><td class="r">46.4%</td><td class="r good">56.1%</td></tr>
-    <tr><td>Util. Juan Camilo (64%)</td><td class="r">$44,562,266</td><td class="r">$53,816,804</td></tr>
-    <tr><td>Util. Tia Berta (29.3%)</td><td class="r">$20,422,763</td><td class="r">$24,663,232</td></tr>
-    <tr><td>Util. Tio Augusto (6.7%)</td><td class="r">$4,643,512</td><td class="r">$5,608,720</td></tr>
+    <tr><td>Utilidad bruta acum.</td><td class="r">$69,628,541</td><td class="r good">$84,088,757</td></tr>
+    <tr><td>Socio 1 (operador)</td><td class="r">$12,184,995</td><td class="r">$17,246,071</td></tr>
+    <tr><td>Utilidad neta sociedad</td><td class="r">$57,443,546</td><td class="r good">$66,842,686</td></tr>
+    <tr><td>ROI neto capital</td><td class="r">38.3%</td><td class="r good">44.6%</td></tr>
+    <tr><td>Util. Juan Camilo (64%)</td><td class="r">$36,763,869</td><td class="r">$42,779,319</td></tr>
+    <tr><td>Util. Tia Berta (29.3%)</td><td class="r">$16,850,107</td><td class="r">$19,607,188</td></tr>
+    <tr><td>Util. Tio Augusto (6.7%)</td><td class="r">$3,829,570</td><td class="r">$4,456,179</td></tr>
   </table></div>
-  <p class="note">Distribucion segun capital aportado. Nota: el Excel de liquidacion del L.2025 registra un reparto 35% utilidades ($5.06M) / 65% Valencia Mejia ($9.40M) &mdash; confirmar tratamiento antes de distribuir.</p>
+  <p class="note">El socio 1 (operador) participa con 17.5% de la utilidad en L.1525&ndash;1725 y 35% desde el L.2025 en adelante (el Excel de liquidacion del L.2025 lo confirma: $5.06M / $9.40M Valencia Mejia). La utilidad neta se distribuye por capital aportado.</p>
 
   <hr class="divider">
   <p class="sec-title">Proyeccion a 12 meses (jul 2026 &ndash; jun 2027)</p>
@@ -669,9 +685,9 @@
     <button class="btn" onclick="setProy12('socios')" id="btn-p12-socios">Por socio</button>
   </div>
   <div class="chart-wrap"><canvas id="chartProy12"></canvas></div>
-  <p class="note" id="note-p12">2 galpones en paralelo (~5 lotes/ano, ~4,000 aves/lote), ingreso estimado ~$525M/ano.</p>
+  <p class="note" id="note-p12">2 galpones en paralelo (~5 lotes/ano, ~4,000 aves/lote), ingreso estimado ~$525M/ano. Cifras netas para la sociedad (65% de la utilidad bruta).</p>
 
-  <div class="info"><strong>Proyeccion base (margen 15%):</strong> En 12 meses el negocio podria generar ~$78.8M adicionales. Acumulado total: ~$162.9M. ROI: ~109% sobre capital de $150M.</div>
+  <div class="info"><strong>Proyeccion base (margen 15%, neta 65%):</strong> En 12 meses la sociedad podria generar ~$51.2M netos adicionales (utilidad bruta ~$78.8M, de la cual 35% es del socio operador). Neta acumulada: ~$118M. ROI neto: ~79% sobre capital de $150M.</div>
 </div>
 
 <!-- ============ SENSIBILIDAD ============ -->
@@ -713,7 +729,7 @@
 
   <div class="info">
     <strong>Hallazgos positivos</strong><br>
-    &bull; $84.1M utilidad en 4 lotes liquidados, ROI 56.1% en ~12 meses<br>
+    &bull; $84.1M utilidad bruta en 4 lotes ($66.8M netos sociedad tras socio operador), ROI neto 44.6% en ~12 meses<br>
     &bull; Lote 2025 se recupero: pese a mortalidad 13.22%, cerro en +$14.5M con precio record ($26,960/ave)<br>
     &bull; Recomendaciones implementadas: regreso a San Marino/Babcock (L.2626) y operacion con 2 galpones en paralelo<br>
     &bull; Arriendos de los lotes activos muy por debajo del L.2025: $720K y $990K/mes (vs $1.71M)<br>
@@ -722,6 +738,7 @@
   <div class="alert">
     <strong>Alertas y pendientes</strong><br>
     &bull; El brote del L.2025 costo ~10 puntos de margen (8.1% vs 18.3% historico): ~$18M de utilidad no realizada<br>
+    &bull; La participacion del socio operador subio de 17.5% a 35%: con margenes normales (~18%) el negocio sigue siendo atractivo (ROI neto ~12%/lote), pero con margenes bajos (L.2025: 8.1%) la neta se adelgaza mucho &mdash; cuidar costos y precio de venta<br>
     &bull; L.2526 entra a las semanas 10&ndash;14, la ventana del brote del L.2025 &mdash; maxima vigilancia<br>
     &bull; L.2526: mortalidad 3.19% concentrada en sem 1 (54 aves) + 12 ahogadas en sem 5 &mdash; revisar recepcion y bebederos<br>
     &bull; Estirpes nuevas sin historial propio: Hy Line W-80 (blanca) y Azur &mdash; monitorear curvas vs guia<br>
@@ -733,7 +750,7 @@
   <ul class="rec-list">
     <li class="urg"><strong>Vigilancia reforzada L.2526</strong> en semanas 10&ndash;14 (ventana del brote del L.2025): peso, mortalidad y bioseguridad diaria</li>
     <li class="urg"><strong>Completar plan vacunal</strong> de ambos lotes segun calendario (Plan Vac. del registro)</li>
-    <li class="urg"><strong>Aclarar esquema de reparto</strong> del L.2025: 35% utilidades / 65% Valencia Mejia vs distribucion por capital</li>
+    <li class="urg"><strong>Formalizar por escrito</strong> el esquema del socio operador (17.5% lotes 1525&ndash;1725, 35% desde L.2025 en adelante)</li>
     <li class="urg"><strong>Definir proyecto Pereira</strong>: alcance, capital y registro propio (hoy es copia del 2526)</li>
   </ul>
 
@@ -1110,12 +1127,14 @@ function setProy12(v) {
 function buildProy12() {
   if(charts.proy12) charts.proy12.destroy();
   const months = ['Jul','Ago','Sep','Oct','Nov','Dic','Ene','Feb','Mar','Abr','May','Jun'];
-  const s = 84.09; // utilidad acumulada real a jul 2026
+  // Cifras NETAS para la sociedad: 65% de la utilidad bruta (35% socio operador)
+  const s = 66.84;      // utilidad neta acumulada real a jul 2026
+  const NETO = 0.65;    // participacion de la sociedad desde el L.2025
 
   if(proy12View === 'acum') {
-    const cons = Array.from({length:12},(_,i)=>+(s+525*0.10/11*i).toFixed(1));
-    const base = Array.from({length:12},(_,i)=>+(s+525*0.15/11*i).toFixed(1));
-    const opt = Array.from({length:12},(_,i)=>+(s+525*0.20/11*i).toFixed(1));
+    const cons = Array.from({length:12},(_,i)=>+(s+525*0.10*NETO/11*i).toFixed(1));
+    const base = Array.from({length:12},(_,i)=>+(s+525*0.15*NETO/11*i).toFixed(1));
+    const opt = Array.from({length:12},(_,i)=>+(s+525*0.20*NETO/11*i).toFixed(1));
     charts.proy12 = new Chart(document.getElementById('chartProy12'), {
       type:'line',
       data:{labels:months,datasets:[
@@ -1125,11 +1144,12 @@ function buildProy12() {
       ]},
       options:{...baseOpts(v=>'$'+v.toFixed(0)+'M'),plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}}}}
     });
-    document.getElementById('note-p12').textContent = '2 galpones en paralelo, ~5 lotes/ano, ingreso estimado ~$525M/ano. Margen sobre ingresos.';
+    document.getElementById('note-p12').textContent = '2 galpones en paralelo, ~5 lotes/ano, ingreso ~$525M/ano. Utilidad NETA sociedad (65% de la bruta; margen sobre ingresos).';
   } else {
-    const jc = Array.from({length:12},(_,i)=>+(53.82+50.40/11*i).toFixed(1));
-    const tb = Array.from({length:12},(_,i)=>+(24.66+23.10/11*i).toFixed(1));
-    const ta = Array.from({length:12},(_,i)=>+(5.61+5.25/11*i).toFixed(1));
+    const anualBase = 525*0.15*NETO; // ~51.2M netos/ano en escenario base
+    const jc = Array.from({length:12},(_,i)=>+(42.78+anualBase*0.64/11*i).toFixed(1));
+    const tb = Array.from({length:12},(_,i)=>+(19.61+anualBase*0.2933/11*i).toFixed(1));
+    const ta = Array.from({length:12},(_,i)=>+(4.46+anualBase*0.0667/11*i).toFixed(1));
     charts.proy12 = new Chart(document.getElementById('chartProy12'), {
       type:'line',
       data:{labels:months,datasets:[
@@ -1139,7 +1159,7 @@ function buildProy12() {
       ]},
       options:{...baseOpts(v=>'$'+v.toFixed(0)+'M'),plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}}}}
     });
-    document.getElementById('note-p12').textContent = 'Utilidad acumulada por socio (escenario base 15%, reparto por capital aportado).';
+    document.getElementById('note-p12').textContent = 'Utilidad NETA acumulada por socio capitalista (escenario base 15%, tras 35% del socio operador, reparto por capital).';
   }
 }
 
