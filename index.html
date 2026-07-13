@@ -409,6 +409,7 @@
   <button class="mob-tab" onclick="showSec('proyecciones',this)"><span class="mob-icon">&#8594;</span>Proyecc.</button>
   <button class="mob-tab" onclick="showSec('sensibilidad',this)"><span class="mob-icon">&#9670;</span>Sensib.</button>
   <button class="mob-tab" onclick="showSec('recomendaciones',this)"><span class="mob-icon">&#10003;</span>Recom.</button>
+  <button class="mob-tab" onclick="showSec('pereira',this)"><span class="mob-icon">&#9672;</span>Pereira</button>
 </nav>
 
 <!-- ===== APP BODY ===== -->
@@ -447,6 +448,11 @@
     </button>
     <button class="nav-item" onclick="showSec('recomendaciones',this)">
       <span class="nav-icon">&#10003;</span> Recomendaciones
+    </button>
+
+    <div class="sidebar-group-label">Otros proyectos</div>
+    <button class="nav-item" onclick="showSec('pereira',this)">
+      <span class="nav-icon">&#9672;</span> Pereira
     </button>
   </nav>
 
@@ -775,6 +781,82 @@
   <p class="note" style="text-align:center;margin-top:20px">Actualizado por Claude AI &middot; Julio 13, 2026 &middot; Fuente: Consolidado Gastos Levantes + Registros de Lote (Drive) &middot; Sociedad Valencia &mdash; Granja Avicola Valense, Tulua</p>
 </div>
 
+<!-- ============ PEREIRA (PROYECTO INDEPENDIENTE) ============ -->
+<div class="section" id="sec-pereira">
+  <p class="sec-title">Proyecto independiente &mdash; sus cifras NO suman en los indicadores de Sociedad Valencia (Tulua)</p>
+  <h2 class="sec-heading">Granja Pereira &mdash; Fondo de Inversionistas</h2>
+
+  <div class="alert"><strong>Estado: en preparacion.</strong> Estructura y modelo financiero definidos (may 2026); la operacion NO ha iniciado. Gastos reales a la fecha: <strong>$200,000</strong> (fletes). Todas las demas cifras de esta seccion son <strong>proyecciones del modelo financiero</strong>, no resultados.</div>
+
+  <div class="kpi-grid">
+    <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Capital del fondo</p><p class="kpi-val">$147M</p><p class="kpi-sub">$132M operacion + $15M CAPEX</p></div>
+    <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Inversionistas</p><p class="kpi-val">3</p><p class="kpi-sub">$49M c/u &middot; 33.3% cada uno</p></div>
+    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">Capacidad</p><p class="kpi-val">8,000 aves</p><p class="kpi-sub">2 galpones &middot; ~5.3 lotes/ano</p></div>
+    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">Utilidad / lote (proy.)</p><p class="kpi-val">$12.9M</p><p class="kpi-sub">Margen 13.0% &middot; $3,347/ave</p></div>
+    <div class="kpi" style="border-left-color:#BA7517"><p class="kpi-label">Payback (proy.)</p><p class="kpi-val">Mes 30</p><p class="kpi-sub">~2.5 anos</p></div>
+    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">ROI 48 meses (proy.)</p><p class="kpi-val">171%</p><p class="kpi-sub">~43% anualizado &middot; 2.71x capital</p></div>
+  </div>
+
+  <hr class="divider">
+  <p class="sec-title">Flujo de caja acumulado proyectado (48 meses)</p>
+  <div class="chart-wrap"><canvas id="chartPereira"></canvas></div>
+  <p class="note">Saldo acumulado del fondo total y por inversionista ($49M de aporte). Cruza a positivo en el mes 30.</p>
+
+  <hr class="divider">
+  <p class="sec-title">P&amp;L proyectado por lote &mdash; 4,000 pollitas, ciclo 16 sem, mortalidad 4%</p>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th>Concepto</th><th class="r">Valor</th><th class="c">% del costo</th></tr>
+    <tr><td>Ingreso (3,840 aves &times; $25,791)</td><td class="r good">$99,037,440</td><td class="c">&mdash;</td></tr>
+    <tr><td>Pollitas</td><td class="r">$18,788,000</td><td class="c">21.8%</td></tr>
+    <tr><td>Alimento</td><td class="r">$37,372,000</td><td class="c">43.4%</td></tr>
+    <tr><td>Vacunas + servicios</td><td class="r">$6,616,000</td><td class="c">7.7%</td></tr>
+    <tr><td>Medicamentos</td><td class="r">$1,144,000</td><td class="c">1.3%</td></tr>
+    <tr><td>Fletes</td><td class="r">$2,648,000</td><td class="c">3.1%</td></tr>
+    <tr><td>Costos comunes (energia/gas/cama)</td><td class="r">$4,300,000</td><td class="c">5.0%</td></tr>
+    <tr><td>Arriendo ($200/ave/mes)</td><td class="r">$2,956,120</td><td class="c">3.4%</td></tr>
+    <tr><td>Comisiones de venta ($1,150/ave)</td><td class="r">$4,416,000</td><td class="c">5.1%</td></tr>
+    <tr><td>Mano de obra (galponero + admin)</td><td class="r">$7,944,573</td><td class="c">9.2%</td></tr>
+    <tr class="tot"><td>Costo total del lote</td><td class="r">$86,184,693</td><td class="c">100%</td></tr>
+    <tr class="tot"><td>Utilidad por lote</td><td class="r good">$12,852,747</td><td class="c good">margen 13.0%</td></tr>
+  </table></div>
+  <p class="note">Break-even: $22,444/ave (vs precio de venta $25,791, promedio historico Valencia). Parametros tomados del Modelo Financiero Pereira (Drive).</p>
+
+  <hr class="divider">
+  <p class="sec-title">Proyeccion de utilidad del fondo</p>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th>Periodo</th><th class="r">Utilidad fondo</th><th class="r">Por inversionista</th></tr>
+    <tr><td>Ano 1 (arranque escalonado)</td><td class="r">$51,410,989</td><td class="r">$17,136,996</td></tr>
+    <tr><td>Ano 2 (regimen estable)</td><td class="r">$68,485,441</td><td class="r">$22,828,480</td></tr>
+    <tr><td>Ano 3</td><td class="r">$68,485,441</td><td class="r">$22,828,480</td></tr>
+    <tr><td>Ano 4</td><td class="r">$62,731,413</td><td class="r">$20,910,471</td></tr>
+    <tr class="tot"><td>Total 48 meses</td><td class="r good">$251,113,284</td><td class="r good">$83,704,428</td></tr>
+  </table></div>
+
+  <hr class="divider">
+  <p class="sec-title">Diferencias clave vs Sociedad Valencia (Tulua)</p>
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th>Aspecto</th><th>Valencia (Tulua)</th><th>Pereira</th></tr>
+    <tr><td>Capital</td><td>$150M (socio 2)</td><td>$147M (fondo, 3 inversionistas iguales)</td></tr>
+    <tr><td>Esquema del operador</td><td>Socio 1: 17.5% &rarr; 35% de la utilidad</td><td>Comision fija $1,150/ave vendida</td></tr>
+    <tr><td>Mano de obra</td><td>Galponero por servicios</td><td>Galponero + administrador asalariados ($4.3M/mes)</td></tr>
+    <tr><td>Arriendo</td><td>Fijo mensual por galpon</td><td>Variable: $200/ave/mes</td></tr>
+    <tr><td>Utilidad distribuible</td><td>65% del lote (socio 2)</td><td>100% entre inversionistas</td></tr>
+    <tr><td>Margen proyectado/lote</td><td>~15-18% historico (bruto)</td><td>13.0% (ya neto de comisiones y MO)</td></tr>
+  </table></div>
+
+  <p class="sec-title" style="margin-top:16px">Reglas de gobernanza sugeridas (del modelo)</p>
+  <ul class="rec-list">
+    <li class="med"><strong>Reserva operativa</strong> antes de distribuir utilidades</li>
+    <li class="med"><strong>Capital protegido</strong>: el aporte inicial no se distribuye</li>
+    <li class="med"><strong>Quorum 2/3</strong> para decisiones mayores</li>
+    <li class="med"><strong>Reuniones trimestrales</strong> de inversionistas</li>
+    <li class="med"><strong>Comision operativa</strong> definida por contrato</li>
+    <li class="med"><strong>Salida y liquidez</strong> pactadas por escrito</li>
+  </ul>
+
+  <div class="info"><strong>Proximos pasos:</strong> cerrar aportes del fondo, firmar reglas de gobernanza, y crear el registro de lote propio (el actual es copia del 2526). Cuando arranque el primer lote, este modulo mostrara datos reales vs modelo.</div>
+</div>
+
     </div><!-- /content-pad -->
   </main>
 </div><!-- /app-body -->
@@ -868,6 +950,7 @@ function showSec(id, el) {
   if(id==='lote2025' && !charts.l2025) init2025();
   if(id==='proyecciones' && !charts.proy) initProy();
   if(id==='sensibilidad' && !charts.heat) initSens();
+  if(id==='pereira' && !charts.pereira) initPereira();
 }
 
 function toggleSidebar() {
@@ -1424,6 +1507,20 @@ function renderGStats(){
     const rows=top.slice(0,4).map(([g,v])=>'<div class="cat-row"><span style="display:flex;align-items:center;gap:5px"><span class="leg-sq" style="background:'+G_CAT_COLORS[g]+';width:8px;height:8px"></span>'+g+'</span><span>'+gFmtFull(v)+'<span class="cat-pct">'+(v/gt*100).toFixed(0)+'%</span></span></div>').join('');
     card.innerHTML='<p class="kpi-label">'+G_LABELS[k]+'</p><p class="kpi-val">'+gFmtFull(gt)+'</p><p class="kpi-sub">$'+Math.round(gt/pol).toLocaleString('es-CO')+' / pollita &middot; '+pol.toLocaleString()+' aves</p><div style="margin-top:8px">'+rows+'</div>';
     grid.appendChild(card);
+  });
+}
+
+// ========== PEREIRA (proyecto independiente) ==========
+// Proyeccion del Modelo Financiero Pereira (Drive). Flujo acumulado del fondo.
+function initPereira() {
+  charts.pereira = new Chart(document.getElementById('chartPereira'), {
+    type:'line',
+    data:{labels:['Mes 0','Mes 12','Mes 24','Mes 36','Mes 48'],datasets:[
+      {label:'Fondo total ($147M)',data:[-147,-108.4,-44.2,20.1,84.3],borderColor:'#378ADD',backgroundColor:'#378ADD15',borderWidth:2,pointRadius:4,tension:.3,fill:true},
+      {label:'Por inversionista ($49M)',data:[-49,-36.1,-14.7,6.7,28.1],borderColor:'#1D9E75',borderWidth:2,pointRadius:4,tension:.3,borderDash:[5,3],fill:false}
+    ]},
+    options:{...baseOpts(v=>'$'+v+'M'),plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}},
+      tooltip:{callbacks:{label:c=>' '+c.dataset.label+': $'+c.parsed.y.toFixed(1)+'M'}}}}
   });
 }
 
