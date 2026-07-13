@@ -345,8 +345,8 @@
 
 <script>
 (function(){
-  // SHA-256 hash of "Valencia2026"
-  const HASH = 'a3c2f7b1e8d4a9e6f2b0c5d3e7a1f4b8c9d2e6f0a4b7c1d5e8f2a6b0c4d7e9';
+  // Solo se almacena el hash SHA-256 de la contrasena (no la contrasena en claro)
+  const HASH = 'c09e57d99fb75e5195600d31813e05fc262a868fa0138e4552055d23ce609db7';
   async function sha256(str) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
     return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
@@ -356,9 +356,7 @@
   window.checkPass = async function() {
     const val = document.getElementById('login-pass').value;
     const h = await sha256(val);
-    // Compare against stored hash of Valencia2026
-    const stored = await sha256('Valencia2026');
-    if(h === stored) {
+    if(h === HASH) {
       sessionStorage.setItem('sv_auth','1');
       unlock();
     } else {
@@ -385,7 +383,7 @@
   <span class="app-header-brand">Sociedad Valencia</span>
   <span class="app-header-divider"></span>
   <span class="app-header-sub">Granja Avicola Valense &mdash; Tulua, Valle</span>
-  <span class="app-header-badge">Corte Abr 6, 2026</span>
+  <span class="app-header-badge">Corte Jul 10, 2026</span>
 </header>
 
 <!-- ===== BOTTOM TAB NAV (mobile) ===== -->
@@ -447,21 +445,23 @@
 <!-- ============ RESUMEN ============ -->
 <div class="section active" id="sec-resumen">
   <p class="sec-title">Sociedad Valencia &mdash; Granja Avicola Valense, Tulua</p>
-  <h1 class="sec-heading">Informe Ejecutivo &mdash; Corte abril 6, 2026</h1>
+  <h1 class="sec-heading">Informe Ejecutivo &mdash; Corte julio 10, 2026</h1>
+
+  <div class="info"><strong>Lote 2025 liquidado en positivo:</strong> pese al brote sanitario (13.22% mortalidad), cerr&oacute; con utilidad de <strong>+$14.5M</strong> gracias a un precio r&eacute;cord de $26,960/ave &mdash; super&oacute; incluso el escenario optimista proyectado (+$7.6M).</div>
 
   <div class="kpi-grid">
-    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">Utilidad acumulada</p><p class="kpi-val">$69.6M</p><p class="kpi-sub">3 lotes liquidados</p></div>
-    <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Margen promedio</p><p class="kpi-val">18.3%</p><p class="kpi-sub">Rango: 16.3%&ndash;20.6%</p></div>
-    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">ROI sobre capital</p><p class="kpi-val">46.4%</p><p class="kpi-sub">$150M invertidos</p></div>
-    <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Aves vendidas</p><p class="kpi-val">14,749</p><p class="kpi-sub">Precio prom: $25,791</p></div>
-    <div class="kpi" style="border-left-color:#D4537E"><p class="kpi-label">Mortalidad L.2025</p><p class="kpi-val" id="kpi-mort-2025">13.22%</p><p class="kpi-sub" id="kpi-mort-2025-sub">1.005 de 7.600 aves</p></div>
-    <div class="kpi" style="border-left-color:#D4537E"><p class="kpi-label">Peso vs guia L.2025</p><p class="kpi-val" id="kpi-peso-2025">-12.3%</p><p class="kpi-sub" id="kpi-peso-2025-sub">1294g vs 1475g</p></div>
+    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">Utilidad acumulada</p><p class="kpi-val">$84.1M</p><p class="kpi-sub">4 lotes liquidados</p></div>
+    <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Margen agregado</p><p class="kpi-val">15.0%</p><p class="kpi-sub">Rango: 8.1%&ndash;20.6%</p></div>
+    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">ROI sobre capital</p><p class="kpi-val">56.1%</p><p class="kpi-sub">$150M invertidos</p></div>
+    <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Aves vendidas</p><p class="kpi-val">21,396</p><p class="kpi-sub">Precio prom: $26,155</p></div>
+    <div class="kpi" style="border-left-color:#7E57C2"><p class="kpi-label">Lote 2526 (activo)</p><p class="kpi-val">Sem 8</p><p class="kpi-sub">3,098 aves &middot; mort. 3.19%</p></div>
+    <div class="kpi" style="border-left-color:#26A69A"><p class="kpi-label">Lote 2626 (activo)</p><p class="kpi-val">Sem 3</p><p class="kpi-sub">4,371 aves &middot; mort. 0.73%</p></div>
   </div>
 
   <hr class="divider">
   <p class="sec-title">Resumen por lote</p>
   <div class="chart-wrap"><canvas id="chartResumen"></canvas></div>
-  <p class="note">Ingresos, costos y utilidad de los 3 lotes liquidados. Lote 2025 activo (solo costos).</p>
+  <p class="note">Ingresos, costos y utilidad de los 4 lotes liquidados. Lotes 2526 y 2626 activos (solo costos a la fecha).</p>
 </div>
 
 <!-- ============ COMPARATIVO ============ -->
@@ -470,27 +470,27 @@
   <h2 class="sec-heading">Todos los indicadores lado a lado</h2>
 
   <div class="tbl-wrap"><table class="tbl">
-    <tr><th>Indicador</th><th class="r">L.1525</th><th class="r">L.1625</th><th class="r">L.1725</th><th class="r">L.2025</th></tr>
-    <tr><td>Estado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c warn">ACTIVO</td></tr>
-    <tr><td>Raza</td><td class="c">Babcock Brown</td><td class="c">Hy Line Brown</td><td class="c">Babcock Brown</td><td class="c">Lohmann Brown</td></tr>
-    <tr><td>Proveedor</td><td class="c">San Marino</td><td class="c">San Marino</td><td class="c">San Marino</td><td class="c warn">Pronavicola</td></tr>
-    <tr><td>Fecha inicio</td><td class="c">30/05/2025</td><td class="c">09/08/2025</td><td class="c">01/09/2025</td><td class="c">19/12/2025</td></tr>
-    <tr><td>Aves recibidas</td><td class="r">5,350</td><td class="r">4,400</td><td class="r">5,750</td><td class="r">7,600</td></tr>
-    <tr><td>Aves vendidas / vivas</td><td class="r">4,837</td><td class="r">4,282</td><td class="r">5,630</td><td class="r">6,576 vivas</td></tr>
-    <tr><td>Mortalidad</td><td class="r">9.59%</td><td class="r">3.11%</td><td class="r good">1.63%</td><td class="r warn">12.82%</td></tr>
-    <tr><td>Peso final (g)</td><td class="r">1,355</td><td class="r">1,322</td><td class="r">1,376</td><td class="r warn">1,118</td></tr>
-    <tr><td>Cumpl. peso</td><td class="r">-1.8%</td><td class="r good">+1.7%</td><td class="r">-0.25%</td><td class="r warn">-11.6%</td></tr>
-    <tr><td>Ingreso total</td><td class="r">$130,221,000</td><td class="r">$103,281,320</td><td class="r">$146,899,000</td><td class="r">&mdash;</td></tr>
-    <tr><td>Costo total</td><td class="r">$109,016,773</td><td class="r">$85,126,961</td><td class="r">$116,629,045</td><td class="r">$155,855,224</td></tr>
-    <tr><td>Utilidad</td><td class="r">$21,204,227</td><td class="r">$18,154,359</td><td class="r good">$30,269,955</td><td class="r">&mdash;</td></tr>
-    <tr><td>Margen</td><td class="r">16.3%</td><td class="r">17.6%</td><td class="r good">20.6%</td><td class="r">&mdash;</td></tr>
-    <tr><td>Precio / ave</td><td class="r">$26,922</td><td class="r">$24,120</td><td class="r">$26,092</td><td class="r">&mdash;</td></tr>
-    <tr><td>Costo / ave</td><td class="r">$22,538</td><td class="r">$19,880</td><td class="r good">$20,716</td><td class="r">$23,703*</td></tr>
-    <tr><td>Utilidad / ave</td><td class="r">$4,384</td><td class="r">$4,240</td><td class="r good">$5,377</td><td class="r">&mdash;</td></tr>
-    <tr><td>Arriendo / mes</td><td class="r">$1,000,000</td><td class="r">$880,000</td><td class="r">$1,140,000</td><td class="r warn">$1,710,000</td></tr>
-    <tr><td>Medicamentos</td><td class="r">$1,645,800</td><td class="r">$2,524,450</td><td class="r good">$255,500</td><td class="r warn">$5,749,615</td></tr>
+    <tr><th>Indicador</th><th class="r">L.1525</th><th class="r">L.1625</th><th class="r">L.1725</th><th class="r">L.2025</th><th class="r">L.2526</th><th class="r">L.2626</th></tr>
+    <tr><td>Estado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c warn">ACTIVO</td><td class="c warn">ACTIVO</td></tr>
+    <tr><td>Raza</td><td class="c">Babcock Brown</td><td class="c">Hy Line Brown</td><td class="c">Babcock Brown</td><td class="c">Lohmann Brown</td><td class="c">Hy Line W-80 + Brown</td><td class="c">Babcock Brown + Azur</td></tr>
+    <tr><td>Proveedor</td><td class="c">San Marino</td><td class="c">San Marino</td><td class="c">San Marino</td><td class="c warn">Pronavicola</td><td class="c">Hy Line</td><td class="c good">San Marino</td></tr>
+    <tr><td>Fecha inicio</td><td class="c">30/05/2025</td><td class="c">09/08/2025</td><td class="c">01/09/2025</td><td class="c">19/12/2025</td><td class="c">16/05/2026</td><td class="c">16/06/2026</td></tr>
+    <tr><td>Aves recibidas</td><td class="r">5,350</td><td class="r">4,400</td><td class="r">5,750</td><td class="r">7,600</td><td class="r">3,200</td><td class="r">4,400</td></tr>
+    <tr><td>Aves vendidas / vivas</td><td class="r">4,837</td><td class="r">4,282</td><td class="r">5,630</td><td class="r">6,647</td><td class="r">3,098 vivas</td><td class="r">4,371 vivas</td></tr>
+    <tr><td>Mortalidad</td><td class="r">9.59%</td><td class="r">3.11%</td><td class="r good">1.63%</td><td class="r warn">13.22%</td><td class="r">3.19%</td><td class="r good">0.73%</td></tr>
+    <tr><td>Peso final (g)</td><td class="r">1,355</td><td class="r">1,322</td><td class="r">1,376</td><td class="r">1,294</td><td class="r">597 (S8)</td><td class="r">195 (S3)</td></tr>
+    <tr><td>Cumpl. peso</td><td class="r">-1.8%</td><td class="r good">+1.7%</td><td class="r">-0.25%</td><td class="r warn">-2.7%</td><td class="r">-0.5%</td><td class="r">-4.1%</td></tr>
+    <tr><td>Ingreso total</td><td class="r">$130,221,000</td><td class="r">$103,281,320</td><td class="r">$146,899,000</td><td class="r">$179,202,500</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
+    <tr><td>Costo total</td><td class="r">$109,016,773</td><td class="r">$85,126,961</td><td class="r">$116,629,045</td><td class="r">$164,742,284</td><td class="r">$40,747,609*</td><td class="r">$34,131,861*</td></tr>
+    <tr><td>Utilidad</td><td class="r">$21,204,227</td><td class="r">$18,154,359</td><td class="r good">$30,269,955</td><td class="r">$14,460,216</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
+    <tr><td>Margen</td><td class="r">16.3%</td><td class="r">17.6%</td><td class="r good">20.6%</td><td class="r warn">8.1%</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
+    <tr><td>Precio / ave</td><td class="r">$26,922</td><td class="r">$24,120</td><td class="r">$26,092</td><td class="r good">$26,960</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
+    <tr><td>Costo / ave</td><td class="r">$22,538</td><td class="r">$19,880</td><td class="r good">$20,716</td><td class="r warn">$24,784</td><td class="r">$12,734*</td><td class="r">$7,757*</td></tr>
+    <tr><td>Utilidad / ave</td><td class="r">$4,384</td><td class="r">$4,240</td><td class="r good">$5,377</td><td class="r warn">$2,175</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
+    <tr><td>Arriendo / mes</td><td class="r">$1,000,000</td><td class="r">$880,000</td><td class="r">$1,140,000</td><td class="r warn">$1,710,000</td><td class="r good">$720,000</td><td class="r">$990,000</td></tr>
+    <tr><td>Medicamentos</td><td class="r">$1,645,800</td><td class="r">$2,524,450</td><td class="r good">$255,500</td><td class="r warn">$5,749,615</td><td class="r good">$0</td><td class="r good">$0</td></tr>
   </table></div>
-  <p class="note">* Costo/ave del Lote 2025 es parcial (lote en curso).</p>
+  <p class="note">* Cifras parciales (lotes en curso, corte jul 10). L.2526: 2,500 Hy Line W-80 (blanca) + 700 Hy Line Brown. L.2626: 4,000 Babcock Brown (San Marino) + 400 Azur. Peso y mortalidad de L.2626 sobre las 4,000 Babcock.</p>
 
   <hr class="divider">
   <p class="sec-title">Evolucion de indicadores clave</p>
@@ -517,9 +517,11 @@
     <div class="lote-tog on" onclick="toggleC('1625')" id="togc-1625"><span class="dot" style="background:#1D9E75"></span>L.1625</div>
     <div class="lote-tog on" onclick="toggleC('1725')" id="togc-1725"><span class="dot" style="background:#BA7517"></span>L.1725</div>
     <div class="lote-tog on" onclick="toggleC('2025')" id="togc-2025"><span class="dot" style="background:#D4537E"></span>L.2025</div>
+    <div class="lote-tog on" onclick="toggleC('2526')" id="togc-2526"><span class="dot" style="background:#7E57C2"></span>L.2526</div>
+    <div class="lote-tog on" onclick="toggleC('2626')" id="togc-2626"><span class="dot" style="background:#26A69A"></span>L.2626</div>
   </div>
   <div class="chart-wrap"><canvas id="chartConsumo"></canvas></div>
-  <p class="note" id="consumo-note">Consumo total en kg por semana de vida. Lote 2025 semana 16 parcial (4 dias).</p>
+  <p class="note" id="consumo-note">Consumo total en kg por semana de vida. Lotes 2526 y 2626 en curso.</p>
   <hr class="divider">
   <p class="sec-title">Resumen comparativo &mdash; totales por lote</p>
   <div class="stats-grid" id="consumo-stats"></div>
@@ -537,10 +539,12 @@
     <div class="lote-tog on" onclick="toggleG('1625')" id="togg-1625"><span class="dot" style="background:#1D9E75"></span>L.1625</div>
     <div class="lote-tog on" onclick="toggleG('1725')" id="togg-1725"><span class="dot" style="background:#BA7517"></span>L.1725</div>
     <div class="lote-tog on" onclick="toggleG('2025')" id="togg-2025"><span class="dot" style="background:#D4537E"></span>L.2025</div>
+    <div class="lote-tog on" onclick="toggleG('2526')" id="togg-2526"><span class="dot" style="background:#7E57C2"></span>L.2526</div>
+    <div class="lote-tog on" onclick="toggleG('2626')" id="togg-2626"><span class="dot" style="background:#26A69A"></span>L.2626</div>
   </div>
   <div id="legend-gcat" class="legend" style="display:none"></div>
   <div class="chart-wrap"><canvas id="chartGastos"></canvas></div>
-  <p class="note" id="gastos-note">Gasto total semanal en COP (todas las categorias). Lote 2025 semana 16 parcial.</p>
+  <p class="note" id="gastos-note">Gasto total semanal en COP (todas las categorias). Lotes 2526 y 2626 en curso.</p>
   <hr class="divider">
   <p class="sec-title">Resumen por lote</p>
   <div class="stats-grid" id="gastos-stats"></div>
@@ -562,16 +566,17 @@
   <hr class="divider">
   <p class="sec-title">Desglose porcentual</p>
   <div class="tbl-wrap"><table class="tbl">
-    <tr><th>Categoria</th><th class="c">L.1525</th><th class="c">L.1625</th><th class="c">L.1725</th><th class="c">L.2025</th></tr>
-    <tr><td>Pollitas</td><td class="c">21.5%</td><td class="c">24.9%</td><td class="c">24.0%</td><td class="c">25.1%</td></tr>
-    <tr><td>Alimento</td><td class="c">46.9%</td><td class="c">42.9%</td><td class="c">48.6%</td><td class="c">48.1%</td></tr>
-    <tr><td>Mano de obra</td><td class="c">10.0%</td><td class="c">9.1%</td><td class="c">6.2%</td><td class="c">6.1%</td></tr>
-    <tr><td>Arrendamiento</td><td class="c">4.1%</td><td class="c">3.7%</td><td class="c">3.9%</td><td class="c">4.4%</td></tr>
-    <tr><td>Vacunas + Serv.</td><td class="c">7.5%</td><td class="c">8.0%</td><td class="c">9.1%</td><td class="c">5.9%</td></tr>
-    <tr><td>Medicamentos</td><td class="c">1.5%</td><td class="c">3.0%</td><td class="c good">0.2%</td><td class="c warn">3.7%</td></tr>
-    <tr><td>Fletes</td><td class="c">2.7%</td><td class="c">3.0%</td><td class="c">4.0%</td><td class="c">2.4%</td></tr>
-    <tr><td>Otros</td><td class="c">5.8%</td><td class="c">5.4%</td><td class="c">3.9%</td><td class="c">4.3%</td></tr>
+    <tr><th>Categoria</th><th class="c">L.1525</th><th class="c">L.1625</th><th class="c">L.1725</th><th class="c">L.2025</th><th class="c">L.2526*</th><th class="c">L.2626*</th></tr>
+    <tr><td>Pollitas</td><td class="c">21.5%</td><td class="c">24.9%</td><td class="c">24.0%</td><td class="c">23.8%</td><td class="c">37.8%</td><td class="c">62.4%</td></tr>
+    <tr><td>Alimento</td><td class="c">46.9%</td><td class="c">42.9%</td><td class="c">48.6%</td><td class="c">46.8%</td><td class="c">30.7%</td><td class="c">14.6%</td></tr>
+    <tr><td>Mano de obra</td><td class="c">10.0%</td><td class="c">9.1%</td><td class="c">6.2%</td><td class="c">7.2%</td><td class="c">8.5%</td><td class="c">3.3%</td></tr>
+    <tr><td>Arrendamiento</td><td class="c">4.1%</td><td class="c">3.7%</td><td class="c">3.9%</td><td class="c">4.2%</td><td class="c">3.5%</td><td class="c">2.9%</td></tr>
+    <tr><td>Vacunas + Serv.</td><td class="c">7.5%</td><td class="c">8.0%</td><td class="c">9.1%</td><td class="c">6.1%</td><td class="c">8.9%</td><td class="c">6.3%</td></tr>
+    <tr><td>Medicamentos</td><td class="c">1.5%</td><td class="c">3.0%</td><td class="c good">0.2%</td><td class="c warn">3.5%</td><td class="c good">0.0%</td><td class="c good">0.0%</td></tr>
+    <tr><td>Fletes</td><td class="c">2.7%</td><td class="c">3.0%</td><td class="c">4.0%</td><td class="c">4.5%</td><td class="c">2.0%</td><td class="c">0.6%</td></tr>
+    <tr><td>Otros</td><td class="c">5.8%</td><td class="c">5.4%</td><td class="c">3.9%</td><td class="c">4.0%</td><td class="c">8.5%</td><td class="c">9.9%</td></tr>
   </table></div>
+  <p class="note">* Lotes activos: composicion parcial. El peso de pollitas es alto al inicio del ciclo y se diluye con el consumo de alimento.</p>
 </div>
 
 <!-- ============ LOTE 2025 ============ -->
@@ -586,10 +591,12 @@
     <div class="lote-tog on" onclick="toggle2025('1625')" id="tog2-1625"><span class="dot" style="background:#1D9E75"></span>L.1625</div>
     <div class="lote-tog on" onclick="toggle2025('1725')" id="tog2-1725"><span class="dot" style="background:#BA7517"></span>L.1725</div>
     <div class="lote-tog on" onclick="toggle2025('2025')" id="tog2-2025"><span class="dot" style="background:#D4537E"></span>L.2025</div>
+    <div class="lote-tog on" onclick="toggle2025('2526')" id="tog2-2526"><span class="dot" style="background:#7E57C2"></span>L.2526</div>
+    <div class="lote-tog on" onclick="toggle2025('2626')" id="tog2-2626"><span class="dot" style="background:#26A69A"></span>L.2626</div>
   </div>
 
   <div class="chart-wrap"><canvas id="chart2025"></canvas></div>
-  <p class="note" id="note2025">Mortalidad semanal por lote. Lote 2025 presenta pico critico semanas 10&ndash;14 sin precedente en lotes anteriores.</p>
+  <p class="note" id="note2025">Mortalidad semanal por lote. El pico del Lote 2025 (sem 10&ndash;14) es la referencia de riesgo para los lotes activos.</p>
 
   <hr class="divider">
   <p class="sec-title">Resumen comparativo &mdash; mortalidad y peso por lote</p>
@@ -598,24 +605,30 @@
 
 <!-- ============ PROYECCIONES ============ -->
 <div class="section" id="sec-proyecciones">
-  <p class="sec-title">Proyecciones Lote 2025</p>
-  <h2 class="sec-heading">Tres escenarios de liquidacion</h2>
+  <p class="sec-title">Lote 2025 &mdash; resultado real vs escenarios</p>
+  <h2 class="sec-heading">La liquidacion supero el mejor escenario</h2>
 
-  <div class="scenario-grid">
+  <div class="scenario-grid" style="grid-template-columns:repeat(4,1fr)">
+    <div class="scenario" style="background:#378ADD15;border:1px solid #378ADD66">
+      <p class="s-title" style="color:#378ADD">REAL (may 2026)</p>
+      <p class="s-val" style="color:#378ADD">+$14.5M</p>
+      <p class="s-sub">6,647 aves &middot; $26,960/ave</p>
+      <p class="s-sub">Margen: +8.1%</p>
+    </div>
     <div class="scenario" style="background:#1D9E7515;border:0.5px solid #1D9E7544">
-      <p class="s-title" style="color:#1D9E75">Optimista</p>
+      <p class="s-title" style="color:#1D9E75">Optimista (proy.)</p>
       <p class="s-val" style="color:#1D9E75">+$7.6M</p>
       <p class="s-sub">6,500 aves &middot; $27,000/ave</p>
       <p class="s-sub">Margen: +4.4%</p>
     </div>
     <div class="scenario" style="background:#BA751715;border:0.5px solid #BA751744">
-      <p class="s-title" style="color:#BA7517">Base</p>
+      <p class="s-title" style="color:#BA7517">Base (proy.)</p>
       <p class="s-val" style="color:#BA7517">&minus;$19.7M</p>
       <p class="s-sub">6,300 aves &middot; $24,000/ave</p>
       <p class="s-sub">Margen: -13.0%</p>
     </div>
     <div class="scenario" style="background:#D4537E15;border:0.5px solid #D4537E44">
-      <p class="s-title" style="color:#D4537E">Pesimista</p>
+      <p class="s-title" style="color:#D4537E">Pesimista (proy.)</p>
       <p class="s-val" style="color:#D4537E">&minus;$57.9M</p>
       <p class="s-sub">5,800 aves &middot; $20,000/ave</p>
       <p class="s-sub">Margen: -49.9%</p>
@@ -623,35 +636,38 @@
   </div>
 
   <div class="chart-wrap"><canvas id="chartProy"></canvas></div>
-  <p class="note">Resultado proyectado y precio de equilibrio por escenario.</p>
+  <p class="note">Resultado real de liquidacion vs escenarios proyectados en abril 2026. Se vendieron mas aves y a mejor precio de lo previsto.</p>
 
   <hr class="divider">
-  <p class="sec-title">Impacto en el negocio acumulado</p>
+  <p class="sec-title">Impacto real en el negocio acumulado</p>
   <div class="tbl-wrap"><table class="tbl">
-    <tr><th>Metrica</th><th class="r">Sin L.2025</th><th class="r">+ Optimista</th><th class="r">+ Base</th><th class="r">+ Pesimista</th></tr>
-    <tr><td>Utilidad acum.</td><td class="r">$69,628,541</td><td class="r good">$77,273,317</td><td class="r">$49,973,317</td><td class="r warn">$11,773,317</td></tr>
-    <tr><td>ROI capital</td><td class="r">46.4%</td><td class="r good">51.5%</td><td class="r">33.3%</td><td class="r warn">7.8%</td></tr>
-    <tr><td>Util. Juan Camilo</td><td class="r">$44,562,266</td><td class="r">$49,454,923</td><td class="r">$31,982,923</td><td class="r">$7,534,923</td></tr>
-    <tr><td>Util. Tia Berta</td><td class="r">$20,422,763</td><td class="r">$22,641,082</td><td class="r">$14,648,242</td><td class="r">$3,449,602</td></tr>
-    <tr><td>Util. Tio Augusto</td><td class="r">$4,643,512</td><td class="r">$5,177,312</td><td class="r">$3,348,152</td><td class="r">$788,792</td></tr>
+    <tr><th>Metrica</th><th class="r">Sin L.2025</th><th class="r">Real con L.2025</th></tr>
+    <tr><td>Utilidad acum.</td><td class="r">$69,628,541</td><td class="r good">$84,088,757</td></tr>
+    <tr><td>ROI capital</td><td class="r">46.4%</td><td class="r good">56.1%</td></tr>
+    <tr><td>Util. Juan Camilo (64%)</td><td class="r">$44,562,266</td><td class="r">$53,816,804</td></tr>
+    <tr><td>Util. Tia Berta (29.3%)</td><td class="r">$20,422,763</td><td class="r">$24,663,232</td></tr>
+    <tr><td>Util. Tio Augusto (6.7%)</td><td class="r">$4,643,512</td><td class="r">$5,608,720</td></tr>
   </table></div>
+  <p class="note">Distribucion segun capital aportado. Nota: el Excel de liquidacion del L.2025 registra un reparto 35% utilidades ($5.06M) / 65% Valencia Mejia ($9.40M) &mdash; confirmar tratamiento antes de distribuir.</p>
 
   <hr class="divider">
-  <p class="sec-title">Proyeccion a 12 meses (abr 2026 &ndash; mar 2027)</p>
+  <p class="sec-title">Proyeccion a 12 meses (jul 2026 &ndash; jun 2027)</p>
   <div class="controls">
     <button class="btn active" onclick="setProy12('acum')" id="btn-p12-acum">Utilidad acumulada</button>
     <button class="btn" onclick="setProy12('socios')" id="btn-p12-socios">Por socio</button>
   </div>
   <div class="chart-wrap"><canvas id="chartProy12"></canvas></div>
-  <p class="note" id="note-p12">3 lotes adicionales, 6,000 aves/lote, ciclo 16 sem. Inflacion arriendo 5%, insumos 3%.</p>
+  <p class="note" id="note-p12">2 galpones en paralelo (~5 lotes/ano, ~4,000 aves/lote), ingreso estimado ~$525M/ano.</p>
 
-  <div class="info"><strong>Proyeccion base:</strong> En 12 meses el negocio podria generar $79.6M adicionales. Acumulado total: $129.6M. ROI: 86.4% sobre capital de $150M.</div>
+  <div class="info"><strong>Proyeccion base (margen 15%):</strong> En 12 meses el negocio podria generar ~$78.8M adicionales. Acumulado total: ~$162.9M. ROI: ~109% sobre capital de $150M.</div>
 </div>
 
 <!-- ============ SENSIBILIDAD ============ -->
 <div class="section" id="sec-sensibilidad">
   <p class="sec-title">Punto de equilibrio y sensibilidad</p>
-  <h2 class="sec-heading">Lote 2025 &mdash; analisis de break-even</h2>
+  <h2 class="sec-heading">Lote 2025 &mdash; analisis de break-even (historico)</h2>
+
+  <div class="info"><strong>Resultado real:</strong> el lote se liquido en mayo 2026 con 6,647 aves a $26,960/ave = $179.2M de ingreso y <strong>+$14.5M</strong> de utilidad &mdash; muy cerca de la celda 6,500 aves &times; $27K de la matriz. Este analisis se conserva como referencia metodologica para los lotes activos.</div>
 
   <div class="tbl-wrap"><table class="tbl">
     <tr><th>Escenario</th><th class="r">Costo total</th><th class="c">Aves</th><th class="r">Precio min./ave</th><th class="r">vs precio historico</th></tr>
@@ -685,48 +701,50 @@
 
   <div class="info">
     <strong>Hallazgos positivos</strong><br>
-    &bull; $69.6M utilidad en 3 lotes, margen 18.3%, ROI 46.4% en 7 meses<br>
-    &bull; Lote 1725: mejor desempeno (20.6% margen, 1.63% mortalidad, $5,377 util/ave)<br>
-    &bull; Curva de aprendizaje positiva de Lote 1525 a Lote 1725<br>
-    &bull; Escala crecio de 5,350 a 7,600 aves/lote
+    &bull; $84.1M utilidad en 4 lotes liquidados, ROI 56.1% en ~12 meses<br>
+    &bull; Lote 2025 se recupero: pese a mortalidad 13.22%, cerro en +$14.5M con precio record ($26,960/ave)<br>
+    &bull; Recomendaciones implementadas: regreso a San Marino/Babcock (L.2626) y operacion con 2 galpones en paralelo<br>
+    &bull; Arriendos de los lotes activos muy por debajo del L.2025: $720K y $990K/mes (vs $1.71M)<br>
+    &bull; Cero gasto en medicamentos en ambos lotes activos a la fecha
   </div>
   <div class="alert">
-    <strong>Alertas criticas</strong><br>
-    &bull; Lote 2025: mortalidad 12.82%, peso -11.6%, probable perdida de -$19.7M (escenario base)<br>
-    &bull; Cambio a Pronavicola/Lohmann Brown correlaciona con peor desempeno<br>
-    &bull; Arriendo +71% en 7 meses ($1.0M &rarr; $1.71M/mes)<br>
-    &bull; Medicamentos 4x superiores al promedio ($5.75M vs $1.48M)
+    <strong>Alertas y pendientes</strong><br>
+    &bull; El brote del L.2025 costo ~10 puntos de margen (8.1% vs 18.3% historico): ~$18M de utilidad no realizada<br>
+    &bull; L.2526 entra a las semanas 10&ndash;14, la ventana del brote del L.2025 &mdash; maxima vigilancia<br>
+    &bull; L.2526: mortalidad 3.19% concentrada en sem 1 (54 aves) + 12 ahogadas en sem 5 &mdash; revisar recepcion y bebederos<br>
+    &bull; Estirpes nuevas sin historial propio: Hy Line W-80 (blanca) y Azur &mdash; monitorear curvas vs guia<br>
+    &bull; Registro "Lote Pereira" es copia del 2526 sin datos propios &mdash; estructurar antes de arrancar
   </div>
 
   <hr class="divider">
   <p class="sec-title">Acciones urgentes (30 dias)</p>
   <ul class="rec-list">
-    <li class="urg"><strong>Veterinario especialista</strong> para diagnosticar y tratar brote Lote 2025</li>
-    <li class="urg"><strong>Pre-negociar venta</strong> con minimo 3 compradores para maximizar precio</li>
-    <li class="urg"><strong>Monitoreo diario</strong> de peso y mortalidad hasta liquidacion</li>
-    <li class="urg"><strong>Reunion de socios</strong> para alinear expectativas sobre posible perdida</li>
+    <li class="urg"><strong>Vigilancia reforzada L.2526</strong> en semanas 10&ndash;14 (ventana del brote del L.2025): peso, mortalidad y bioseguridad diaria</li>
+    <li class="urg"><strong>Completar plan vacunal</strong> de ambos lotes segun calendario (Plan Vac. del registro)</li>
+    <li class="urg"><strong>Aclarar esquema de reparto</strong> del L.2025: 35% utilidades / 65% Valencia Mejia vs distribucion por capital</li>
+    <li class="urg"><strong>Definir proyecto Pereira</strong>: alcance, capital y registro propio (hoy es copia del 2526)</li>
   </ul>
 
   <p class="sec-title" style="margin-top:16px">Mediano plazo (3-6 meses)</p>
   <ul class="rec-list">
-    <li class="med"><strong>Retornar a Babcock Brown / San Marino</strong> en el proximo lote</li>
-    <li class="med"><strong>Negociar contrato arriendo</strong> plurianual con tope de incremento IPC</li>
+    <li class="med"><strong>Pre-negociar venta L.2526</strong> (liquidacion estimada sep-oct 2026) con minimo 3 compradores</li>
+    <li class="med"><strong>Documentar protocolos bioseguridad</strong> basados en L.1725 y L.2626 (mejores arranques)</li>
+    <li class="med"><strong>Seguro avicola</strong> para mitigar eventos sanitarios (el brote del L.2025 costo ~$18M)</li>
     <li class="med"><strong>Galponero de respaldo</strong> para eliminar dependencia de Orlando</li>
-    <li class="med"><strong>Protocolos bioseguridad</strong> documentados (basados en Lote 1725)</li>
-    <li class="med"><strong>Seguro avicola</strong> para mitigar eventos sanitarios</li>
+    <li class="med"><strong>Evaluar mercado de polla blanca</strong> (Hy Line W-80): precio y demanda vs marron antes de repetir</li>
   </ul>
 
   <p class="sec-title" style="margin-top:16px">Largo plazo (6-24 meses)</p>
   <ul class="rec-list">
     <li class="lng"><strong>Galpon propio</strong> ($80-150M inversion, ahorro $40-60M/ano en arriendo)</li>
-    <li class="lng"><strong>Escalar a 10,000+ aves</strong> por lote para economias de escala</li>
+    <li class="lng"><strong>Escalar a 10,000+ aves</strong> simultaneas entre galpones para economias de escala</li>
     <li class="lng"><strong>Produccion de huevo</strong> &mdash; evaluar integracion vertical</li>
     <li class="lng"><strong>Certificacion BPA-ICA</strong> para mercados premium</li>
     <li class="lng"><strong>Acuerdo formal de socios</strong> con reglas claras por escrito</li>
   </ul>
 
   <hr class="divider">
-  <p class="note" style="text-align:center;margin-top:20px">Generado por Claude AI &middot; Abril 6, 2026 &middot; Sociedad Valencia &mdash; Granja Avicola Valense, Tulua</p>
+  <p class="note" style="text-align:center;margin-top:20px">Actualizado por Claude AI &middot; Julio 13, 2026 &middot; Fuente: Consolidado Gastos Levantes + Registros de Lote (Drive) &middot; Sociedad Valencia &mdash; Granja Avicola Valense, Tulua</p>
 </div>
 
     </div><!-- /content-pad -->
@@ -735,8 +753,8 @@
 
 <script>
 // ========== DATA ==========
-const COLORS = {'1525':'#378ADD','1625':'#1D9E75','1725':'#BA7517','2025':'#D4537E'};
-const LABELS = {'1525':'L.1525','1625':'L.1625','1725':'L.1725','2025':'L.2025'};
+const COLORS = {'1525':'#378ADD','1625':'#1D9E75','1725':'#BA7517','2025':'#D4537E','2526':'#7E57C2','2626':'#26A69A'};
+const LABELS = {'1525':'L.1525','1625':'L.1625','1725':'L.1725','2025':'L.2025','2526':'L.2526','2626':'L.2626'};
 const isDark = matchMedia('(prefers-color-scheme:dark)').matches;
 const gridC = isDark ? 'rgba(255,255,255,.07)' : 'rgba(0,0,0,.07)';
 const tickC = isDark ? '#888' : '#777';
@@ -747,37 +765,49 @@ const DATA = {
     '1525': [29,12,6,4,434,3,6,2,3,4,2,2,3,1,2,0],
     '1625': [15,6,5,8,10,20,8,8,3,44,2,2,1,3,2,0],
     '1725': [27,8,4,6,3,5,2,3,4,3,3,2,7,4,4,5],
-    '2025': [46,33,24,16,9,6,4,8,11,50,110,256,142,153,84,33,15,5] // @@L2025_MORT_W@@
+    '2025': [46,33,24,16,9,6,4,8,11,50,110,256,142,153,84,33,15,5], // @@L2025_MORT_W@@
+    '2526': [54,11,4,4,16,8,3,2],
+    '2626': [18,7,4]
   },
   mort_acum: {
     '1525': [0.54,0.77,0.88,0.95,9.07,9.12,9.23,9.27,9.33,9.40,9.44,9.48,9.53,9.55,9.59,9.59],
     '1625': [0.34,0.48,0.59,0.77,1.00,1.45,1.64,1.82,1.89,2.89,2.93,2.98,3.00,3.07,3.11,3.11],
     '1725': [0.47,0.61,0.68,0.78,0.83,0.92,0.96,1.01,1.08,1.13,1.18,1.22,1.34,1.41,1.48,1.57],
-    '2025': [0.61,1.04,1.36,1.57,1.68,1.76,1.82,1.92,2.07,2.72,4.17,7.54,9.41,11.42,12.53,12.96,13.16,13.22] // @@L2025_MORT_A@@
+    '2025': [0.61,1.04,1.36,1.57,1.68,1.76,1.82,1.92,2.07,2.72,4.17,7.54,9.41,11.42,12.53,12.96,13.16,13.22], // @@L2025_MORT_A@@
+    '2526': [1.69,2.03,2.16,2.28,2.78,3.03,3.12,3.19],
+    '2626': [0.45,0.62,0.73]
   },
   peso_real: {
     '1525': [68.6,127.6,209.4,297.3,384.2,467.6,558.5,667.1,775.8,878.5,968.8,1055.7,1132.4,1190.7,1286.5,1355],
     '1625': [72.3,114.6,171.4,244.8,335.4,417.8,524.5,631.2,738.8,854.3,976,1055.3,1146.7,1224.5,1322.4,null],
     '1725': [63.6,110.3,196.5,273.7,355.8,468.4,553.7,651.6,754.8,837.7,943,1051.3,1138,1207,1303,1376.5],
-    '2025': [81.3,131.0,195.0,261.4,355.3,448.6,552.4,632.2,723.5,822.5,903.0,973.3,1056.0,1130.0,1118.0,1294.0,null,null] // @@L2025_PESO_R@@
+    '2025': [81.3,131.0,195.0,261.4,355.3,448.6,552.4,632.2,723.5,822.5,903.0,973.3,1056.0,1130.0,1118.0,1294.0,null,null], // @@L2025_PESO_R@@
+    '2526': [66.2,115.4,177.7,247.4,336.2,418.7,502.5,597.0],
+    '2626': [69.0,117.4,194.7]
   },
   peso_guia: {
     '1525': [67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380],
     '1625': [70,125,190,265,360,460,560,670,780,890,990,1080,1160,1230,1300,1370],
     '1725': [67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380],
-    '2025': [75.0,130.0,195.0,275.0,367.0,475.0,583.0,685.0,782.0,874.0,961.0,1043.0,1123.0,1197.0,1264.0,1330.0,1400.0,1475.0] // @@L2025_PESO_G@@
+    '2025': [75.0,130.0,195.0,275.0,367.0,475.0,583.0,685.0,782.0,874.0,961.0,1043.0,1123.0,1197.0,1264.0,1330.0,1400.0,1475.0], // @@L2025_PESO_G@@
+    '2526': [65,115,180,250,330,420,510,600,690,790,880,960,1030,1100,1170,1210,1250,1280],
+    '2626': [67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380,1468,1550]
   },
   costs_cat: {
     '1525': {Pollitas:23427200,Alimento:51092640,'M.Obra':10900333,Arriendo:4500000,Vacunas:8184800,Medicam:1645800,Fletes:2990000,Otros:7275993},
     '1625': {Pollitas:21171894,Alimento:36559540,'M.Obra':7735333,Arriendo:3140000,Vacunas:6818694,Medicam:2524450,Fletes:2538750,Otros:4638300},
     '1725': {Pollitas:27967600,Alimento:56703742,'M.Obra':7196433,Arriendo:4560000,Vacunas:10554970,Medicam:255500,Fletes:4703500,Otros:4687300},
-    '2025': {Pollitas:39159364,Alimento:77134600,'M.Obra':0,Arriendo:18631000,Vacunas:10024810,Medicam:5749615,Fletes:7595895,Otros:6789800} // @@L2025_COSTS_CAT@@
+    '2025': {Pollitas:39159364,Alimento:77134600,'M.Obra':0,Arriendo:18631000,Vacunas:10024810,Medicam:5749615,Fletes:7595895,Otros:6789800}, // @@L2025_COSTS_CAT@@
+    '2526': {Pollitas:15395840,Alimento:12516149,'M.Obra':0,Arriendo:4815000,Vacunas:3633300,Medicam:0,Fletes:828520,Otros:3558800},
+    '2626': {Pollitas:21293280,Alimento:4986081,'M.Obra':0,Arriendo:2115000,Vacunas:2158600,Medicam:0,Fletes:213500,Otros:3365400}
   },
   totals: {
     '1525': {costo:109016773, ingreso:130221000, utilidad:21204227, aves:4837, pollitas:5350},
     '1625': {costo:85126961, ingreso:103281320, utilidad:18154359, aves:4282, pollitas:4400},
     '1725': {costo:116629045, ingreso:146899000, utilidad:30269955, aves:5630, pollitas:5750},
-    '2025': {costo:165085084,ingreso:0,utilidad:0,aves:0,pollitas:7600} // @@L2025_TOTALS@@
+    '2025': {costo:164742284, ingreso:179202500, utilidad:14460216, aves:6647, pollitas:7600}, // @@L2025_TOTALS@@
+    '2526': {costo:40747609, ingreso:0, utilidad:0, aves:0, pollitas:3200},
+    '2626': {costo:34131861, ingreso:0, utilidad:0, aves:0, pollitas:4400}
   }
 };
 
@@ -831,11 +861,11 @@ function initResumen() {
   charts.resumen = new Chart(ctx, {
     type:'bar',
     data:{
-      labels:['L.1525','L.1625','L.1725','L.2025 (activo)'],
+      labels:['L.1525','L.1625','L.1725','L.2025','L.2526 (act)','L.2626 (act)'],
       datasets:[
-        {label:'Ingresos',data:[130.2,103.3,146.9,0],backgroundColor:'#378ADD',borderRadius:3},
-        {label:'Costos',data:[109.0,85.1,116.6,155.9],backgroundColor:'#888780',borderRadius:3},
-        {label:'Utilidad',data:[21.2,18.2,30.3,0],backgroundColor:'#1D9E75',borderRadius:3}
+        {label:'Ingresos',data:[130.2,103.3,146.9,179.2,0,0],backgroundColor:'#378ADD',borderRadius:3},
+        {label:'Costos',data:[109.0,85.1,116.6,164.7,40.7,34.1],backgroundColor:'#888780',borderRadius:3},
+        {label:'Utilidad',data:[21.2,18.2,30.3,14.5,0,0],backgroundColor:'#1D9E75',borderRadius:3}
       ]
     },
     options:{...baseOpts(v=>'$'+v+'M'),plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}}}}
@@ -845,11 +875,11 @@ function initResumen() {
 // ========== COMPARATIVO CHART ==========
 let compMetric = 'margin';
 const COMP_DATA = {
-  margin: {label:'Margen de utilidad %',data:[16.3,17.6,20.6],labels:['L.1525','L.1625','L.1725'],colors:['#378ADD','#1D9E75','#BA7517'],note:'Margen creciente: de 16.3% a 20.6%. Tendencia positiva en lotes liquidados.'},
-  profit_bird: {label:'Utilidad por ave (COP)',data:[4384,4240,5377],labels:['L.1525','L.1625','L.1725'],colors:['#378ADD','#1D9E75','#BA7517'],note:'Utilidad por ave. Lote 1725 logro $5,377/ave (+23% vs promedio).'},
-  mortality: {label:'Mortalidad %',data:[9.59,3.11,1.63,12.82],labels:['L.1525','L.1625','L.1725','L.2025'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E'],note:'Mortalidad mejoro de 9.59% a 1.63%, pero Lote 2025 disparo a 12.82%.'},
-  rent: {label:'Arriendo mensual (M COP)',data:[1.0,0.88,1.14,1.71],labels:['L.1525','L.1625','L.1725','L.2025'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E'],note:'Arriendo aumento 71% en 7 meses. De $1.0M a $1.71M/mes.'},
-  meds: {label:'Medicamentos (M COP)',data:[1.65,2.52,0.26,5.75],labels:['L.1525','L.1625','L.1725','L.2025'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E'],note:'Medicamentos Lote 2025 ($5.75M) son 4x el promedio historico.'}
+  margin: {label:'Margen de utilidad %',data:[16.3,17.6,20.6,8.1],labels:['L.1525','L.1625','L.1725','L.2025'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E'],note:'Margen crecio hasta 20.6% (L.1725); el brote sanitario del L.2025 lo redujo a 8.1%.'},
+  profit_bird: {label:'Utilidad por ave (COP)',data:[4384,4240,5377,2175],labels:['L.1525','L.1625','L.1725','L.2025'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E'],note:'Utilidad por ave. L.1725 logro $5,377/ave; L.2025 cayo a $2,175 por el brote.'},
+  mortality: {label:'Mortalidad %',data:[9.59,3.11,1.63,13.22,3.19,0.73],labels:['L.1525','L.1625','L.1725','L.2025','L.2526*','L.2626*'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2','#26A69A'],note:'L.2025 cerro en 13.22%. Lotes activos (*): 2526 en 3.19% (sem 8) y 2626 en 0.73% (sem 3).'},
+  rent: {label:'Arriendo mensual (M COP)',data:[1.0,0.88,1.14,1.71,0.72,0.99],labels:['L.1525','L.1625','L.1725','L.2025','L.2526','L.2626'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2','#26A69A'],note:'El arriendo llego a $1.71M/mes en L.2025; los lotes activos bajaron a $720K y $990K/mes.'},
+  meds: {label:'Medicamentos (M COP)',data:[1.65,2.52,0.26,5.75,0,0],labels:['L.1525','L.1625','L.1725','L.2025','L.2526','L.2626'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2','#26A69A'],note:'Medicamentos L.2025 ($5.75M) fueron 4x el promedio. Lotes activos: $0 a la fecha.'}
 };
 
 function initComp() { buildComp(); }
@@ -880,7 +910,7 @@ function setCostView(v) {
 }
 function buildCostos() {
   if(charts.costos) charts.costos.destroy();
-  const lotes = ['1525','1625','1725','2025'];
+  const lotes = ['1525','1625','1725','2025','2526','2626'];
   const labels = lotes.map(k=>LABELS[k]);
 
   if(costView === 'stacked' || costView === 'pct') {
@@ -921,13 +951,15 @@ function buildCostos() {
 
 // ========== LOTE 2025 CHART ==========
 let view2025 = 'mort_sem';
-let active2025 = {1525:true,1625:true,1725:true,2025:true};
+let active2025 = {1525:true,1625:true,1725:true,2025:true,2526:true,2626:true};
 
 const MP_STATS = {
   '1525': {pollitas:5350, mort_total:513, mort_pct:9.59, peso_final:1355, peso_guia:1380, cumpl:-1.8, uniformidad:91.2, semanas:16, evento:'Sem 5: ahogamiento (432 aves)'},
   '1625': {pollitas:4400, mort_total:137, mort_pct:3.11, peso_final:1322, peso_guia:1300, cumpl:1.7, uniformidad:86.3, semanas:16, evento:'Sem 10: frio (44 aves)'},
   '1725': {pollitas:5750, mort_total:94, mort_pct:1.63, peso_final:1376, peso_guia:1380, cumpl:-0.25, uniformidad:90.0, semanas:17, evento:'Sin eventos criticos'},
-  '2025': {pollitas:7600, mort_total:974, mort_pct:12.82, peso_final:1118, peso_guia:1264, cumpl:-11.6, uniformidad:86.0, semanas:16, evento:'Sem 10-14: brote (745 aves)', activo:true}
+  '2025': {pollitas:7600, mort_total:1005, mort_pct:13.22, peso_final:1294, peso_guia:1330, cumpl:-2.7, uniformidad:86.0, semanas:18, evento:'Sem 10-14: brote (745 aves)'},
+  '2526': {pollitas:3200, mort_total:102, mort_pct:3.19, peso_final:597, peso_guia:600, cumpl:-0.5, uniformidad:88.5, semanas:8, evento:'Sem 1: 54 aves; Sem 5: 12 ahogadas', activo:true},
+  '2626': {pollitas:4000, mort_total:29, mort_pct:0.73, peso_final:195, peso_guia:203, cumpl:-4.1, uniformidad:80.0, semanas:3, evento:'Sin eventos criticos', activo:true}
 };
 
 function init2025() { build2025(); renderMPStats(); }
@@ -969,10 +1001,10 @@ function build2025() {
   if(charts.l2025) charts.l2025.destroy();
   const weeks = Array.from({length:16},(_,i)=>'S'+(i+1));
   const notes = {
-    mort_sem:'Mortalidad semanal por lote. Lote 2025 presenta pico critico semanas 10\u201314 sin precedente en lotes anteriores.',
-    mort_acum:'Mortalidad acumulada %. Lote 2025 diverge drasticamente desde semana 10.',
+    mort_sem:'Mortalidad semanal por lote. El pico del Lote 2025 (sem 10\u201314) es la referencia de riesgo para los lotes activos.',
+    mort_acum:'Mortalidad acumulada %. Lote 2025 divergio desde semana 10. Lotes 2526/2626 en curso.',
     peso:'Peso corporal real vs guia genetica. Lineas punteadas = guia del estandar de la raza.',
-    cumpl:'% de cumplimiento del peso estandar. Negativo = por debajo de la guia. Lote 2025 cae a -11.6%.'
+    cumpl:'% de cumplimiento del peso estandar. Negativo = por debajo de la guia.'
   };
   document.getElementById('note2025').textContent = notes[view2025];
 
@@ -997,11 +1029,12 @@ function build2025() {
       });
     }
 
+    const esActivo = (k==='2526'||k==='2626');
     datasets.push({
       label, data: data.slice(0,16),
       borderColor: COLORS[k], backgroundColor: COLORS[k]+'18',
-      borderWidth: k==='2025'?2.5:1.8, pointRadius:3, pointHoverRadius:5,
-      tension:.35, spanGaps:false, borderDash: k==='2025'?[5,3]:[], fill:false
+      borderWidth: esActivo?2.5:1.8, pointRadius:3, pointHoverRadius:5,
+      tension:.35, spanGaps:false, borderDash: esActivo?[5,3]:[], fill:false
     });
   });
 
@@ -1032,6 +1065,7 @@ function initProy() {
     data:{
       labels:['Ingreso','Costo total','Resultado'],
       datasets:[
+        {label:'REAL',data:[179.2,164.7,14.5],backgroundColor:'#378ADD',borderRadius:3},
         {label:'Optimista',data:[175.5,167.9,7.6],backgroundColor:'#1D9E75',borderRadius:3},
         {label:'Base',data:[151.2,170.9,-19.7],backgroundColor:'#BA7517',borderRadius:3},
         {label:'Pesimista',data:[116.0,173.9,-57.9],backgroundColor:'#D4537E',borderRadius:3}
@@ -1053,27 +1087,27 @@ function setProy12(v) {
 }
 function buildProy12() {
   if(charts.proy12) charts.proy12.destroy();
-  const months = ['Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic','Ene','Feb','Mar'];
-  const s = 49.97;
+  const months = ['Jul','Ago','Sep','Oct','Nov','Dic','Ene','Feb','Mar','Abr','May','Jun'];
+  const s = 84.09; // utilidad acumulada real a jul 2026
 
   if(proy12View === 'acum') {
-    const cons = Array.from({length:12},(_,i)=>+(s+145*0.15*3/11*i).toFixed(1));
-    const base = Array.from({length:12},(_,i)=>+(s+145*0.183*3/11*i).toFixed(1));
-    const opt = Array.from({length:12},(_,i)=>+(s+145*0.21*3/11*i).toFixed(1));
+    const cons = Array.from({length:12},(_,i)=>+(s+525*0.10/11*i).toFixed(1));
+    const base = Array.from({length:12},(_,i)=>+(s+525*0.15/11*i).toFixed(1));
+    const opt = Array.from({length:12},(_,i)=>+(s+525*0.20/11*i).toFixed(1));
     charts.proy12 = new Chart(document.getElementById('chartProy12'), {
       type:'line',
       data:{labels:months,datasets:[
-        {label:'Conservador (15%)',data:cons,borderColor:'#BA7517',backgroundColor:'#BA751710',borderWidth:1.8,pointRadius:3,tension:.3,fill:false},
-        {label:'Base (18.3%)',data:base,borderColor:'#378ADD',backgroundColor:'#378ADD10',borderWidth:2,pointRadius:3,tension:.3,fill:false},
-        {label:'Optimista (21%)',data:opt,borderColor:'#1D9E75',backgroundColor:'#1D9E7510',borderWidth:1.8,pointRadius:3,tension:.3,fill:false}
+        {label:'Conservador (10%)',data:cons,borderColor:'#BA7517',backgroundColor:'#BA751710',borderWidth:1.8,pointRadius:3,tension:.3,fill:false},
+        {label:'Base (15%)',data:base,borderColor:'#378ADD',backgroundColor:'#378ADD10',borderWidth:2,pointRadius:3,tension:.3,fill:false},
+        {label:'Optimista (20%)',data:opt,borderColor:'#1D9E75',backgroundColor:'#1D9E7510',borderWidth:1.8,pointRadius:3,tension:.3,fill:false}
       ]},
       options:{...baseOpts(v=>'$'+v.toFixed(0)+'M'),plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}}}}
     });
-    document.getElementById('note-p12').textContent = '3 lotes adicionales, 6,000 aves/lote. Inflacion arriendo 5%, insumos 3%.';
+    document.getElementById('note-p12').textContent = '2 galpones en paralelo, ~5 lotes/ano, ingreso estimado ~$525M/ano. Margen sobre ingresos.';
   } else {
-    const jc = Array.from({length:12},(_,i)=>+(31.98+50.95/11*i).toFixed(1));
-    const tb = Array.from({length:12},(_,i)=>+(14.65+23.32/11*i).toFixed(1));
-    const ta = Array.from({length:12},(_,i)=>+(3.35+5.33/11*i).toFixed(1));
+    const jc = Array.from({length:12},(_,i)=>+(53.82+50.40/11*i).toFixed(1));
+    const tb = Array.from({length:12},(_,i)=>+(24.66+23.10/11*i).toFixed(1));
+    const ta = Array.from({length:12},(_,i)=>+(5.61+5.25/11*i).toFixed(1));
     charts.proy12 = new Chart(document.getElementById('chartProy12'), {
       type:'line',
       data:{labels:months,datasets:[
@@ -1083,7 +1117,7 @@ function buildProy12() {
       ]},
       options:{...baseOpts(v=>'$'+v.toFixed(0)+'M'),plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}}}}
     });
-    document.getElementById('note-p12').textContent = 'Utilidad acumulada por socio (escenario base 18.3%).';
+    document.getElementById('note-p12').textContent = 'Utilidad acumulada por socio (escenario base 15%, reparto por capital aportado).';
   }
 }
 
@@ -1223,15 +1257,17 @@ const CONSUMO_LOTES = {
   '1525':{label:'L.1525',color:'#378ADD',pollitas:5350,kg_sem:[410,700,1000,1200,1280,1400,1600,1720,1960,1960,2120,2160,2280,2280,2440,1480],gr_ave:[11.0,18.8,26.9,32.4,37.6,41.1,47.1,50.6,57.7,58.2,63.0,64.2,67.9,67.9,72.7,null],peso_real:[68.6,127.6,209.4,297.3,384.2,467.6,558.5,667.1,775.8,878.5,968.8,1055.7,1132.4,1190.7,1286.5,1355],peso_guia:[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380],mort:[29,12,6,4,434,3,6,2,3,4,2,2,3,1,2,0],consumo_total:25990,utilidad:21204227,mortalidad_pct:9.6},
   '1625':{label:'L.1625',color:'#1D9E75',pollitas:4420,kg_sem:[440,640,840,880,1040,1040,1260,1360,1440,1520,1720,1820,1900,1000,1040,1120],gr_ave:[14.3,20.9,27.4,28.8,34.5,36.8,44.6,48.3,51.1,54.6,61.8,65.4,null,74.0,77.1,83.0],peso_real:[72.3,114.6,171.4,244.8,335.4,417.8,524.5,631.2,738.8,854.3,976,1055.3,1146.7,1224.5,1322.4,null],peso_guia:[70,125,190,265,360,460,560,670,780,890,990,1080,1160,1230,1300,1370],mort:[15,6,5,8,10,20,8,8,3,44,2,2,1,3,2,0],consumo_total:19060,utilidad:18154359,mortalidad_pct:7.2},
   '1725':{label:'L.1725',color:'#BA7517',pollitas:5700,kg_sem:[440,680,1000,1320,1440,1680,1760,1960,2120,2320,2440,2480,2600,2640,2720,2800,200],gr_ave:[11.0,17.0,25.0,33.1,36.1,43.0,45.1,50.5,54.7,59.9,63.0,66.6,70.6,71.7,73.9,76.2,null],peso_real:[63.6,110.3,196.5,273.7,355.8,468.4,553.7,651.6,754.8,837.7,943,1051.3,1138,1207,1303,1376.5,null],peso_guia:[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380,1468],mort:[27,8,4,6,3,5,2,3,4,3,3,2,7,4,4,5,4],consumo_total:30600,utilidad:30269955,mortalidad_pct:5.1},
-  '2025':{label:'L.2025',color:'#D4537E',pollitas:7600,kg_sem:[600,840,1240,1520,1840,2120,2520,2720,2920,3080,2960,3160,3280,3360,3280,3360,1880,800],gr_ave:[11.3,16.0,23.6,29.0,35.2,40.6,48.2,52.5,56.4,59.9,58.5,64.7,68.6,71.8,71.0,73.1,76.2,347.4],peso_real:[81.3,131.0,195.0,261.4,355.3,448.6,552.4,632.2,723.5,822.5,903.0,973.3,1056.0,1130.0,1118.0,1294.0,null,null],peso_guia:[75.0,130.0,195.0,275.0,367.0,475.0,583.0,685.0,782.0,874.0,961.0,1043.0,1123.0,1197.0,1264.0,1330.0,1400.0,1475.0],mort:[46,33,24,16,9,6,4,8,11,50,110,256,142,153,84,33,15,5],consumo_total:41480,utilidad:null,mortalidad_pct:13.22,activo:true} // @@L2025_CONSUMO@@
+  '2025':{label:'L.2025',color:'#D4537E',pollitas:7600,kg_sem:[600,840,1240,1520,1840,2120,2520,2720,2920,3080,2960,3160,3280,3360,3280,3360,1880,800],gr_ave:[11.3,16.0,23.6,29.0,35.2,40.6,48.2,52.5,56.4,59.9,58.5,64.7,68.6,71.8,71.0,73.1,76.2,null],peso_real:[81.3,131.0,195.0,261.4,355.3,448.6,552.4,632.2,723.5,822.5,903.0,973.3,1056.0,1130.0,1118.0,1294.0,null,null],peso_guia:[75.0,130.0,195.0,275.0,367.0,475.0,583.0,685.0,782.0,874.0,961.0,1043.0,1123.0,1197.0,1264.0,1330.0,1400.0,1475.0],mort:[46,33,24,16,9,6,4,8,11,50,110,256,142,153,84,33,15,5],consumo_total:41480,utilidad:14460216,mortalidad_pct:13.22}, // @@L2025_CONSUMO@@
+  '2526':{label:'L.2526',color:'#7E57C2',pollitas:3200,kg_sem:[260,360,440,680,840,920,940,1020],gr_ave:[11.8,16.4,20.1,31.1,38.6,42.4,43.3,47.0],peso_real:[66.2,115.4,177.7,247.4,336.2,418.7,502.5,597.0],peso_guia:[65,115,180,250,330,420,510,600,690,790,880,960,1030,1100,1170,1210],mort:[54,11,4,4,16,8,3,2],consumo_total:5460,utilidad:null,mortalidad_pct:3.19,activo:true},
+  '2626':{label:'L.2626',color:'#26A69A',pollitas:4000,kg_sem:[320,480,680],gr_ave:[11.5,17.3,24.5],peso_real:[69.0,117.4,194.7],peso_guia:[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380],mort:[18,7,4],consumo_total:1480,utilidad:null,mortalidad_pct:0.73,activo:true}
 };
 const C_METRICS = {
-  kg_sem:{note:'Consumo total en kg por semana de vida. Lote 2025 semana 16 parcial (4 dias).',yLabel:'kg',getData:l=>l.kg_sem.map((v,i)=>v===0&&i>3?null:v)},
+  kg_sem:{note:'Consumo total en kg por semana de vida. Lotes 2526 y 2626 en curso.',yLabel:'kg',getData:l=>l.kg_sem.map((v,i)=>v===0&&i>3?null:v)},
   gr_ave:{note:'Gramos consumidos por ave por semana. Normaliza diferencias de tamano de lote.',yLabel:'gr/ave',getData:l=>l.gr_ave.map(v=>(v&&v>0&&v<500)?Math.round(v*10)/10:null)},
   peso:{note:'Peso promedio del lote por semana. Lineas punteadas = guia genetica.',yLabel:'gr',getData:l=>l.peso_real,getGuia:l=>l.peso_guia},
   mort:{note:'Aves muertas por semana. Lote 2025 presenta pico critico semanas 10-14.',yLabel:'aves',getData:l=>l.mort}
 };
-let cMetric='kg_sem', activeC={1525:true,1625:true,1725:true,2025:true};
+let cMetric='kg_sem', activeC={1525:true,1625:true,1725:true,2025:true,2526:true,2626:true};
 
 function initConsumo(){buildConsumo();renderCStats();}
 function setCMetric(m){
@@ -1255,7 +1291,7 @@ function buildConsumo(){
     if(!activeC[key]) return;
     const data=m.getData(lot);
     const padded=Array.from({length:maxL},(_,i)=>data[i]!==undefined?data[i]:null);
-    datasets.push({label:lot.label,data:padded,borderColor:lot.color,backgroundColor:lot.color+'22',borderWidth:key==='2025'?2.5:1.8,pointRadius:3,pointHoverRadius:5,tension:0.35,spanGaps:false,borderDash:lot.activo?[5,3]:[]});
+    datasets.push({label:lot.label,data:padded,borderColor:lot.color,backgroundColor:lot.color+'22',borderWidth:lot.activo?2.5:1.8,pointRadius:3,pointHoverRadius:5,tension:0.35,spanGaps:false,borderDash:lot.activo?[5,3]:[]});
     if(cMetric==='peso'&&m.getGuia){
       const guia=m.getGuia(lot);
       datasets.push({label:lot.label+' (guia)',data:Array.from({length:maxL},(_,i)=>guia[i]!==undefined?guia[i]:null),borderColor:lot.color+'55',borderWidth:1,pointRadius:0,tension:0.35,borderDash:[3,3],spanGaps:false});
@@ -1283,15 +1319,17 @@ function renderCStats(){
 }
 
 // ========== GASTOS SECTION ==========
-const G_COLORS={'1525':'#378ADD','1625':'#1D9E75','1725':'#BA7517','2025':'#D4537E'};
-const G_LABELS={'1525':'L.1525','1625':'L.1625','1725':'L.1725','2025':'L.2025 (activo)'};
-const G_POLLITAS={'1525':5350,'1625':4420,'1725':5700,'2025':7600};
+const G_COLORS={'1525':'#378ADD','1625':'#1D9E75','1725':'#BA7517','2025':'#D4537E','2526':'#7E57C2','2626':'#26A69A'};
+const G_LABELS={'1525':'L.1525','1625':'L.1625','1725':'L.1725','2025':'L.2025','2526':'L.2526 (activo)','2626':'L.2626 (activo)'};
+const G_POLLITAS={'1525':5350,'1625':4420,'1725':5700,'2025':7600,'2526':3200,'2626':4400};
 const G_CAT_COLORS={'Pollitas':'#378ADD','Alimento':'#1D9E75','Medicamentos':'#D4537E','Vacunas':'#BA7517','Arrendamiento':'#534AB7','Servicios':'#888780','Fletes y otros':'#639922','Costos comunes':'#9FE1CB'};
 const G_GROUPS=['Pollitas','Alimento','Medicamentos','Vacunas','Arrendamiento','Servicios','Fletes y otros','Costos comunes'];
-const G_RAW={"1525":{"pollitas":5350,"group_totals":{"Pollitas":23427200,"Alimento":51092640,"Medicamentos":1645800,"Vacunas":11992800,"Arrendamiento":4500000,"Servicios":11570333,"Fletes y otros":3140000,"Costos comunes":1498000},"weekly_by_group":{"Pollitas":[21087200,2340000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[15190140,0,0,8340000,0,0,0,0,0,5512500,7350000,0,7350000,0,7350000,0,0,0],"Medicamentos":[0,0,0,79400,48500,64000,0,0,0,0,0,496200,0,0,957700,0,0,0],"Vacunas":[4963000,994200,394000,0,0,1240000,1021600,480000,400000,0,0,0,0,820000,780000,620000,280000,0],"Arrendamiento":[1000000,0,0,0,1000000,0,0,0,1000000,0,0,0,0,1500000,0,0,0,0],"Servicios":[3450000,950000,950000,950000,1433000,964000,520000,400000,400000,0,0,400000,400000,420000,0,0,333333,0],"Fletes y otros":[500000,0,0,350000,0,0,350000,0,0,70000,350000,0,370000,0,0,850000,300000,0],"Costos comunes":[98000,0,0,225000,0,0,315000,0,0,0,285000,0,0,0,0,575000,0,0]},"grand_total":108866773},"1625":{"pollitas":4420,"group_totals":{"Pollitas":21171894,"Alimento":36559540,"Medicamentos":2524450,"Vacunas":8204694,"Arrendamiento":3140000,"Servicios":8185333,"Fletes y otros":2538750,"Costos comunes":2802300},"weekly_by_group":{"Pollitas":[21171894,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[2108400,0,2108000,6255000,0,2668800,3870300,0,3870300,5512500,3565800,2336600,0,1776600,2487240,0,0,0],"Medicamentos":[425000,0,0,0,0,1449450,0,0,0,380000,0,0,0,270000,0,0,0,0],"Vacunas":[1848300,1319000,567200,0,0,500000,0,2090700,0,0,0,0,1235000,0,364494,280000,0,0],"Arrendamiento":[880000,0,0,0,0,880000,0,0,0,880000,0,0,0,500000,0,0,0,0],"Servicios":[2810000,560000,660000,550000,400000,400000,400000,733333,0,418000,0,418000,0,0,418000,0,418000,0],"Fletes y otros":[700000,0,0,350000,0,70000,175000,0,175000,185000,175000,175000,0,213750,0,120000,200000,0],"Costos comunes":[638800,0,0,0,0,575000,0,300000,0,400000,0,98500,300000,0,290000,0,200000,0]},"grand_total":85126961},"1725":{"pollitas":5700,"group_totals":{"Pollitas":27967600,"Alimento":56703742,"Medicamentos":255500,"Vacunas":11655770,"Arrendamiento":4560000,"Servicios":8615433,"Fletes y otros":4703500,"Costos comunes":2166500},"weekly_by_group":{"Pollitas":[27967600,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[2108400,2108400,0,3638082,3870300,3870300,0,3870300,5969800,0,3553200,6395760,7106400,0,7106400,7106400,0,0],"Medicamentos":[0,0,0,0,0,108000,0,0,0,0,0,0,0,0,147500,0,0,0],"Vacunas":[4128320,592000,1471000,0,420000,0,775000,420000,0,0,0,0,1257450,0,1392000,0,1200000,0],"Arrendamiento":[1140000,0,0,0,1140000,0,0,0,1140000,0,0,0,0,1140000,0,0,0,0],"Servicios":[1330000,750000,400000,514284,333333,0,418000,0,418000,0,418000,0,836000,0,0,754816,404000,2039000],"Fletes y otros":[70000,0,0,175000,175000,255000,0,245000,175000,138500,150000,270000,0,300000,0,150000,2600000,0],"Costos comunes":[150000,63000,325000,0,300000,150000,0,0,98500,300000,230000,0,0,0,550000,0,0,0]},"grand_total":116628045},"2025":{"pollitas":7600,"group_totals":{"Pollitas":39159364,"Alimento":77134600,"Medicamentos":5749615,"Vacunas":10024810,"Arrendamiento":18631000,"Servicios":0,"Fletes y otros":7595895,"Costos comunes":6789800},"weekly_by_group":{"Pollitas":[39159364, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"Alimento":[6478200, 1923600, 0, 2353680, 5884200, 3922800, 790000, 9807000, 0, 3570000, 4641000, 5355000, 8942850, 8734280, 0, 12519990, 1422000, 790000],"Medicamentos":[105000, 0, 251600, 0, 0, 0, 0, 1019320, 675000, 1112100, 327000, 0, 1691795, 0, 567800, 0, 0, 0],"Vacunas":[1480000, 802000, 729850, 500000, 0, 1150000, 0, 1770000, 0, 0, 0, 0, 0, 0, 2787900, 0, 230000, 575060],"Arrendamiento":[2546000, 1955000, 0, 0, 1710000, 0, 1125000, 0, 2835000, 0, 1125000, 0, 2835000, 0, 1125000, 0, 1125000, 1125000],"Servicios":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"Fletes y otros":[0, 3410000, 0, 0, 252895, 0, 0, 0, 173000, 0, 0, 0, 0, 0, 0, 300000, 1540000, 1920000],"Costos comunes":[3271800, 0, 333000, 250000, 0, 180000, 434000, 285000, 718000, 0, 0, 0, 418000, 300000, 80000, 360000, 80000, 80000]},"grand_total":165085084} // @@L2025_GRAW@@
+const G_RAW={"1525":{"pollitas":5350,"group_totals":{"Pollitas":23427200,"Alimento":51092640,"Medicamentos":1645800,"Vacunas":11992800,"Arrendamiento":4500000,"Servicios":11570333,"Fletes y otros":3140000,"Costos comunes":1498000},"weekly_by_group":{"Pollitas":[21087200,2340000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[15190140,0,0,8340000,0,0,0,0,0,5512500,7350000,0,7350000,0,7350000,0,0,0],"Medicamentos":[0,0,0,79400,48500,64000,0,0,0,0,0,496200,0,0,957700,0,0,0],"Vacunas":[4963000,994200,394000,0,0,1240000,1021600,480000,400000,0,0,0,0,820000,780000,620000,280000,0],"Arrendamiento":[1000000,0,0,0,1000000,0,0,0,1000000,0,0,0,0,1500000,0,0,0,0],"Servicios":[3450000,950000,950000,950000,1433000,964000,520000,400000,400000,0,0,400000,400000,420000,0,0,333333,0],"Fletes y otros":[500000,0,0,350000,0,0,350000,0,0,70000,350000,0,370000,0,0,850000,300000,0],"Costos comunes":[98000,0,0,225000,0,0,315000,0,0,0,285000,0,0,0,0,575000,0,0]},"grand_total":108866773},"1625":{"pollitas":4420,"group_totals":{"Pollitas":21171894,"Alimento":36559540,"Medicamentos":2524450,"Vacunas":8204694,"Arrendamiento":3140000,"Servicios":8185333,"Fletes y otros":2538750,"Costos comunes":2802300},"weekly_by_group":{"Pollitas":[21171894,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[2108400,0,2108000,6255000,0,2668800,3870300,0,3870300,5512500,3565800,2336600,0,1776600,2487240,0,0,0],"Medicamentos":[425000,0,0,0,0,1449450,0,0,0,380000,0,0,0,270000,0,0,0,0],"Vacunas":[1848300,1319000,567200,0,0,500000,0,2090700,0,0,0,0,1235000,0,364494,280000,0,0],"Arrendamiento":[880000,0,0,0,0,880000,0,0,0,880000,0,0,0,500000,0,0,0,0],"Servicios":[2810000,560000,660000,550000,400000,400000,400000,733333,0,418000,0,418000,0,0,418000,0,418000,0],"Fletes y otros":[700000,0,0,350000,0,70000,175000,0,175000,185000,175000,175000,0,213750,0,120000,200000,0],"Costos comunes":[638800,0,0,0,0,575000,0,300000,0,400000,0,98500,300000,0,290000,0,200000,0]},"grand_total":85126961},"1725":{"pollitas":5700,"group_totals":{"Pollitas":27967600,"Alimento":56703742,"Medicamentos":255500,"Vacunas":11655770,"Arrendamiento":4560000,"Servicios":8615433,"Fletes y otros":4703500,"Costos comunes":2166500},"weekly_by_group":{"Pollitas":[27967600,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[2108400,2108400,0,3638082,3870300,3870300,0,3870300,5969800,0,3553200,6395760,7106400,0,7106400,7106400,0,0],"Medicamentos":[0,0,0,0,0,108000,0,0,0,0,0,0,0,0,147500,0,0,0],"Vacunas":[4128320,592000,1471000,0,420000,0,775000,420000,0,0,0,0,1257450,0,1392000,0,1200000,0],"Arrendamiento":[1140000,0,0,0,1140000,0,0,0,1140000,0,0,0,0,1140000,0,0,0,0],"Servicios":[1330000,750000,400000,514284,333333,0,418000,0,418000,0,418000,0,836000,0,0,754816,404000,2039000],"Fletes y otros":[70000,0,0,175000,175000,255000,0,245000,175000,138500,150000,270000,0,300000,0,150000,2600000,0],"Costos comunes":[150000,63000,325000,0,300000,150000,0,0,98500,300000,230000,0,0,0,550000,0,0,0]},"grand_total":116628045},"2025":{"pollitas":7600,"group_totals":{"Pollitas":39159364,"Alimento":77134600,"Medicamentos":5749615,"Vacunas":10024810,"Arrendamiento":18631000,"Servicios":0,"Fletes y otros":7595895,"Costos comunes":6789800},"weekly_by_group":{"Pollitas":[39159364, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"Alimento":[6478200, 1923600, 0, 2353680, 5884200, 3922800, 790000, 9807000, 0, 3570000, 4641000, 5355000, 8942850, 8734280, 0, 12519990, 1422000, 790000],"Medicamentos":[105000, 0, 251600, 0, 0, 0, 0, 1019320, 675000, 1112100, 327000, 0, 1691795, 0, 567800, 0, 0, 0],"Vacunas":[1480000, 802000, 729850, 500000, 0, 1150000, 0, 1770000, 0, 0, 0, 0, 0, 0, 2787900, 0, 230000, 575060],"Arrendamiento":[2546000, 1955000, 0, 0, 1710000, 0, 1125000, 0, 2835000, 0, 1125000, 0, 2835000, 0, 1125000, 0, 1125000, 1125000],"Servicios":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"Fletes y otros":[0, 3410000, 0, 0, 252895, 0, 0, 0, 173000, 0, 0, 0, 0, 0, 0, 300000, 1540000, 1920000],"Costos comunes":[3271800, 0, 333000, 250000, 0, 180000, 434000, 285000, 718000, 0, 0, 0, 418000, 300000, 80000, 360000, 80000, 80000]},"grand_total":165085084}, // @@L2025_GRAW@@
+"2526":{"pollitas":3200,"group_totals":{"Pollitas":15395840,"Alimento":12516149,"Medicamentos":0,"Vacunas":3633300,"Arrendamiento":4815000,"Servicios":0,"Fletes y otros":828520,"Costos comunes":3558800},"weekly_by_group":{"Pollitas":[15395840,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[2441597,0,0,3871194,0,2322716,1926041,1954601,0,0,0,0,0,0,0,0,0,0],"Medicamentos":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Vacunas":[1247300,320000,236400,305700,580000,0,393900,550000,0,0,0,0,0,0,0,0,0,0],"Arrendamiento":[1845000,0,1125000,0,1282500,0,562500,0,0,0,0,0,0,0,0,0,0,0],"Servicios":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Fletes y otros":[87500,0,0,461020,0,105000,87500,87500,0,0,0,0,0,0,0,0,0,0],"Costos comunes":[2688800,250000,0,0,150000,120000,0,150000,0,0,0,0,0,0,0,0,0,0]},"grand_total":40747609},
+"2626":{"pollitas":4400,"group_totals":{"Pollitas":21293280,"Alimento":4986081,"Medicamentos":0,"Vacunas":2158600,"Arrendamiento":2115000,"Servicios":0,"Fletes y otros":213500,"Costos comunes":3365400},"weekly_by_group":{"Pollitas":[17632800,0,3660480,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[1105439,0,1926041,1954601,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Medicamentos":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Vacunas":[1349100,681100,128400,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Arrendamiento":[1552500,0,562500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Servicios":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Fletes y otros":[38500,0,87500,87500,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Costos comunes":[2566000,0,799400,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"grand_total":34131861}
 };
 
-let gView='semanal', activeG={1525:true,1625:true,1725:true,2025:true};
+let gView='semanal', activeG={1525:true,1625:true,1725:true,2025:true,2526:true,2626:true};
 const gFmt=v=>{if(v>=1e9)return '$'+(v/1e9).toFixed(1)+'B';if(v>=1e6)return '$'+(v/1e6).toFixed(1)+'M';if(v>=1e3)return '$'+(v/1e3).toFixed(0)+'K';return '$'+Math.round(v);};
 const gFmtFull=v=>'$'+Math.round(v).toLocaleString('es-CO');
 
@@ -1301,7 +1339,7 @@ function initGastos(){buildGastos();renderGStats();}
 function setGView(v){
   gView=v;
   ['semanal','acumulado','por_ave','categorias'].forEach(x=>document.getElementById('btn-g-'+x).classList.toggle('active',x===v));
-  const notes={semanal:'Gasto total semanal en COP (todas las categorias). Lote 2025 sem. 16 parcial.',acumulado:'Costo acumulado a lo largo del ciclo. Muestra el ritmo de inversion.',por_ave:'Costo acumulado por pollita recibida. Normaliza tamano de lote.',categorias:'Composicion del gasto total por categoria. El alimento domina (~43-49%).'};
+  const notes={semanal:'Gasto total semanal en COP (todas las categorias). Lotes 2526 y 2626 en curso.',acumulado:'Costo acumulado a lo largo del ciclo. Muestra el ritmo de inversion.',por_ave:'Costo acumulado por pollita recibida. Normaliza tamano de lote.',categorias:'Composicion del gasto total por categoria. El alimento domina en lotes completos (~43-49%).'};
   document.getElementById('gastos-note').textContent=notes[v];
   document.getElementById('legend-gcat').style.display=v==='categorias'?'flex':'none';
   if(v==='categorias') document.getElementById('legend-gcat').innerHTML=G_GROUPS.map(g=>'<span class="leg-item"><span class="leg-sq" style="background:'+G_CAT_COLORS[g]+'"></span>'+g+'</span>').join('');
@@ -1318,15 +1356,15 @@ function buildGastos(){
   let cfg;
   if(gView==='semanal'){
     const labels=Array.from({length:18},(_,i)=>'S'+(i+1));
-    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k).map((v,i)=>v===0&&i>0?null:v);return{label:G_LABELS[k],data:wt,borderColor:G_COLORS[k],backgroundColor:G_COLORS[k]+'20',borderWidth:k==='2025'?2.5:1.8,pointRadius:3,pointHoverRadius:5,tension:.3,spanGaps:false,borderDash:k==='2025'?[5,3]:[]};});
+    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k).map((v,i)=>v===0&&i>0?null:v);return{label:G_LABELS[k],data:wt,borderColor:G_COLORS[k],backgroundColor:G_COLORS[k]+'20',borderWidth:(k==='2526'||k==='2626')?2.5:1.8,pointRadius:3,pointHoverRadius:5,tension:.3,spanGaps:false,borderDash:(k==='2526'||k==='2626')?[5,3]:[]};});
     cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': '+gFmtFull(c.parsed.y)}}},scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:false},grid:{color:gridC}},y:{ticks:{font:{size:11},color:tickC,callback:v=>gFmt(v)},grid:{color:gridC}}}}};
   } else if(gView==='acumulado'){
     const labels=Array.from({length:18},(_,i)=>'S'+(i+1));
-    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k);let acc=0;const data=wt.map((v,i)=>{if(v===0&&i>2&&acc===wt.slice(0,i).reduce((s,x)=>s+x,0))return null;acc+=v;return acc;});return{label:G_LABELS[k],data,borderColor:G_COLORS[k],backgroundColor:G_COLORS[k]+'15',borderWidth:k==='2025'?2.5:1.8,pointRadius:2,tension:.3,spanGaps:false,fill:true,borderDash:k==='2025'?[5,3]:[]};});
+    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k);let acc=0;const data=wt.map((v,i)=>{if(v===0&&i>2&&acc===wt.slice(0,i).reduce((s,x)=>s+x,0))return null;acc+=v;return acc;});return{label:G_LABELS[k],data,borderColor:G_COLORS[k],backgroundColor:G_COLORS[k]+'15',borderWidth:(k==='2526'||k==='2626')?2.5:1.8,pointRadius:2,tension:.3,spanGaps:false,fill:true,borderDash:(k==='2526'||k==='2626')?[5,3]:[]};});
     cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': '+gFmtFull(c.parsed.y)}}},scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:false},grid:{color:gridC}},y:{ticks:{font:{size:11},color:tickC,callback:v=>gFmt(v)},grid:{color:gridC}}}}};
   } else if(gView==='por_ave'){
     const labels=Array.from({length:18},(_,i)=>'S'+(i+1));
-    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k);const pol=G_POLLITAS[k];let acc=0;const data=wt.map((v,i)=>{if(v===0&&i>2)return null;acc+=v;return Math.round(acc/pol);});return{label:G_LABELS[k],data,borderColor:G_COLORS[k],backgroundColor:G_COLORS[k]+'18',borderWidth:k==='2025'?2.5:1.8,pointRadius:2,tension:.3,spanGaps:false,borderDash:k==='2025'?[5,3]:[]};});
+    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k);const pol=G_POLLITAS[k];let acc=0;const data=wt.map((v,i)=>{if(v===0&&i>2)return null;acc+=v;return Math.round(acc/pol);});return{label:G_LABELS[k],data,borderColor:G_COLORS[k],backgroundColor:G_COLORS[k]+'18',borderWidth:(k==='2526'||k==='2626')?2.5:1.8,pointRadius:2,tension:.3,spanGaps:false,borderDash:(k==='2526'||k==='2626')?[5,3]:[]};});
     cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': $'+c.parsed.y.toLocaleString('es-CO')+'/ave'}}},scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:false},grid:{color:gridC}},y:{ticks:{font:{size:11},color:tickC,callback:v=>'$'+v.toLocaleString()},grid:{color:gridC}}}}};
   } else {
     const labels=aLotes.map(k=>G_LABELS[k]);
