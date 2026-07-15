@@ -303,6 +303,15 @@ def main():
         log(f"ERROR: carpeta de Drive no disponible: {src_dir}")
         return 1
 
+    # Sincronizar con el remoto antes de leer/editar (evita conflictos con
+    # ediciones hechas desde otra maquina o directamente en GitHub)
+    if not args.dry_run:
+        try:
+            git("pull", "--rebase", "origin", "main")
+            git("push", "origin", "main")  # empuja commits pendientes de runs anteriores
+        except RuntimeError as e:
+            log(f"AVISO: git pull/push inicial fallo ({e}); se continua con la copia local.")
+
     consolidado = copiar_a_temp(src_dir / "Consolidado Gastos Levantes.xlsx")
     liquidados = lotes_liquidados(consolidado)
 
@@ -332,6 +341,10 @@ def main():
 
     if corte_max:
         html = actualizar_corte(html, corte_max)
+        atraso = (date.today() - corte_max).days
+        if atraso > 10:
+            log(f"AVISO: los registros no traen semanas nuevas hace {atraso} dias "
+                f"(ultimo corte {corte_max}). Revisar que el galponero este digitando.")
 
     original = INDEX.read_text(encoding="utf-8")
     if html == original:
@@ -349,13 +362,18 @@ def main():
     INDEX.write_text(html, encoding="utf-8")
     log("index.html actualizado.")
 
-    if git("status", "--porcelain", "index.html"):
-        git("add", "index.html")
-        git("commit", "-m", f"Auto-update {datetime.now():%Y-%m-%d %H:%M}")
-        log("Commit creado.")
-        if not args.no_push:
-            git("push", "origin", "main")
-            log("Push a GitHub OK: Pages redesplegara en ~1 min.")
+    try:
+        if git("status", "--porcelain", "index.html"):
+            git("add", "index.html")
+            git("commit", "-m", f"Auto-update {datetime.now():%Y-%m-%d %H:%M}")
+            log("Commit creado.")
+            if not args.no_push:
+                git("push", "origin", "main")
+                log("Push a GitHub OK: Pages redesplegara en ~1 min.")
+    except RuntimeError as e:
+        log(f"ERROR git: {e}. El index.html local quedo actualizado; "
+            f"el proximo run reintentara commit/push.")
+        return 1
     return 0
 
 
