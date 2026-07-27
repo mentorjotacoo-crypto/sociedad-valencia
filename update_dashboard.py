@@ -190,6 +190,73 @@ def leer_gastos(consolidado: Path, lote: str, nacimiento: date, pollitas: int):
             "weekly_by_group": weekly, "grand_total": sum(totals.values())}
 
 
+def leer_pereira(consolidado: Path, registro: Path, cfg: dict):
+    """Arma el objeto P2726 (lote de Pereira) desde el Consolidado + registro.
+
+    Los rubros se leen de la hoja UTILIDAD (ya categorizada) y se agrupan como
+    se muestran en el dashboard. Devuelve None si no hay hoja para ese lote.
+    """
+    hoja_u = cfg["hoja_utilidad"]
+    wb = openpyxl.load_workbook(consolidado, data_only=True, read_only=True)
+    if hoja_u not in wb.sheetnames:
+        wb.close()
+        return None
+    ws = wb[hoja_u]
+    # etiqueta -> valor de la hoja UTILIDAD (columna A / B)
+    vals = {}
+    for row in ws.iter_rows(min_row=15, max_row=50, max_col=2, values_only=True):
+        a, v = row[0], row[1]
+        if isinstance(a, str) and a.strip() and isinstance(v, (int, float)):
+            vals[a.strip().lower()] = v
+
+    # rubros del dashboard: (titulo, claves de UTILIDAD, observacion)
+    RUBROS = [
+        ("Pollitas",                ["pollitas"],                              cfg.get("obs_pollitas", "")),
+        ("Alimento",                ["alimento"],                              "Concentrado del ciclo"),
+        ("Equipos y montaje",       ["varios"],                                "Comederos, bebederos y montaje"),
+        ("Adecuaciones",            ["adecuaciones"],                          "Obra e instalacion del galpon"),
+        ("Cortinas y desinfeccion", ["diversos"],                              "Carton plast, termometro, desinfectantes"),
+        ("Cama",                    ["cama"],                                  "Cal, cascarilla y papel"),
+        ("Calefaccion",             ["calefaccion"],                           "Gas"),
+        ("Mano de obra",            ["prestacion de servicios"],               "Galponero"),
+        ("Arrendamiento",           ["arrendamiento"],                         "Arriendo del galpon"),
+        ("Vacunas y servicio",      ["vacunas", "prestacion de servicios vacunacion"], "Plan vacunal"),
+        ("Fletes",                  ["fletes", "combustibles y peajes"],       "Transporte de insumos"),
+        ("Medicamentos",            ["medicamentos"],                          "Tratamientos"),
+        ("Servicios publicos",      ["servicios publicos"],                    "Agua y energia"),
+        ("Seguridad social",        ["seguridad social"],                      "Aportes"),
+    ]
+    gastos = []
+    for titulo, claves, obs in RUBROS:
+        v = sum(vals.get(k, 0) or 0 for k in claves)
+        if v:
+            gastos.append([titulo, int(round(v)), obs])
+    gastos.sort(key=lambda g: -g[1])
+    invertido = int(round(vals.get("total costos", sum(g[1] for g in gastos))))
+    wb.close()
+
+    cl = leer_crialev(registro)
+    pollitas = cfg["pollitas"]
+    saldo = cl["saldo"] if cl["saldo"] else pollitas - cl["mort_total"]
+    return {
+        "pollitas": pollitas,
+        "estirpe": cfg.get("estirpe", ""),
+        "nacimiento": cfg["nacimiento"],
+        "semanas": cl["semanas"],
+        "mort_total": cl["mort_total"],
+        "mort_pct": round(cl["mort_pct"], 2),
+        "saldo": saldo,
+        "peso_final": cl["peso_final"],
+        "peso_guia": cl["peso_guia_sem"],
+        "cumpl": cl["cumpl"],
+        "uniformidad": cl["uniformidad"] if cl["uniformidad"] else cfg.get("uniformidad_dia1"),
+        "peso_dia1": cfg.get("peso_dia1"),
+        "kg": cl["consumo_total"],
+        "invertido": invertido,
+        "gastos": gastos,
+    }
+
+
 def lotes_liquidados(consolidado: Path):
     """Lee la tabla de liquidaciones de la hoja Consolidado."""
     wb = openpyxl.load_workbook(consolidado, data_only=True, read_only=True)
@@ -338,6 +405,25 @@ def main():
         corte_max = max(corte_max, corte_lote) if corte_max else corte_lote
         log(f"Lote {lote}: sem {cl['semanas']}, mort {cl['mort_pct']:.2f}%, "
             f"peso {cl['peso_final']}g, gastos ${ga['grand_total']:,}")
+
+    # ---- Pereira (proyecto independiente): un solo marcador con todo ----
+    for lote, pc in cfg.get("lotes_pereira", {}).items():
+        registro = copiar_a_temp(src_dir / pc["registro"])
+        datos = leer_pereira(consolidado, registro, pc)
+        if datos is None:
+            log(f"AVISO: no existe la hoja '{pc['hoja_utilidad']}' en el Consolidado; Pereira {lote} sin actualizar.")
+            continue
+        marker = f"@@P{lote}_DATA@@"
+        pat = re.compile(rf"^.*// {re.escape(marker)}.*$", re.M)
+        if not pat.search(html):
+            log(f"AVISO: marcador {marker} no encontrado en index.html")
+            continue
+        linea = ("const P" + lote + " = "
+                 + json.dumps(datos, ensure_ascii=False, separators=(",", ":"))
+                 + f"; // {marker}")
+        html = pat.sub(lambda _m: linea, html)
+        log(f"Pereira {lote}: sem {datos['semanas']}, {datos['saldo']:,} aves, "
+            f"mort {datos['mort_pct']}%, invertido ${datos['invertido']:,}")
 
     if corte_max:
         html = actualizar_corte(html, corte_max)
