@@ -961,8 +961,19 @@
   <p class="sec-title">Proyecto independiente &mdash; sus cifras NO suman en los indicadores de Sociedad Valencia (Tulua)</p>
   <h2 class="sec-heading">Granja Pereira &mdash; Fondo de Inversionistas</h2>
 
-  <div class="alert"><strong>Estado: en preparacion.</strong> Estructura y modelo financiero definidos (may 2026); la operacion NO ha iniciado. Gastos reales a la fecha: <strong>$200,000</strong> (fletes). Todas las demas cifras de esta seccion son <strong>proyecciones del modelo financiero</strong>, no resultados.</div>
+  <div class="info" id="pereira-estado"><strong>Operacion iniciada.</strong> El lote 2726 arranco el 23 de julio de 2026. Las cifras de esta seccion son <strong>reales</strong>; el modelo financiero se conserva abajo como referencia para contrastar.</div>
 
+  <p class="sec-title">Lote 2726 &mdash; primer lote en curso (datos reales)</p>
+  <div class="kpi-grid" id="p2726-kpis"></div>
+
+  <div class="tbl-wrap"><table class="tbl">
+    <tr><th>Rubro</th><th class="r">Invertido</th><th class="c">% del total</th><th>Observacion</th></tr>
+    <tbody id="p2726-gastos"></tbody>
+  </table></div>
+  <p class="note" id="p2726-nota">Inversion ejecutada en el lote 2726 segun el Consolidado (hoja LOTE Pereira 2726).</p>
+
+  <hr class="divider">
+  <p class="sec-title">Modelo financiero de referencia (may 2026)</p>
   <div class="kpi-grid">
     <div class="kpi" style="--kpi-accent:#378ADD"><p class="kpi-label">Capital del fondo</p><p class="kpi-val">$147M</p><p class="kpi-sub">$132M operacion + $15M CAPEX</p></div>
     <div class="kpi" style="--kpi-accent:#378ADD"><p class="kpi-label">Inversionistas</p><p class="kpi-val">3</p><p class="kpi-sub">$49M c/u &middot; 33.3% cada uno</p></div>
@@ -1149,7 +1160,7 @@ function showSec(id, el) {
   if(id==='lote2025' && !charts.l2025) init2025();
   if(id==='proyecciones' && !charts.proy) initProy();
   if(id==='sensibilidad' && !charts.heat) initSens();
-  if(id==='pereira' && !charts.pereira) initPereira();
+  if(id==='pereira') { renderPereira2726(); if(!charts.pereira) initPereira(); }
 }
 
 function toggleSidebar() {
@@ -1710,8 +1721,41 @@ function renderGStats(){
 }
 
 // ========== PEREIRA (proyecto independiente) ==========
+// Datos REALES del lote 2726. Los actualiza update_dashboard.py desde el
+// Consolidado (hoja UTILIDAD Pereira 2726) y el Registro Lote Pereira.
+const P2726 = {"pollitas":4800,"estirpe":"Babcock Brown","nacimiento":"2026-07-23","semanas":0,"mort_total":0,"mort_pct":0,"saldo":4800,"peso_final":null,"peso_guia":null,"cumpl":null,"uniformidad":91.3,"peso_dia1":39.1,"kg":0,"invertido":32730202,"gastos":[["Pollitas",19925760,"4,800 Babcock Brown (San Marino)"],["Equipos y montaje",4870000,"Comederos, bebederos y montaje"],["Adecuaciones",1665600,"Obra e instalacion del galpon"],["Cortinas y desinfeccion",1651512,"Carton plast, termometro, desinfectantes"],["Alimento",1479480,"Concentrado del ciclo"],["Cama",1323350,"Cal, cascarilla y papel"],["Calefaccion",1270000,"Gas"],["Fletes",450000,"Transporte de insumos"],["Medicamentos",94500,"Tratamientos"]]}; // @@P2726_DATA@@
+
+function renderPereira2726() {
+  const d = P2726;
+  const M = v => '$' + (v/1e6).toFixed(1) + 'M';
+  const N = v => v.toLocaleString('en-US');
+  const dias = Math.max(0, Math.round((Date.now() - new Date(d.nacimiento + 'T00:00:00').getTime()) / 86400000));
+  const sem = d.semanas > 0 ? d.semanas : Math.floor(dias / 7) + 1;
+  const fnac = new Date(d.nacimiento + 'T00:00:00').toLocaleDateString('es-CO', {day:'numeric', month:'short', year:'numeric'});
+
+  const kpis = [
+    ['#0D9488', 'Estado del lote', 'Sem ' + sem, dias + ' dias de vida &middot; inicio ' + fnac],
+    ['#378ADD', 'Aves', N(d.saldo), N(d.pollitas) + ' recibidas &middot; ' + d.estirpe],
+    [d.mort_pct > 3 ? '#D4537E' : '#1D9E75', 'Mortalidad', d.mort_pct.toFixed(2) + '%', N(d.mort_total) + ' aves'],
+    ['#BA7517', 'Invertido a la fecha', M(d.invertido), '$' + N(Math.round(d.invertido / d.pollitas)) + ' / ave'],
+    ['#378ADD', d.peso_final ? 'Peso actual' : 'Peso 1er dia', (d.peso_final || d.peso_dia1) + ' g',
+      d.cumpl !== null && d.cumpl !== undefined ? 'Guia ' + d.peso_guia + 'g (' + (d.cumpl >= 0 ? '+' : '') + d.cumpl + '%)' : 'Uniformidad ' + d.uniformidad + '%'],
+    ['#1D9E75', 'Alimento consumido', d.kg ? N(d.kg) + ' kg' : '&mdash;', d.kg ? N(Math.round(d.kg * 1000 / d.saldo)) + ' g/ave' : 'Sin semanas cerradas aun']
+  ];
+  document.getElementById('p2726-kpis').innerHTML = kpis.map(k =>
+    '<div class="kpi" style="--kpi-accent:' + k[0] + '"><p class="kpi-label">' + k[1] +
+    '</p><p class="kpi-val">' + k[2] + '</p><p class="kpi-sub">' + k[3] + '</p></div>').join('');
+
+  const tot = d.invertido || 1;
+  document.getElementById('p2726-gastos').innerHTML =
+    d.gastos.map(g => '<tr><td>' + g[0] + '</td><td class="r">$' + N(g[1]) +
+      '</td><td class="c">' + (g[1] / tot * 100).toFixed(1) + '%</td><td>' + g[2] + '</td></tr>').join('') +
+    '<tr class="tot"><td>TOTAL INVERTIDO</td><td class="r">$' + N(tot) + '</td><td class="c">100%</td><td></td></tr>';
+}
+
 // Proyeccion del Modelo Financiero Pereira (Drive). Flujo acumulado del fondo.
 function initPereira() {
+  renderPereira2726();
   charts.pereira = new Chart(document.getElementById('chartPereira'), {
     type:'line',
     data:{labels:['Mes 0','Mes 12','Mes 24','Mes 36','Mes 48'],datasets:[
