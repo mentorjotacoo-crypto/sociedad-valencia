@@ -59,31 +59,53 @@
   :root {
     --sidebar-w: 200px;
     --header-h: 52px;
-    --color-text-primary: #1a1a1a;
-    --color-text-secondary: #666;
+    --color-text-primary: #14181f;
+    --color-text-secondary: #5b6472;
+    --color-text-muted: #8b95a3;
     --color-background-primary: #fff;
-    --color-background-secondary: #f5f7fa;
+    --color-background-secondary: #f6f8fa;
+    --color-surface-raised: #fff;
     --color-border-primary: #333;
-    --color-border-secondary: #ddd;
-    --color-border-tertiary: #eee;
+    --color-border-secondary: #dde2e8;
+    --color-border-tertiary: #edf0f3;
     --border-radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 1px 2px rgba(16,24,40,.05);
+    --shadow-md: 0 2px 8px rgba(16,24,40,.07), 0 1px 2px rgba(16,24,40,.04);
+    --accent: #378ADD;
+    --pos: #15803d;
+    --neg: #be3455;
+    --zebra: rgba(16,24,40,.018);
   }
   @media(prefers-color-scheme:dark){
     :root {
-      --color-text-primary: #e8e8e8;
-      --color-text-secondary: #999;
-      --color-background-primary: #1c1c1e;
-      --color-background-secondary: #28282c;
+      --color-text-primary: #e9edf2;
+      --color-text-secondary: #9aa4b2;
+      --color-text-muted: #6b7684;
+      --color-background-primary: #16181d;
+      --color-background-secondary: #1f232a;
+      --color-surface-raised: #1f232a;
       --color-border-primary: #ccc;
-      --color-border-secondary: #3a3a3e;
-      --color-border-tertiary: #2e2e32;
+      --color-border-secondary: #333942;
+      --color-border-tertiary: #272c34;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+      --shadow-md: 0 2px 8px rgba(0,0,0,.35), 0 1px 2px rgba(0,0,0,.2);
+      --pos: #4ade80;
+      --neg: #f87f9d;
+      --zebra: rgba(255,255,255,.022);
     }
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   /* ---- APP SHELL ---- */
   html, body { height: 100%; overflow: hidden; }
-  body { font-family: -apple-system, 'Segoe UI', sans-serif; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  /* Cifras alineadas en columna (clave en tablas financieras) */
+  .kpi-val, .tbl td, .tbl th, .s-val, .cat-row, .num { font-variant-numeric: tabular-nums; font-feature-settings: 'tnum' 1; }
 
   /* Header */
   .app-header {
@@ -106,17 +128,24 @@
     flex-shrink: 0;
   }
   .app-header-brand {
-    font-size: 14px; font-weight: 700; color: #fff;
-    letter-spacing: -0.02em; flex-shrink: 0;
+    font-size: 14.5px; font-weight: 700; color: #fff;
+    letter-spacing: -0.022em; flex-shrink: 0;
   }
   .app-header-divider { width: 1px; height: 18px; background: rgba(255,255,255,.15); flex-shrink: 0; }
-  .app-header-sub { font-size: 11px; color: #64748b; flex: 1; }
+  .app-header-sub { font-size: 11.5px; color: #8b98ab; flex: 1; letter-spacing: .002em; }
   .app-header-badge {
+    display: inline-flex; align-items: center; gap: 6px;
     font-size: 11px; font-weight: 500;
-    background: rgba(55,138,221,.18);
-    color: #7ec4f7;
-    padding: 3px 10px; border-radius: 20px;
-    border: 1px solid rgba(55,138,221,.3);
+    background: rgba(55,138,221,.16);
+    color: #8fcdf9;
+    padding: 4px 11px; border-radius: 20px;
+    border: 1px solid rgba(55,138,221,.28);
+    flex-shrink: 0; font-variant-numeric: tabular-nums;
+  }
+  /* punto "en vivo" que indica datos vigentes */
+  .app-header-badge::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: #34d399; box-shadow: 0 0 0 2px rgba(52,211,153,.2);
     flex-shrink: 0;
   }
   .menu-btn {
@@ -145,9 +174,9 @@
     scrollbar-color: #1e293b transparent;
   }
   .sidebar-group-label {
-    font-size: 10px; font-weight: 600; color: #334155;
-    text-transform: uppercase; letter-spacing: .09em;
-    padding: 18px 16px 5px;
+    font-size: 9.5px; font-weight: 700; color: #46536b;
+    text-transform: uppercase; letter-spacing: .11em;
+    padding: 18px 16px 6px;
   }
   .nav-item {
     display: flex; align-items: center; gap: 9px;
@@ -161,38 +190,60 @@
   }
   .nav-item:hover { background: rgba(255,255,255,.05); color: #cbd5e1; }
   .nav-item.active {
-    background: rgba(55,138,221,.1);
-    color: #f8fafc; font-weight: 500;
+    background: linear-gradient(90deg, rgba(55,138,221,.16), rgba(55,138,221,.04));
+    color: #f8fafc; font-weight: 550;
     border-left-color: #378ADD;
   }
+  .nav-item.active .nav-icon { color: #7ec4f7; }
   .nav-icon { font-size: 13px; flex-shrink: 0; width: 16px; text-align: center; }
 
   /* Main content */
   .main-content {
-    flex: 1; overflow-y: auto;
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+    /* min-width:0 evita que una tabla ancha (min-width) infle el flex item
+       y desborde horizontalmente toda la pagina en movil */
+    min-width: 0;
     background: var(--color-background-primary);
     color: var(--color-text-primary);
     line-height: 1.5;
   }
-  .content-pad { max-width: 880px; padding: 28px 32px 48px; }
+  .content-pad { max-width: 1140px; padding: 30px 34px 52px; min-width: 0; }
 
   /* ---- EXISTING SECTION STYLES ---- */
   .section { display: none; }
   .section.active { display: block; }
-  .sec-title { font-size: 11px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.07em; margin: 0 0 10px; }
-  .sec-heading { font-size: 18px; font-weight: 600; color: var(--color-text-primary); margin: 0 0 16px; }
+  .sec-title { font-size: 10.5px; font-weight: 600; color: var(--color-text-muted); text-transform: uppercase; letter-spacing: 0.09em; margin: 0 0 10px; }
+  .sec-heading { font-size: 21px; font-weight: 650; color: var(--color-text-primary); margin: 0 0 6px; letter-spacing: -0.021em; line-height: 1.25; }
+  .sec-sub { font-size: 12.5px; color: var(--color-text-secondary); margin: 0 0 18px; max-width: 62ch; line-height: 1.55; }
 
   .controls { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; align-items: center; }
-  .btn { background: none; border: 0.5px solid var(--color-border-secondary); border-radius: var(--border-radius-md); padding: 5px 12px; font-size: 12px; cursor: pointer; color: var(--color-text-secondary); transition: all 0.15s; font-family: inherit; }
-  .btn.active { font-weight: 500; color: var(--color-text-primary); border-color: var(--color-border-primary); background: var(--color-background-secondary); }
-  .lote-tog { display: flex; align-items: center; gap: 5px; font-size: 12px; cursor: pointer; padding: 4px 10px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); user-select: none; transition: all 0.15s; }
-  .lote-tog.on { color: var(--color-text-primary); border-color: var(--color-border-primary); background: var(--color-background-secondary); }
-  .dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+  .btn {
+    background: var(--color-surface-raised); border: 1px solid var(--color-border-secondary);
+    border-radius: 7px; padding: 6px 13px; font-size: 12px; cursor: pointer;
+    color: var(--color-text-secondary); transition: all 0.14s; font-family: inherit;
+    white-space: nowrap;
+  }
+  .btn:hover { color: var(--color-text-primary); border-color: var(--color-text-muted); }
+  .btn.active {
+    font-weight: 600; color: #fff; border-color: var(--accent);
+    background: var(--accent); box-shadow: var(--shadow-sm);
+  }
+  .lote-tog {
+    display: flex; align-items: center; gap: 6px; font-size: 12px; cursor: pointer;
+    padding: 5px 11px; border-radius: 7px; border: 1px solid var(--color-border-tertiary);
+    color: var(--color-text-muted); user-select: none; transition: all 0.14s;
+    background: var(--color-surface-raised); white-space: nowrap;
+  }
+  .lote-tog:hover { border-color: var(--color-border-secondary); color: var(--color-text-secondary); }
+  .lote-tog.on { color: var(--color-text-primary); border-color: var(--color-border-secondary); background: var(--color-background-secondary); font-weight: 500; }
+  .lote-tog .dot { opacity: .35; transition: opacity .14s; }
+  .lote-tog.on .dot { opacity: 1; }
+  .dot { width: 9px; height: 9px; border-radius: 3px; flex-shrink: 0; }
   .sep { width: 1px; height: 18px; background: var(--color-border-tertiary); margin: 0 2px; }
 
   .chart-wrap { position: relative; width: 100%; height: 320px; }
-  .note { font-size: 11px; color: var(--color-text-secondary); margin: 6px 0 0; }
-  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: 16px 0; }
+  .note { font-size: 11.5px; color: var(--color-text-secondary); margin: 8px 0 0; line-height: 1.5; }
+  .divider { border: none; border-top: 1px solid var(--color-border-tertiary); margin: 26px 0 20px; }
 
   .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
   .leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--color-text-secondary); }
@@ -202,29 +253,91 @@
   .cat-row:last-child { border-bottom: none; }
   .cat-pct { font-size: 11px; color: var(--color-text-secondary); margin-left: 6px; }
 
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin: 12px 0 16px; }
-  .kpi { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px; border-left: 3px solid var(--color-border-tertiary); }
-  .kpi-label { font-size: 11px; color: var(--color-text-secondary); margin: 0 0 3px; }
-  .kpi-val { font-size: 18px; font-weight: 600; color: var(--color-text-primary); margin: 0; }
-  .kpi-sub { font-size: 11px; color: var(--color-text-secondary); margin: 2px 0 0; }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(164px, 1fr)); gap: 10px; margin: 14px 0 18px; min-width: 0; }
+  .kpi-grid > * { min-width: 0; }
+  .kpi {
+    position: relative;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-tertiary);
+    border-radius: var(--radius-lg);
+    padding: 14px 14px 13px 16px;
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    transition: box-shadow .15s, transform .15s;
+  }
+  /* franja de acento (reemplaza el border-left para no descuadrar el padding) */
+  .kpi::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--kpi-accent, var(--color-border-secondary));
+  }
+  .kpi:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+  .kpi-label { font-size: 10.5px; font-weight: 600; color: var(--color-text-muted); margin: 0 0 5px; text-transform: uppercase; letter-spacing: .05em; }
+  .kpi-val { font-size: 23px; font-weight: 650; color: var(--color-text-primary); margin: 0; letter-spacing: -0.028em; line-height: 1.15; }
+  .kpi-sub { font-size: 11.5px; color: var(--color-text-secondary); margin: 4px 0 0; line-height: 1.4; }
 
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; }
-  .stat-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px; border-left: 3px solid transparent; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 10px; }
+  .stat-card {
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-tertiary);
+    border-radius: var(--radius-lg);
+    padding: 14px;
+    box-shadow: var(--shadow-sm);
+    border-left: 3px solid transparent;
+  }
 
-  .tbl { width: 100%; border-collapse: collapse; font-size: 12px; margin: 10px 0; }
-  .tbl th { text-align: left; font-weight: 500; font-size: 11px; color: var(--color-text-secondary); padding: 6px 10px; border-bottom: 1px solid var(--color-border-secondary); text-transform: uppercase; letter-spacing: 0.05em; }
-  .tbl td { padding: 7px 10px; border-bottom: 0.5px solid var(--color-border-tertiary); color: var(--color-text-primary); }
+  /* Panel: envuelve grafica + nota para dar estructura visual */
+  .panel {
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-tertiary);
+    border-radius: var(--radius-lg);
+    padding: 16px 16px 12px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 4px;
+  }
+  .panel .note:last-child { margin-bottom: 0; }
+  .panel, .stats-grid, .stats-grid > *, .section { min-width: 0; }
+
+  .tbl-wrap {
+    border: 1px solid var(--color-border-tertiary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    background: var(--color-surface-raised);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 10px 0;
+  }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .tbl th {
+    text-align: left; font-weight: 600; font-size: 10.5px;
+    color: var(--color-text-muted);
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--color-border-secondary);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    background: var(--color-background-secondary);
+    white-space: nowrap;
+  }
+  .tbl td { padding: 9px 12px; border-bottom: 1px solid var(--color-border-tertiary); color: var(--color-text-primary); }
+  .tbl tbody tr:nth-child(even) td, .tbl tr:nth-child(even) td { background: var(--zebra); }
+  .tbl tr:last-child td { border-bottom: none; }
   .tbl tr:hover td { background: var(--color-background-secondary); }
   .tbl .r { text-align: right; }
   .tbl .c { text-align: center; }
-  .tbl .tot td { font-weight: 600; border-top: 1px solid var(--color-border-secondary); }
-  .tbl .warn { color: #D4537E; font-weight: 500; }
-  .tbl .good { color: #1D9E75; font-weight: 500; }
+  .tbl .tot td { font-weight: 650; border-top: 1.5px solid var(--color-border-secondary); background: var(--color-background-secondary); }
+  .tbl .tot:hover td { background: var(--color-background-secondary); }
+  .tbl .warn { color: var(--neg); font-weight: 600; }
+  .tbl .good { color: var(--pos); font-weight: 600; }
 
-  .alert { background: #D4537E12; border: 0.5px solid #D4537E44; border-radius: var(--border-radius-md); padding: 12px 14px; margin: 12px 0; font-size: 12px; color: var(--color-text-primary); }
-  .alert strong { color: #D4537E; }
-  .info { background: #1D9E7512; border: 0.5px solid #1D9E7544; border-radius: var(--border-radius-md); padding: 12px 14px; margin: 12px 0; font-size: 12px; color: var(--color-text-primary); }
-  .info strong { color: #1D9E75; }
+  .alert, .info {
+    border-radius: var(--radius-lg);
+    padding: 13px 15px 13px 16px;
+    margin: 14px 0; font-size: 12.5px; line-height: 1.6;
+    color: var(--color-text-primary);
+    border: 1px solid; border-left-width: 3px;
+  }
+  .alert { background: #D4537E0F; border-color: #D4537E33; border-left-color: #D4537E; }
+  .alert strong { color: var(--neg); }
+  .info { background: #1D9E750F; border-color: #1D9E7533; border-left-color: #1D9E75; }
+  .info strong { color: var(--pos); }
 
   .scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 12px 0; }
   .scenario-grid.cols4 { grid-template-columns: repeat(4, 1fr); }
@@ -314,14 +427,16 @@
     /* Cat-grid en columna */
     .cat-grid { grid-template-columns: 1fr; }
 
-    /* Tablas: scroll horizontal */
-    .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    /* Tablas: scroll horizontal con primera columna fija */
     .tbl { min-width: 560px; }
     .tbl td:first-child, .tbl th:first-child {
-      position: sticky; left: 0;
-      background: var(--color-background-primary);
-      z-index: 1;
+      position: sticky; left: 0; z-index: 1;
+      background: var(--color-surface-raised);
+      box-shadow: 1px 0 0 var(--color-border-tertiary);
     }
+    .tbl th:first-child { background: var(--color-background-secondary); }
+    .tbl tr:nth-child(even) td:first-child { background: #f8fafb; }
+    .tbl .tot td:first-child { background: var(--color-background-secondary); }
     .tbl tr:hover td:first-child { background: var(--color-background-secondary); }
     .tbl th, .tbl td { padding: 6px 8px; font-size: 11px; }
 
@@ -334,11 +449,42 @@
     .legend::-webkit-scrollbar { display: none; }
   }
 
-  /* Teléfonos muy pequeños */
-  @media(max-width: 400px) {
+  /* Teléfonos muy pequeños: una sola columna solo si de verdad no cabe */
+  @media(max-width: 359px) {
     .kpi-grid { grid-template-columns: 1fr; }
     .chart-wrap { height: 200px; }
     .mob-tab { padding: 8px 10px 10px; font-size: 9px; }
+  }
+
+  @media(prefers-color-scheme:dark){
+    .tbl tr:nth-child(even) td:first-child { background: #22262e; }
+  }
+
+  /* ---- IMPRESION / PDF (para reuniones de socios) ---- */
+  @media print {
+    @page { margin: 14mm 12mm; size: A4 portrait; }
+    html, body { height: auto; overflow: visible; background: #fff; }
+    .app-header, .sidebar, .mob-nav, .menu-btn, #login-overlay,
+    .controls, .sidebar-backdrop { display: none !important; }
+    .app-body { position: static; display: block; }
+    .main-content { overflow: visible; background: #fff; color: #000; }
+    .content-pad { max-width: 100%; padding: 0; }
+    /* Imprime TODAS las secciones, no solo la visible */
+    .section { display: block !important; page-break-after: always; }
+    .section:last-child { page-break-after: auto; }
+    .sec-heading { font-size: 16pt; }
+    .kpi, .stat-card, .panel, .tbl-wrap { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .chart-wrap { height: 240px; break-inside: avoid; }
+    .tbl { font-size: 9pt; }
+    .tbl th { background: #f1f3f5 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .alert, .info { break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    /* Encabezado impreso */
+    .content-pad::before {
+      content: 'Sociedad Valencia — Granja Avicola Valense, Tulua';
+      display: block; font-size: 9pt; color: #666;
+      border-bottom: 1px solid #ccc; padding-bottom: 6px; margin-bottom: 14px;
+    }
   }
 </style>
 </head>
@@ -467,18 +613,20 @@
   <h1 class="sec-heading">Informe Ejecutivo &mdash; <span id="corte-heading">Corte julio 24, 2026</span></h1>
 
   <div class="kpi-grid">
-    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">Utilidad bruta acum.</p><p class="kpi-val">$84.1M</p><p class="kpi-sub">4 lotes &middot; margen 15.0%</p></div>
-    <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Socio 2 (capital)</p><p class="kpi-val">$66.8M</p><p class="kpi-sub">Neto tras socio 1 (17.5% / 35%)</p></div>
-    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">ROI neto</p><p class="kpi-val">44.6%</p><p class="kpi-sub">$150M invertidos &middot; bruto 56.1%</p></div>
-    <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Aves vendidas</p><p class="kpi-val">21,396</p><p class="kpi-sub">Precio prom: $26,155</p></div>
-    <div class="kpi" style="border-left-color:#7E57C2"><p class="kpi-label">Lote 2526 (activo)</p><p class="kpi-val" id="kpi-2526-val">Sem 8</p><p class="kpi-sub" id="kpi-2526-sub">3,098 aves &middot; mort. 3.19%</p></div>
-    <div class="kpi" style="border-left-color:#26A69A"><p class="kpi-label">Lote 2626 (activo)</p><p class="kpi-val" id="kpi-2626-val">Sem 3</p><p class="kpi-sub" id="kpi-2626-sub">4,371 aves &middot; mort. 0.73%</p></div>
+    <div class="kpi" style="--kpi-accent:#1D9E75"><p class="kpi-label">Utilidad bruta acum.</p><p class="kpi-val">$84.1M</p><p class="kpi-sub">4 lotes &middot; margen 15.0%</p></div>
+    <div class="kpi" style="--kpi-accent:#378ADD"><p class="kpi-label">Socio 2 (capital)</p><p class="kpi-val">$66.8M</p><p class="kpi-sub">Neto tras socio 1 (17.5% / 35%)</p></div>
+    <div class="kpi" style="--kpi-accent:#1D9E75"><p class="kpi-label">ROI neto</p><p class="kpi-val">44.6%</p><p class="kpi-sub">$150M invertidos &middot; bruto 56.1%</p></div>
+    <div class="kpi" style="--kpi-accent:#378ADD"><p class="kpi-label">Aves vendidas</p><p class="kpi-val">21,396</p><p class="kpi-sub">Precio prom: $26,155</p></div>
+    <div class="kpi" style="--kpi-accent:#7E57C2"><p class="kpi-label">Lote 2526 (activo)</p><p class="kpi-val" id="kpi-2526-val">Sem 8</p><p class="kpi-sub" id="kpi-2526-sub">3,098 aves &middot; mort. 3.19%</p></div>
+    <div class="kpi" style="--kpi-accent:#0D9488"><p class="kpi-label">Lote 2626 (activo)</p><p class="kpi-val" id="kpi-2626-val">Sem 3</p><p class="kpi-sub" id="kpi-2626-sub">4,371 aves &middot; mort. 0.73%</p></div>
   </div>
 
   <hr class="divider">
   <p class="sec-title">Resumen por lote</p>
-  <div class="chart-wrap"><canvas id="chartResumen"></canvas></div>
-  <p class="note">Ingresos, costos y utilidad bruta de los 4 lotes liquidados. Lotes 2526 y 2626 activos (solo costos a la fecha).</p>
+  <div class="panel">
+    <div class="chart-wrap"><canvas id="chartResumen"></canvas></div>
+    <p class="note">Ingresos, costos y utilidad bruta de los 4 lotes liquidados. Lotes 2526 y 2626 activos (solo costos a la fecha).</p>
+  </div>
 
   <hr class="divider">
   <p class="sec-title">Distribucion de utilidades por lote &mdash; Socio 1 / Socio 2</p>
@@ -531,12 +679,17 @@
     <button class="btn" onclick="setCompMetric('rent')" id="btn-comp-rent">Arriendo/mes</button>
     <button class="btn" onclick="setCompMetric('meds')" id="btn-comp-meds">Medicamentos</button>
   </div>
-  <div class="chart-wrap"><canvas id="chartComp"></canvas></div>
-  <p class="note" id="comp-note">Margen de utilidad por lote liquidado.</p>
+  <div class="panel">
+    <div class="chart-wrap"><canvas id="chartComp"></canvas></div>
+    <p class="note" id="comp-note">Margen de utilidad por lote liquidado.</p>
+  </div>
 </div>
 
 <!-- ============ CONSUMO ============ -->
 <div class="section" id="sec-consumo">
+  <p class="sec-title">Alimento y desarrollo</p>
+  <h2 class="sec-heading">Consumo y curva de crecimiento</h2>
+  <p class="sec-sub">Evolucion semanal del consumo de alimento, el peso corporal frente a la guia genetica y la mortalidad. Activa o desactiva lotes para comparar campanas.</p>
   <div class="controls">
     <button class="btn active" onclick="setCMetric('kg_sem')" id="btn-c-kg_sem">Consumo kg/semana</button>
     <button class="btn" onclick="setCMetric('gr_ave')" id="btn-c-gr_ave">Consumo gr/ave/sem</button>
@@ -548,10 +701,12 @@
     <div class="lote-tog on" onclick="toggleC('1725')" id="togc-1725"><span class="dot" style="background:#BA7517"></span>L.1725</div>
     <div class="lote-tog on" onclick="toggleC('2025')" id="togc-2025"><span class="dot" style="background:#D4537E"></span>L.2025</div>
     <div class="lote-tog on" onclick="toggleC('2526')" id="togc-2526"><span class="dot" style="background:#7E57C2"></span>L.2526</div>
-    <div class="lote-tog on" onclick="toggleC('2626')" id="togc-2626"><span class="dot" style="background:#26A69A"></span>L.2626</div>
+    <div class="lote-tog on" onclick="toggleC('2626')" id="togc-2626"><span class="dot" style="background:#0D9488"></span>L.2626</div>
   </div>
-  <div class="chart-wrap"><canvas id="chartConsumo"></canvas></div>
-  <p class="note" id="consumo-note">Consumo total en kg por semana de vida. Lotes 2526 y 2626 en curso.</p>
+  <div class="panel">
+    <div class="chart-wrap"><canvas id="chartConsumo"></canvas></div>
+    <p class="note" id="consumo-note">Consumo total en kg por semana de vida. Lotes 2526 y 2626 en curso.</p>
+  </div>
   <hr class="divider">
   <p class="sec-title">Resumen comparativo &mdash; totales por lote</p>
   <div class="stats-grid" id="consumo-stats"></div>
@@ -559,6 +714,9 @@
 
 <!-- ============ GASTOS ============ -->
 <div class="section" id="sec-gastos">
+  <p class="sec-title">Ejecucion del gasto</p>
+  <h2 class="sec-heading">Gasto semanal y acumulado</h2>
+  <p class="sec-sub">Ritmo de inversion por lote a lo largo del ciclo. La vista &laquo;por ave&raquo; normaliza el tamano del lote y permite comparar campanas de distinto volumen.</p>
   <div class="controls">
     <button class="btn active" onclick="setGView('semanal')" id="btn-g-semanal">Gasto semanal</button>
     <button class="btn" onclick="setGView('acumulado')" id="btn-g-acumulado">Gasto acumulado</button>
@@ -570,11 +728,13 @@
     <div class="lote-tog on" onclick="toggleG('1725')" id="togg-1725"><span class="dot" style="background:#BA7517"></span>L.1725</div>
     <div class="lote-tog on" onclick="toggleG('2025')" id="togg-2025"><span class="dot" style="background:#D4537E"></span>L.2025</div>
     <div class="lote-tog on" onclick="toggleG('2526')" id="togg-2526"><span class="dot" style="background:#7E57C2"></span>L.2526</div>
-    <div class="lote-tog on" onclick="toggleG('2626')" id="togg-2626"><span class="dot" style="background:#26A69A"></span>L.2626</div>
+    <div class="lote-tog on" onclick="toggleG('2626')" id="togg-2626"><span class="dot" style="background:#0D9488"></span>L.2626</div>
   </div>
   <div id="legend-gcat" class="legend" style="display:none"></div>
-  <div class="chart-wrap"><canvas id="chartGastos"></canvas></div>
-  <p class="note" id="gastos-note">Gasto total semanal en COP (todas las categorias). Lotes 2526 y 2626 en curso.</p>
+  <div class="panel">
+    <div class="chart-wrap"><canvas id="chartGastos"></canvas></div>
+    <p class="note" id="gastos-note">Gasto total semanal en COP (todas las categorias). Lotes 2526 y 2626 en curso.</p>
+  </div>
   <hr class="divider">
   <p class="sec-title">Resumen por lote</p>
   <div class="stats-grid" id="gastos-stats"></div>
@@ -590,8 +750,10 @@
     <button class="btn" onclick="setCostView('pct')" id="btn-cost-pct">% del total</button>
     <button class="btn" onclick="setCostView('per_bird')" id="btn-cost-per_bird">Costo / ave</button>
   </div>
-  <div class="chart-wrap"><canvas id="chartCostos"></canvas></div>
-  <p class="note" id="cost-note">Gasto total por categoria y lote. Alimento + Pollitas = ~70% del costo en todos los lotes.</p>
+  <div class="panel">
+    <div class="chart-wrap"><canvas id="chartCostos"></canvas></div>
+    <p class="note" id="cost-note">Gasto total por categoria y lote. Alimento + Pollitas = ~70% del costo en todos los lotes.</p>
+  </div>
 
   <hr class="divider">
   <p class="sec-title">Desglose porcentual</p>
@@ -611,6 +773,9 @@
 
 <!-- ============ LOTE 2025 ============ -->
 <div class="section" id="sec-lote2025">
+  <p class="sec-title">Indicadores sanitarios</p>
+  <h2 class="sec-heading">Mortalidad y peso por lote</h2>
+  <p class="sec-sub">Seguimiento semana a semana. El pico del Lote 2025 (semanas 10&ndash;14) queda como referencia de riesgo para vigilar los lotes en curso.</p>
   <div class="controls">
     <button class="btn active" onclick="set2025('mort_sem')" id="btn-2025-mort_sem">Mortalidad semanal</button>
     <button class="btn" onclick="set2025('mort_acum')" id="btn-2025-mort_acum">Mortalidad acumulada</button>
@@ -622,11 +787,13 @@
     <div class="lote-tog on" onclick="toggle2025('1725')" id="tog2-1725"><span class="dot" style="background:#BA7517"></span>L.1725</div>
     <div class="lote-tog on" onclick="toggle2025('2025')" id="tog2-2025"><span class="dot" style="background:#D4537E"></span>L.2025</div>
     <div class="lote-tog on" onclick="toggle2025('2526')" id="tog2-2526"><span class="dot" style="background:#7E57C2"></span>L.2526</div>
-    <div class="lote-tog on" onclick="toggle2025('2626')" id="tog2-2626"><span class="dot" style="background:#26A69A"></span>L.2626</div>
+    <div class="lote-tog on" onclick="toggle2025('2626')" id="tog2-2626"><span class="dot" style="background:#0D9488"></span>L.2626</div>
   </div>
 
-  <div class="chart-wrap"><canvas id="chart2025"></canvas></div>
-  <p class="note" id="note2025">Mortalidad semanal por lote. El pico del Lote 2025 (sem 10&ndash;14) es la referencia de riesgo para los lotes activos.</p>
+  <div class="panel">
+    <div class="chart-wrap"><canvas id="chart2025"></canvas></div>
+    <p class="note" id="note2025">Mortalidad semanal por lote. El pico del Lote 2025 (sem 10&ndash;14) es la referencia de riesgo para los lotes activos.</p>
+  </div>
 
   <hr class="divider">
   <p class="sec-title">Resumen comparativo &mdash; mortalidad y peso por lote</p>
@@ -665,8 +832,10 @@
     </div>
   </div>
 
-  <div class="chart-wrap"><canvas id="chartProy"></canvas></div>
-  <p class="note">Resultado real de liquidacion vs escenarios proyectados en abril 2026. Se vendieron mas aves y a mejor precio de lo previsto.</p>
+  <div class="panel">
+    <div class="chart-wrap"><canvas id="chartProy"></canvas></div>
+    <p class="note">Resultado real de liquidacion vs escenarios proyectados en abril 2026. Se vendieron mas aves y a mejor precio de lo previsto.</p>
+  </div>
 
   <hr class="divider">
   <p class="sec-title">Impacto real en el negocio acumulado</p>
@@ -687,8 +856,10 @@
     <button class="btn active" onclick="setProy12('acum')" id="btn-p12-acum">Utilidad acumulada</button>
     <button class="btn" onclick="setProy12('socios')" id="btn-p12-socios">Por socio</button>
   </div>
-  <div class="chart-wrap"><canvas id="chartProy12"></canvas></div>
-  <p class="note" id="note-p12">2 galpones en paralelo (~5 lotes/ano, ~4,000 aves/lote), ingreso estimado ~$525M/ano. Cifras netas para la sociedad (65% de la utilidad bruta).</p>
+  <div class="panel">
+    <div class="chart-wrap"><canvas id="chartProy12"></canvas></div>
+    <p class="note" id="note-p12">2 galpones en paralelo (~5 lotes/ano, ~4,000 aves/lote), ingreso estimado ~$525M/ano. Cifras netas para la sociedad (65% de la utilidad bruta).</p>
+  </div>
 
   <div class="info"><strong>Proyeccion base (margen 15%, neta 65%):</strong> En 12 meses la sociedad podria generar ~$51.2M netos adicionales (utilidad bruta ~$78.8M, de la cual 35% es del socio operador). Neta acumulada: ~$118M. ROI neto: ~79% sobre capital de $150M.</div>
 </div>
@@ -710,8 +881,10 @@
 
   <hr class="divider">
   <p class="sec-title">Matriz de sensibilidad &mdash; resultado neto segun precio y aves vendidas</p>
-  <div class="chart-wrap" style="height:340px"><canvas id="chartHeat"></canvas></div>
-  <p class="note">Valores en millones COP. Costo base: $170M. Verde = ganancia, rojo = perdida.</p>
+  <div class="panel">
+    <div class="chart-wrap" style="height:340px"><canvas id="chartHeat"></canvas></div>
+    <p class="note">Valores en millones COP. Costo base: $170M. Verde = ganancia, rojo = perdida.</p>
+  </div>
 
   <hr class="divider">
   <p class="sec-title">Sensibilidad por variable</p>
@@ -721,8 +894,10 @@
     <button class="btn" onclick="setSens('feed')" id="btn-sens-feed">Costo alimento</button>
     <button class="btn" onclick="setSens('rent')" id="btn-sens-rent">Arriendo</button>
   </div>
-  <div class="chart-wrap"><canvas id="chartSens"></canvas></div>
-  <p class="note" id="note-sens">Impacto en utilidad al variar el precio de venta por ave (base: $24,000, 6,300 aves).</p>
+  <div class="panel">
+    <div class="chart-wrap"><canvas id="chartSens"></canvas></div>
+    <p class="note" id="note-sens">Impacto en utilidad al variar el precio de venta por ave (base: $24,000, 6,300 aves).</p>
+  </div>
 </div>
 
 <!-- ============ RECOMENDACIONES ============ -->
@@ -787,18 +962,20 @@
   <div class="alert"><strong>Estado: en preparacion.</strong> Estructura y modelo financiero definidos (may 2026); la operacion NO ha iniciado. Gastos reales a la fecha: <strong>$200,000</strong> (fletes). Todas las demas cifras de esta seccion son <strong>proyecciones del modelo financiero</strong>, no resultados.</div>
 
   <div class="kpi-grid">
-    <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Capital del fondo</p><p class="kpi-val">$147M</p><p class="kpi-sub">$132M operacion + $15M CAPEX</p></div>
-    <div class="kpi" style="border-left-color:#378ADD"><p class="kpi-label">Inversionistas</p><p class="kpi-val">3</p><p class="kpi-sub">$49M c/u &middot; 33.3% cada uno</p></div>
-    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">Capacidad</p><p class="kpi-val">8,000 aves</p><p class="kpi-sub">2 galpones &middot; ~5.3 lotes/ano</p></div>
-    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">Utilidad / lote (proy.)</p><p class="kpi-val">$12.9M</p><p class="kpi-sub">Margen 13.0% &middot; $3,347/ave</p></div>
-    <div class="kpi" style="border-left-color:#BA7517"><p class="kpi-label">Payback (proy.)</p><p class="kpi-val">Mes 30</p><p class="kpi-sub">~2.5 anos</p></div>
-    <div class="kpi" style="border-left-color:#1D9E75"><p class="kpi-label">ROI 48 meses (proy.)</p><p class="kpi-val">171%</p><p class="kpi-sub">~43% anualizado &middot; 2.71x capital</p></div>
+    <div class="kpi" style="--kpi-accent:#378ADD"><p class="kpi-label">Capital del fondo</p><p class="kpi-val">$147M</p><p class="kpi-sub">$132M operacion + $15M CAPEX</p></div>
+    <div class="kpi" style="--kpi-accent:#378ADD"><p class="kpi-label">Inversionistas</p><p class="kpi-val">3</p><p class="kpi-sub">$49M c/u &middot; 33.3% cada uno</p></div>
+    <div class="kpi" style="--kpi-accent:#1D9E75"><p class="kpi-label">Capacidad</p><p class="kpi-val">8,000 aves</p><p class="kpi-sub">2 galpones &middot; ~5.3 lotes/ano</p></div>
+    <div class="kpi" style="--kpi-accent:#1D9E75"><p class="kpi-label">Utilidad / lote (proy.)</p><p class="kpi-val">$12.9M</p><p class="kpi-sub">Margen 13.0% &middot; $3,347/ave</p></div>
+    <div class="kpi" style="--kpi-accent:#BA7517"><p class="kpi-label">Payback (proy.)</p><p class="kpi-val">Mes 30</p><p class="kpi-sub">~2.5 anos</p></div>
+    <div class="kpi" style="--kpi-accent:#1D9E75"><p class="kpi-label">ROI 48 meses (proy.)</p><p class="kpi-val">171%</p><p class="kpi-sub">~43% anualizado &middot; 2.71x capital</p></div>
   </div>
 
   <hr class="divider">
   <p class="sec-title">Flujo de caja acumulado proyectado (48 meses)</p>
-  <div class="chart-wrap"><canvas id="chartPereira"></canvas></div>
-  <p class="note">Saldo acumulado del fondo total y por inversionista ($49M de aporte). Cruza a positivo en el mes 30.</p>
+  <div class="panel">
+    <div class="chart-wrap"><canvas id="chartPereira"></canvas></div>
+    <p class="note">Saldo acumulado del fondo total y por inversionista ($49M de aporte). Cruza a positivo en el mes 30.</p>
+  </div>
 
   <hr class="divider">
   <p class="sec-title">P&amp;L proyectado por lote &mdash; 4,000 pollitas, ciclo 16 sem, mortalidad 4%</p>
@@ -861,12 +1038,34 @@
 
 <script>
 // ========== DATA ==========
-const COLORS = {'1525':'#378ADD','1625':'#1D9E75','1725':'#BA7517','2025':'#D4537E','2526':'#7E57C2','2626':'#26A69A'};
+const COLORS = {'1525':'#378ADD','1625':'#1D9E75','1725':'#BA7517','2025':'#D4537E','2526':'#7E57C2','2626':'#0D9488'};
 const LABELS = {'1525':'L.1525','1625':'L.1625','1725':'L.1725','2025':'L.2025','2526':'L.2526','2626':'L.2626'};
 const isDark = matchMedia('(prefers-color-scheme:dark)').matches;
 const IS_MOBILE = matchMedia('(max-width:768px)').matches;
-const gridC = isDark ? 'rgba(255,255,255,.07)' : 'rgba(0,0,0,.07)';
-const tickC = isDark ? '#888' : '#777';
+const gridC = isDark ? 'rgba(255,255,255,.06)' : 'rgba(16,24,40,.06)';
+const tickC = isDark ? '#8b95a3' : '#6b7684';
+
+// Defaults globales de Chart.js: tipografia consistente y tooltips legibles
+if (window.Chart) {
+  Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
+  Chart.defaults.font.size = 11.5;
+  Chart.defaults.color = tickC;
+  Chart.defaults.animation.duration = 500;
+  Chart.defaults.animation.easing = 'easeOutQuart';
+  const tt = Chart.defaults.plugins.tooltip;
+  tt.backgroundColor = isDark ? 'rgba(28,32,40,.97)' : 'rgba(20,24,31,.95)';
+  tt.titleColor = '#fff'; tt.bodyColor = '#e9edf2';
+  tt.padding = 11; tt.cornerRadius = 8;
+  tt.titleFont = {size: 11.5, weight: '600'};
+  tt.bodyFont = {size: 12};
+  tt.boxPadding = 5; tt.usePointStyle = true;
+  tt.borderColor = 'rgba(255,255,255,.1)'; tt.borderWidth = 1;
+  tt.displayColors = true;
+  Chart.defaults.plugins.legend.labels.boxWidth = 8;
+  Chart.defaults.plugins.legend.labels.boxHeight = 8;
+  Chart.defaults.plugins.legend.labels.padding = 14;
+  Chart.defaults.elements.point.hoverBorderWidth = 2;
+}
 const fmt = v => { if(Math.abs(v)>=1e6) return '$'+(v/1e6).toFixed(1)+'M'; if(Math.abs(v)>=1e3) return '$'+(v/1e3).toFixed(0)+'K'; return '$'+Math.round(v); };
 
 const DATA = {
@@ -966,8 +1165,8 @@ const baseOpts = (yFmt) => ({
   interaction:{mode:'index',intersect:false},
   plugins:{legend:{display:false}},
   scales:{
-    x:{ticks:{font:{size:11},color:tickC},grid:{color:gridC}},
-    y:{ticks:{font:{size:11},color:tickC,callback:yFmt||((v)=>v)},grid:{color:gridC}}
+    x:{ticks:{font:{size:11},color:tickC},grid:{display:false},border:{color:gridC}},
+    y:{ticks:{font:{size:11},color:tickC,callback:yFmt||((v)=>v),padding:6},grid:{color:gridC},border:{display:false}}
   }
 });
 
@@ -996,9 +1195,9 @@ let compMetric = 'margin';
 const COMP_DATA = {
   margin: {label:'Margen de utilidad %',data:[16.3,17.6,20.6,8.1],labels:['L.1525','L.1625','L.1725','L.2025'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E'],note:'Margen crecio hasta 20.6% (L.1725); el brote sanitario del L.2025 lo redujo a 8.1%.'},
   profit_bird: {label:'Utilidad por ave (COP)',data:[4384,4240,5377,2175],labels:['L.1525','L.1625','L.1725','L.2025'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E'],note:'Utilidad por ave. L.1725 logro $5,377/ave; L.2025 cayo a $2,175 por el brote.'},
-  mortality: {label:'Mortalidad %',data:[9.59,3.11,1.63,13.22,3.19,0.73],labels:['L.1525','L.1625','L.1725','L.2025','L.2526*','L.2626*'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2','#26A69A'],note:'L.2025 cerro en 13.22%. Lotes activos (*): 2526 en 3.19% (sem 8) y 2626 en 0.73% (sem 3).'},
-  rent: {label:'Arriendo mensual (M COP)',data:[1.0,0.88,1.14,1.71,0.72,0.99],labels:['L.1525','L.1625','L.1725','L.2025','L.2526','L.2626'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2','#26A69A'],note:'El arriendo llego a $1.71M/mes en L.2025; los lotes activos bajaron a $720K y $990K/mes.'},
-  meds: {label:'Medicamentos (M COP)',data:[1.65,2.52,0.26,5.75,0,0],labels:['L.1525','L.1625','L.1725','L.2025','L.2526','L.2626'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2','#26A69A'],note:'Medicamentos L.2025 ($5.75M) fueron 4x el promedio. Lotes activos: $0 a la fecha.'}
+  mortality: {label:'Mortalidad %',data:[9.59,3.11,1.63,13.22,3.19,0.73],labels:['L.1525','L.1625','L.1725','L.2025','L.2526*','L.2626*'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2','#0D9488'],note:'L.2025 cerro en 13.22%. Lotes activos (*): 2526 en 3.19% (sem 8) y 2626 en 0.73% (sem 3).'},
+  rent: {label:'Arriendo mensual (M COP)',data:[1.0,0.88,1.14,1.71,0.72,0.99],labels:['L.1525','L.1625','L.1725','L.2025','L.2526','L.2626'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2','#0D9488'],note:'El arriendo llego a $1.71M/mes en L.2025; los lotes activos bajaron a $720K y $990K/mes.'},
+  meds: {label:'Medicamentos (M COP)',data:[1.65,2.52,0.26,5.75,0,0],labels:['L.1525','L.1625','L.1725','L.2025','L.2526','L.2626'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2','#0D9488'],note:'Medicamentos L.2025 ($5.75M) fueron 4x el promedio. Lotes activos: $0 a la fecha.'}
 };
 
 function initComp() { buildComp(); }
@@ -1382,7 +1581,7 @@ const CONSUMO_LOTES = {
   '1725':{label:'L.1725',color:'#BA7517',pollitas:5700,kg_sem:[440,680,1000,1320,1440,1680,1760,1960,2120,2320,2440,2480,2600,2640,2720,2800,200],gr_ave:[11.0,17.0,25.0,33.1,36.1,43.0,45.1,50.5,54.7,59.9,63.0,66.6,70.6,71.7,73.9,76.2,null],peso_real:[63.6,110.3,196.5,273.7,355.8,468.4,553.7,651.6,754.8,837.7,943,1051.3,1138,1207,1303,1376.5,null],peso_guia:[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380,1468],mort:[27,8,4,6,3,5,2,3,4,3,3,2,7,4,4,5,4],consumo_total:30600,utilidad:30269955,mortalidad_pct:5.1},
   '2025':{label:'L.2025',color:'#D4537E',pollitas:7600,kg_sem:[600,840,1240,1520,1840,2120,2520,2720,2920,3080,2960,3160,3280,3360,3280,3360,1880,800],gr_ave:[11.3,16.0,23.6,29.0,35.2,40.6,48.2,52.5,56.4,59.9,58.5,64.7,68.6,71.8,71.0,73.1,76.2,null],peso_real:[81.3,131.0,195.0,261.4,355.3,448.6,552.4,632.2,723.5,822.5,903.0,973.3,1056.0,1130.0,1118.0,1294.0,null,null],peso_guia:[75.0,130.0,195.0,275.0,367.0,475.0,583.0,685.0,782.0,874.0,961.0,1043.0,1123.0,1197.0,1264.0,1330.0,1400.0,1475.0],mort:[46,33,24,16,9,6,4,8,11,50,110,256,142,153,84,33,15,5],consumo_total:41480,utilidad:14460216,mortalidad_pct:13.22}, // @@L2025_CONSUMO@@
   '2526':{label:'L.2526',color:'#7E57C2',pollitas:3200,kg_sem:[260,360,440,680,840,920,940,1020,1040,1120],gr_ave:[11.8,16.4,20.1,31.1,38.6,42.4,43.3,47.0,48.0,51.8],peso_real:[66.2,115.4,177.7,247.4,336.2,418.7,502.5,597.0,683.4,786.3],peso_guia:[65,115,180,250,330,420,510,600,690,790,880,960,1030,1100,1170,1210,1250,1280],mort:[54,11,4,4,16,8,3,2,3,4],consumo_total:7620,utilidad:null,mortalidad_pct:3.41,activo:true}, // @@L2526_CONSUMO@@
-  '2626':{label:'L.2626',color:'#26A69A',pollitas:4000,kg_sem:[320,480,680,960,1080],gr_ave:[11.5,17.3,24.5,34.6,39.0],peso_real:[69.0,117.4,194.7,278.4,365.6],peso_guia:[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380,1468,1550],mort:[18,7,4,3,12],consumo_total:3520,utilidad:null,mortalidad_pct:1.10,activo:true}, // @@L2626_CONSUMO@@
+  '2626':{label:'L.2626',color:'#0D9488',pollitas:4000,kg_sem:[320,480,680,960,1080],gr_ave:[11.5,17.3,24.5,34.6,39.0],peso_real:[69.0,117.4,194.7,278.4,365.6],peso_guia:[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380,1468,1550],mort:[18,7,4,3,12],consumo_total:3520,utilidad:null,mortalidad_pct:1.10,activo:true}, // @@L2626_CONSUMO@@
 };
 const C_METRICS = {
   kg_sem:{note:'Consumo total en kg por semana de vida. Lotes 2526 y 2626 en curso.',yLabel:'kg',getData:l=>l.kg_sem.map((v,i)=>v===0&&i>3?null:v)},
@@ -1442,7 +1641,7 @@ function renderCStats(){
 }
 
 // ========== GASTOS SECTION ==========
-const G_COLORS={'1525':'#378ADD','1625':'#1D9E75','1725':'#BA7517','2025':'#D4537E','2526':'#7E57C2','2626':'#26A69A'};
+const G_COLORS={'1525':'#378ADD','1625':'#1D9E75','1725':'#BA7517','2025':'#D4537E','2526':'#7E57C2','2626':'#0D9488'};
 const G_LABELS={'1525':'L.1525','1625':'L.1625','1725':'L.1725','2025':'L.2025','2526':'L.2526 (activo)','2626':'L.2626 (activo)'};
 const G_POLLITAS={'1525':5350,'1625':4420,'1725':5700,'2025':7600,'2526':3200,'2626':4400};
 const G_CAT_COLORS={'Pollitas':'#378ADD','Alimento':'#1D9E75','Medicamentos':'#D4537E','Vacunas':'#BA7517','Arrendamiento':'#534AB7','Servicios':'#888780','Fletes y otros':'#639922','Costos comunes':'#9FE1CB'};
