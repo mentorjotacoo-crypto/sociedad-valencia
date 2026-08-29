@@ -141,10 +141,13 @@ def leer_crialev(path: Path):
 
 
 # ------------------------------------------------------------------ GASTOS --
-def leer_gastos(consolidado: Path, lote: str, nacimiento: date, pollitas: int):
-    """Extrae gastos semanales por grupo de la hoja LOTE {lote} del Consolidado."""
+def leer_gastos(consolidado: Path, lote: str, nacimiento: date, pollitas: int, hoja: str = None):
+    """Extrae gastos semanales por grupo de la hoja LOTE del Consolidado.
+
+    `hoja` permite apuntar a hojas con otro nombre (p.ej. 'LOTE Pereira 2726').
+    """
     wb = openpyxl.load_workbook(consolidado, data_only=True, read_only=True)
-    ws = wb[f"LOTE {lote}"]
+    ws = wb[hoja or f"LOTE {lote}"]
     section, presta = None, 0
     weekly = {g: [0] * 18 for g in GROUPS}
     totals = {g: 0 for g in GROUPS}
@@ -235,6 +238,16 @@ def leer_pereira(consolidado: Path, registro: Path, cfg: dict):
     invertido = int(round(vals.get("total costos", sum(g[1] for g in gastos))))
     wb.close()
 
+    # gasto semanal por grupo, desde la hoja LOTE (misma logica que Tulua)
+    hoja_lote = cfg.get("hoja_lote") or hoja_u.replace("UTILIDAD", "LOTE")
+    try:
+        ga = leer_gastos(consolidado, cfg.get("lote", ""),
+                         date.fromisoformat(cfg["nacimiento"]),
+                         cfg["pollitas"], hoja=hoja_lote)
+        gsem = ga["weekly_by_group"]
+    except Exception:
+        gsem = {}
+
     cl = leer_crialev(registro)
     pollitas = cfg["pollitas"]
     saldo = cl["saldo"] if cl["saldo"] else pollitas - cl["mort_total"]
@@ -254,6 +267,16 @@ def leer_pereira(consolidado: Path, registro: Path, cfg: dict):
         "kg": cl["consumo_total"],
         "invertido": invertido,
         "gastos": gastos,
+        # series semanales para poder graficar igual que los lotes de Tulua
+        "serie": {
+            "mort": cl["mort"],
+            "mort_acum": cl["mort_acum"],
+            "peso": cl["peso"],
+            "peso_guia": cl["peso_guia_full"],
+            "kg_sem": cl["kg"],
+            "gr_ave": cl["gr_ave"],
+        },
+        "gastos_sem": gsem,
     }
 
 

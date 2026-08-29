@@ -1017,6 +1017,10 @@
   <hr class="divider">
   <p class="sec-title">Resumen comparativo por lote</p>
   <div class="stats-grid" id="pereira-stats"></div>
+
+  <hr class="divider">
+  <p class="sec-title">Detalle de la inversion ejecutada</p>
+  <div id="pereira-inversion"></div>
 </div>
 
     </div><!-- /content-pad -->
@@ -1807,48 +1811,57 @@ function renderGStats(){
 // Consolidado (hoja UTILIDAD Pereira 2726) y el Registro Lote Pereira.
 const PEREIRA = {"2726":{"pollitas":4896,"estirpe":"Babcock Brown","nacimiento":"2026-07-23","semanas":5,"mort_total":42,"mort_pct":0.86,"saldo":4854,"peso_final":331,"peso_guia":390,"cumpl":-15.2,"uniformidad":79.0,"peso_dia1":39.1,"kg":4180,"invertido":47806577,"gastos":[["Pollitas",19925760,"4,896 Babcock Brown"],["Alimento",13035383,"Concentrado del ciclo"],["Equipos y montaje",4820882,"Comederos, bebederos y montaje"],["Mano de obra",3131452,"Galponero"],["Arrendamiento",1700000,"Arriendo del galpon"],["Cama",1323350,"Cal, cascarilla y papel"],["Calefaccion",1270000,"Gas"],["Fletes",1200000,"Transporte de insumos"],["Vacunas y servicio",1063650,"Plan vacunal"],["Cortinas y desinfeccion",241600,"Carton plast, termometro, desinfectantes"],["Medicamentos",94500,"Tratamientos"]],"serie":{"mort":[25,9,1,6,1],"mort_acum":[0.51,0.69,0.71,0.84,0.86],"peso":[72.0,130.8,180.0,270.0,330.7],"peso_guia":[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380,1468,1550],"kg_sem":[280,620,860,1160,1260],"gr_ave":[8.2,18.2,25.3,34.1,37.1]},"gastos_sem":{"Pollitas":[19925760,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[1479480,2890000,0,2380000,6285903,0,0,0,0,0,0,0,0,0,0,0,0,0],"Medicamentos":[94500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Vacunas":[0,1063650,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Arrendamiento":[0,2331000,0,1650452,850000,0,0,0,0,0,0,0,0,0,0,0,0,0],"Servicios":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Fletes y otros":[450000,200000,0,150000,400000,0,0,0,0,0,0,0,0,0,0,0,0,0],"Costos comunes":[6880462,471900,0,181250,122220,0,0,0,0,0,0,0,0,0,0,0,0,0]},"lote":"2726","galpon":1},"2826":{"pollitas":4596,"estirpe":"Babcock Brown","nacimiento":"2026-08-20","semanas":1,"mort_total":7,"mort_pct":0.15,"saldo":4589,"peso_final":54,"peso_guia":67,"cumpl":-19.4,"uniformidad":72.2,"peso_dia1":35.3,"kg":240,"invertido":28268286,"gastos":[["Pollitas",18680400,"4,596 Babcock Brown"],["Equipos y montaje",4603470,"Comederos, bebederos y montaje"],["Calefaccion",1423200,"Gas"],["Alimento",1282216,"Concentrado del ciclo"],["Cama",1027500,"Cal, cascarilla y papel"],["Arrendamiento",850000,"Arriendo del galpon"],["Fletes",300000,"Transporte de insumos"],["Medicamentos",101500,"Tratamientos"]],"serie":{"mort":[7],"mort_acum":[0.15],"peso":[54.0],"peso_guia":[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380,1468,1550],"kg_sem":[240],"gr_ave":[7.5]},"gastos_sem":{"Pollitas":[18680400,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[1282216,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Medicamentos":[101500,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Vacunas":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Arrendamiento":[850000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Servicios":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Fletes y otros":[300000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Costos comunes":[7054170,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},"lote":"2826","galpon":2}}; // @@PEREIRA_DATA@@
 
-// Renderiza un bloque por cada lote de Pereira (KPIs + inversion ejecutada).
-// Es generico: si manana abren el 2926 solo lo agrega el actualizador.
+// Tarjetas por lote (arriba) y detalle de inversion (abajo), para que las
+// graficas queden a la vista sin tener que pasar tablas largas.
 function renderPereira() {
-  const cont = document.getElementById('pereira-lotes');
+  var cont = document.getElementById('pereira-lotes');
+  var inv = document.getElementById('pereira-inversion');
   if (!cont) return;
-  const N = v => Number(v).toLocaleString('en-US');
-  const M = v => '$' + (v/1e6).toFixed(1) + 'M';
-  const claves = Object.keys(PEREIRA).sort();
-  cont.innerHTML = claves.map((k, idx) => {
-    const d = PEREIRA[k];
-    const dias = Math.max(0, Math.round((Date.now() - new Date(d.nacimiento + 'T00:00:00').getTime()) / 86400000));
-    const sem = d.semanas > 0 ? d.semanas : Math.floor(dias / 7) + 1;
-    const fnac = new Date(d.nacimiento + 'T00:00:00').toLocaleDateString('es-CO', {day:'numeric', month:'short', year:'numeric'});
-    const bajoPeso = d.cumpl !== null && d.cumpl !== undefined && d.cumpl < -5;
-    const kpis = [
-      ['#0D9488', 'Estado', 'Sem ' + sem, dias + ' dias &middot; inicio ' + fnac],
+  var N = function(v){ return Number(v).toLocaleString('en-US'); };
+  var M = function(v){ return '$' + (v/1e6).toFixed(1) + 'M'; };
+  var claves = Object.keys(PEREIRA).sort();
+  var htmlCards = '', htmlInv = '';
+
+  claves.forEach(function(k, idx){
+    var d = PEREIRA[k];
+    var dias = Math.max(0, Math.round((Date.now() - new Date(d.nacimiento + 'T00:00:00').getTime()) / 86400000));
+    var sem = d.semanas > 0 ? d.semanas : Math.floor(dias / 7) + 1;
+    var fnac = new Date(d.nacimiento + 'T00:00:00').toLocaleDateString('es-CO', {day:'numeric', month:'short', year:'numeric'});
+    var bajoPeso = d.cumpl !== null && d.cumpl !== undefined && d.cumpl < -5;
+    var s = (typeof PEREIRA_STYLE !== 'undefined' && PEREIRA_STYLE[k]) ? PEREIRA_STYLE[k] : {color:'#378ADD'};
+    var kpis = [
+      [s.color, 'Estado', 'Sem ' + sem, dias + ' dias &middot; inicio ' + fnac],
       ['#378ADD', 'Aves vivas', N(d.saldo), N(d.pollitas) + ' recibidas &middot; galpon ' + (d.galpon || '-')],
       [d.mort_pct > 3 ? '#D4537E' : '#1D9E75', 'Mortalidad', Number(d.mort_pct).toFixed(2) + '%', N(d.mort_total) + ' aves'],
       ['#BA7517', 'Invertido', M(d.invertido), '$' + N(Math.round(d.invertido / d.pollitas)) + ' / ave'],
-      [bajoPeso ? '#D4537E' : '#378ADD', d.peso_final ? 'Peso' : 'Peso 1er dia',
+      [bajoPeso ? '#D4537E' : '#1D9E75', d.peso_final ? 'Peso' : 'Peso 1er dia',
         (d.peso_final || d.peso_dia1) + ' g',
         (d.cumpl !== null && d.cumpl !== undefined)
-          ? 'Guia ' + d.peso_guia + 'g (' + (d.cumpl >= 0 ? '+' : '') + d.cumpl + '%)'
-          : d.estirpe],
+          ? 'Guia ' + d.peso_guia + 'g (' + (d.cumpl >= 0 ? '+' : '') + d.cumpl + '%)' : d.estirpe],
       ['#1D9E75', 'Alimento', d.kg ? N(d.kg) + ' kg' : '&mdash;',
         d.kg ? N(Math.round(d.kg * 1000 / d.saldo)) + ' g/ave' : 'Sin semanas cerradas']
     ];
-    const tot = d.invertido || 1;
-    const filas = d.gastos.map(g => '<tr><td>' + g[0] + '</td><td class="r">$' + N(g[1]) +
-        '</td><td class="c">' + (g[1] / tot * 100).toFixed(1) + '%</td><td>' + g[2] + '</td></tr>').join('');
-    return (idx ? '<hr class="divider">' : '') +
-      '<p class="sec-title">Lote ' + d.lote + ' &mdash; galpon ' + (d.galpon || '-') + ' (datos reales)</p>' +
+    htmlCards += '<p class="sec-title">Lote ' + d.lote + ' &mdash; galpon ' + (d.galpon || '-') + ' (datos reales)</p>' +
       (bajoPeso ? '<div class="alert"><strong>Peso por debajo de la guia (' + d.cumpl + '%).</strong> ' +
         'Revisar consumo, densidad y calidad del alimento: un lote que llega liviano a la venta se paga menos.</div>' : '') +
-      '<div class="kpi-grid">' + kpis.map(x =>
-        '<div class="kpi" style="--kpi-accent:' + x[0] + '"><p class="kpi-label">' + x[1] +
-        '</p><p class="kpi-val">' + x[2] + '</p><p class="kpi-sub">' + x[3] + '</p></div>').join('') + '</div>' +
+      '<div class="kpi-grid">' + kpis.map(function(x){
+        return '<div class="kpi" style="--kpi-accent:' + x[0] + '"><p class="kpi-label">' + x[1] +
+          '</p><p class="kpi-val">' + x[2] + '</p><p class="kpi-sub">' + x[3] + '</p></div>'; }).join('') + '</div>';
+
+    var tot = d.invertido || 1;
+    var filas = (d.gastos || []).map(function(g){
+      return '<tr><td>' + g[0] + '</td><td class="r">$' + N(g[1]) +
+        '</td><td class="c">' + (g[1] / tot * 100).toFixed(1) + '%</td><td>' + g[2] + '</td></tr>'; }).join('');
+    htmlInv += (idx ? '<hr class="divider">' : '') +
+      '<p class="sec-title">Lote ' + d.lote + '</p>' +
       '<div class="tbl-wrap"><table class="tbl">' +
       '<tr><th>Rubro</th><th class="r">Invertido</th><th class="c">% del total</th><th>Observacion</th></tr>' +
       filas + '<tr class="tot"><td>TOTAL INVERTIDO</td><td class="r">$' + N(tot) +
       '</td><td class="c">100%</td><td></td></tr></table></div>';
-  }).join('');
+  });
+
+  cont.innerHTML = htmlCards;
+  if (inv) inv.innerHTML = htmlInv;
 }
 
 // Estilo de los lotes de Pereira (proyecto aparte: su propia identidad visual).
