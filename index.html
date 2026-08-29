@@ -217,12 +217,15 @@
   .sec-sub { font-size: 12.5px; color: var(--color-text-secondary); margin: 0 0 18px; max-width: 62ch; line-height: 1.55; }
 
   .controls { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; align-items: center; }
+  .controls-lotes { margin-top: -6px; margin-bottom: 16px; }
   .btn {
     background: var(--color-surface-raised); border: 1px solid var(--color-border-secondary);
     border-radius: 7px; padding: 6px 13px; font-size: 12px; cursor: pointer;
     color: var(--color-text-secondary); transition: all 0.14s; font-family: inherit;
     white-space: nowrap;
   }
+  .btn.btn-filtro { font-weight: 600; }
+  .btn.btn-filtro.active { background: var(--accent); border-color: var(--accent); color: #fff; }
   .btn:hover { color: var(--color-text-primary); border-color: var(--color-text-muted); }
   .btn.active {
     font-weight: 600; color: #fff; border-color: var(--accent);
@@ -239,6 +242,16 @@
   .lote-tog .dot { opacity: .35; transition: opacity .14s; }
   .lote-tog.on .dot { opacity: 1; }
   .dot { width: 9px; height: 9px; border-radius: 3px; flex-shrink: 0; }
+  /* La forma del chip = la forma del marcador en la grafica, para reconocer
+     el lote sin depender solo del color. */
+  .dot-circle   { border-radius: 50%; }
+  .dot-rect     { border-radius: 1px; }
+  .dot-triangle { border-radius: 0; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+  .dot-rectRot  { border-radius: 0; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+  .dot-star     { border-radius: 0; width: 11px; height: 11px;
+    clip-path: polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%); }
+  .dot-crossRot { border-radius: 0; width: 10px; height: 10px;
+    clip-path: polygon(20% 0,50% 30%,80% 0,100% 20%,70% 50%,100% 80%,80% 100%,50% 70%,20% 100%,0 80%,30% 50%,0 20%); }
   .sep { width: 1px; height: 18px; background: var(--color-border-tertiary); margin: 0 2px; }
 
   .chart-wrap { position: relative; width: 100%; height: 320px; }
@@ -414,7 +427,7 @@
     .kpi-val { font-size: 16px; }
 
     /* Charts más bajos */
-    .chart-wrap { height: 230px; }
+    .chart-wrap { height: 290px; }
 
     /* Stats en columna */
     .stats-grid { grid-template-columns: 1fr; }
@@ -440,9 +453,11 @@
     .tbl tr:hover td:first-child { background: var(--color-background-secondary); }
     .tbl th, .tbl td { padding: 6px 8px; font-size: 11px; }
 
-    /* Controles: scroll horizontal */
+    /* Controles: las metricas scrollean, pero los lotes SIEMPRE se ven
+       (antes el ultimo chip y el filtro quedaban escondidos) */
     .controls { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; }
     .controls::-webkit-scrollbar { display: none; }
+    .controls-lotes { flex-wrap: wrap; overflow-x: visible; row-gap: 6px; }
 
     /* Legend: scroll horizontal */
     .legend { flex-wrap: nowrap; overflow-x: auto; }
@@ -452,7 +467,7 @@
   /* Teléfonos muy pequeños: una sola columna solo si de verdad no cabe */
   @media(max-width: 359px) {
     .kpi-grid { grid-template-columns: 1fr; }
-    .chart-wrap { height: 200px; }
+    .chart-wrap { height: 250px; }
     .mob-tab { padding: 8px 10px 10px; font-size: 9px; }
   }
 
@@ -542,7 +557,7 @@
   <span class="app-header-brand">Sociedad Valencia</span>
   <span class="app-header-divider"></span>
   <span class="app-header-sub">Granja Avicola Valense &mdash; Tulua, Valle</span>
-  <span class="app-header-badge" id="corte-badge">Corte Ago 10, 2026</span>
+  <span class="app-header-badge" id="corte-badge">Corte Ago 28, 2026</span>
 </header>
 
 <!-- ===== BOTTOM TAB NAV (mobile) ===== -->
@@ -610,7 +625,7 @@
 <!-- ============ RESUMEN ============ -->
 <div class="section active" id="sec-resumen">
   <p class="sec-title">Sociedad Valencia &mdash; Granja Avicola Valense, Tulua</p>
-  <h1 class="sec-heading">Informe Ejecutivo &mdash; <span id="corte-heading">Corte agosto 10, 2026</span></h1>
+  <h1 class="sec-heading">Informe Ejecutivo &mdash; <span id="corte-heading">Corte agosto 28, 2026</span></h1>
 
   <div class="kpi-grid">
     <div class="kpi" style="--kpi-accent:#1D9E75"><p class="kpi-label">Utilidad bruta acum.</p><p class="kpi-val">$83.7M</p><p class="kpi-sub">4 lotes &middot; margen 15.0%</p></div>
@@ -697,13 +712,15 @@
     <button class="btn" onclick="setCMetric('gr_ave')" id="btn-c-gr_ave">Consumo gr/ave/sem</button>
     <button class="btn" onclick="setCMetric('peso')" id="btn-c-peso">Peso corporal (gr)</button>
     <button class="btn" onclick="setCMetric('mort')" id="btn-c-mort">Mortalidad semanal</button>
-    <div class="sep"></div>
-    <div class="lote-tog on" onclick="toggleC('1525')" id="togc-1525"><span class="dot" style="background:#378ADD"></span>L.1525</div>
-    <div class="lote-tog on" onclick="toggleC('1625')" id="togc-1625"><span class="dot" style="background:#1D9E75"></span>L.1625</div>
-    <div class="lote-tog on" onclick="toggleC('1725')" id="togc-1725"><span class="dot" style="background:#BA7517"></span>L.1725</div>
-    <div class="lote-tog on" onclick="toggleC('2025')" id="togc-2025"><span class="dot" style="background:#D4537E"></span>L.2025</div>
-    <div class="lote-tog on" onclick="toggleC('2526')" id="togc-2526"><span class="dot" style="background:#7E57C2"></span>L.2526</div>
-    <div class="lote-tog on" onclick="toggleC('2626')" id="togc-2626"><span class="dot" style="background:#0D9488"></span>L.2626</div>
+    </div>
+  <div class="controls controls-lotes">
+    <button class="btn btn-filtro" onclick="filtroLotes('consumo',this)">Solo en curso</button>
+    <div class="lote-tog on" onclick="toggleC('1525')" id="togc-1525"><span class="dot dot-circle" style="background:#378ADD"></span>L.1525</div>
+    <div class="lote-tog on" onclick="toggleC('1625')" id="togc-1625"><span class="dot dot-rect" style="background:#1D9E75"></span>L.1625</div>
+    <div class="lote-tog on" onclick="toggleC('1725')" id="togc-1725"><span class="dot dot-star" style="background:#BA7517"></span>L.1725</div>
+    <div class="lote-tog on" onclick="toggleC('2025')" id="togc-2025"><span class="dot dot-crossRot" style="background:#D4537E"></span>L.2025</div>
+    <div class="lote-tog on" onclick="toggleC('2526')" id="togc-2526"><span class="dot dot-rectRot" style="background:#7E57C2"></span>L.2526</div>
+    <div class="lote-tog on" onclick="toggleC('2626')" id="togc-2626"><span class="dot dot-triangle" style="background:#0D9488"></span>L.2626</div>
   </div>
   <div class="panel">
     <div class="chart-wrap"><canvas id="chartConsumo"></canvas></div>
@@ -724,13 +741,15 @@
     <button class="btn" onclick="setGView('acumulado')" id="btn-g-acumulado">Gasto acumulado</button>
     <button class="btn" onclick="setGView('por_ave')" id="btn-g-por_ave">Gasto por ave</button>
     <button class="btn" onclick="setGView('categorias')" id="btn-g-categorias">Por categoria</button>
-    <div class="sep"></div>
-    <div class="lote-tog on" onclick="toggleG('1525')" id="togg-1525"><span class="dot" style="background:#378ADD"></span>L.1525</div>
-    <div class="lote-tog on" onclick="toggleG('1625')" id="togg-1625"><span class="dot" style="background:#1D9E75"></span>L.1625</div>
-    <div class="lote-tog on" onclick="toggleG('1725')" id="togg-1725"><span class="dot" style="background:#BA7517"></span>L.1725</div>
-    <div class="lote-tog on" onclick="toggleG('2025')" id="togg-2025"><span class="dot" style="background:#D4537E"></span>L.2025</div>
-    <div class="lote-tog on" onclick="toggleG('2526')" id="togg-2526"><span class="dot" style="background:#7E57C2"></span>L.2526</div>
-    <div class="lote-tog on" onclick="toggleG('2626')" id="togg-2626"><span class="dot" style="background:#0D9488"></span>L.2626</div>
+    </div>
+  <div class="controls controls-lotes">
+    <button class="btn btn-filtro" onclick="filtroLotes('gastos',this)">Solo en curso</button>
+    <div class="lote-tog on" onclick="toggleG('1525')" id="togg-1525"><span class="dot dot-circle" style="background:#378ADD"></span>L.1525</div>
+    <div class="lote-tog on" onclick="toggleG('1625')" id="togg-1625"><span class="dot dot-rect" style="background:#1D9E75"></span>L.1625</div>
+    <div class="lote-tog on" onclick="toggleG('1725')" id="togg-1725"><span class="dot dot-star" style="background:#BA7517"></span>L.1725</div>
+    <div class="lote-tog on" onclick="toggleG('2025')" id="togg-2025"><span class="dot dot-crossRot" style="background:#D4537E"></span>L.2025</div>
+    <div class="lote-tog on" onclick="toggleG('2526')" id="togg-2526"><span class="dot dot-rectRot" style="background:#7E57C2"></span>L.2526</div>
+    <div class="lote-tog on" onclick="toggleG('2626')" id="togg-2626"><span class="dot dot-triangle" style="background:#0D9488"></span>L.2626</div>
   </div>
   <div id="legend-gcat" class="legend" style="display:none"></div>
   <div class="panel">
@@ -783,13 +802,15 @@
     <button class="btn" onclick="set2025('mort_acum')" id="btn-2025-mort_acum">Mortalidad acumulada</button>
     <button class="btn" onclick="set2025('peso')" id="btn-2025-peso">Peso corporal (gr)</button>
     <button class="btn" onclick="set2025('cumpl')" id="btn-2025-cumpl">Cumplimiento peso %</button>
-    <div class="sep"></div>
-    <div class="lote-tog on" onclick="toggle2025('1525')" id="tog2-1525"><span class="dot" style="background:#378ADD"></span>L.1525</div>
-    <div class="lote-tog on" onclick="toggle2025('1625')" id="tog2-1625"><span class="dot" style="background:#1D9E75"></span>L.1625</div>
-    <div class="lote-tog on" onclick="toggle2025('1725')" id="tog2-1725"><span class="dot" style="background:#BA7517"></span>L.1725</div>
-    <div class="lote-tog on" onclick="toggle2025('2025')" id="tog2-2025"><span class="dot" style="background:#D4537E"></span>L.2025</div>
-    <div class="lote-tog on" onclick="toggle2025('2526')" id="tog2-2526"><span class="dot" style="background:#7E57C2"></span>L.2526</div>
-    <div class="lote-tog on" onclick="toggle2025('2626')" id="tog2-2626"><span class="dot" style="background:#0D9488"></span>L.2626</div>
+    </div>
+  <div class="controls controls-lotes">
+    <button class="btn btn-filtro" onclick="filtroLotes('mp',this)">Solo en curso</button>
+    <div class="lote-tog on" onclick="toggle2025('1525')" id="tog2-1525"><span class="dot dot-circle" style="background:#378ADD"></span>L.1525</div>
+    <div class="lote-tog on" onclick="toggle2025('1625')" id="tog2-1625"><span class="dot dot-rect" style="background:#1D9E75"></span>L.1625</div>
+    <div class="lote-tog on" onclick="toggle2025('1725')" id="tog2-1725"><span class="dot dot-star" style="background:#BA7517"></span>L.1725</div>
+    <div class="lote-tog on" onclick="toggle2025('2025')" id="tog2-2025"><span class="dot dot-crossRot" style="background:#D4537E"></span>L.2025</div>
+    <div class="lote-tog on" onclick="toggle2025('2526')" id="tog2-2526"><span class="dot dot-rectRot" style="background:#7E57C2"></span>L.2526</div>
+    <div class="lote-tog on" onclick="toggle2025('2626')" id="tog2-2626"><span class="dot dot-triangle" style="background:#0D9488"></span>L.2626</div>
   </div>
 
   <div class="panel">
@@ -963,14 +984,7 @@
 
   <div class="info" id="pereira-estado"><strong>Operacion iniciada.</strong> El lote 2726 arranco el 23 de julio de 2026. Las cifras de esta seccion son <strong>reales</strong>; el modelo financiero se conserva abajo como referencia para contrastar.</div>
 
-  <p class="sec-title">Lote 2726 &mdash; primer lote en curso (datos reales)</p>
-  <div class="kpi-grid" id="p2726-kpis"></div>
-
-  <div class="tbl-wrap"><table class="tbl">
-    <tr><th>Rubro</th><th class="r">Invertido</th><th class="c">% del total</th><th>Observacion</th></tr>
-    <tbody id="p2726-gastos"></tbody>
-  </table></div>
-  <p class="note" id="p2726-nota">Inversion ejecutada en el lote 2726 segun el Consolidado (hoja LOTE Pereira 2726).</p>
+  <div id="pereira-lotes"></div>
 
   <hr class="divider">
   <p class="sec-title">Modelo financiero de referencia (may 2026)</p>
@@ -1055,6 +1069,96 @@ const COLORS = {'1525':'#378ADD','1625':'#1D9E75','1725':'#BA7517','2025':'#D453
 const LABELS = {'1525':'L.1525','1625':'L.1625','1725':'L.1725','2025':'L.2025','2526':'L.2526','2626':'L.2626'};
 const isDark = matchMedia('(prefers-color-scheme:dark)').matches;
 const IS_MOBILE = matchMedia('(max-width:768px)').matches;
+
+// Estilo unificado por lote: color + FORMA del marcador. La forma es una
+// segunda senal visual para que la identidad no dependa solo del color
+// (clave en pantallas pequenas y para daltonismo).
+const LOTE_STYLE = {
+  '1525': {color:'#378ADD', punto:'circle',   activo:false},
+  '1625': {color:'#1D9E75', punto:'rect',     activo:false},
+  '1725': {color:'#BA7517', punto:'star',     activo:false},
+  '2025': {color:'#D4537E', punto:'crossRot', activo:false},
+  '2526': {color:'#7E57C2', punto:'rectRot',  activo:true},
+  '2626': {color:'#0D9488', punto:'triangle', activo:true}
+};
+const GUIA_COLOR = () => isDark ? 'rgba(255,255,255,.3)' : 'rgba(16,24,40,.3)';
+
+// En movil los marcadores se espacian (1 de cada 3) para no saturar la linea,
+// pero se mantiene la forma visible y siempre se marca el ultimo dato.
+function radioPunto(activo) {
+  const base = activo ? 4.5 : 3;
+  if (!IS_MOBILE) return base;
+  return ctx => {
+    const n = (ctx.chart.data.labels || []).length;
+    return (ctx.dataIndex % 3 === 0 || ctx.dataIndex === n - 1) ? base : 0;
+  };
+}
+
+// Config comun de linea para TODAS las graficas por lote (consumo, gastos,
+// mortalidad y peso), para que se lean igual en todo el informe.
+function lineaLote(k, data, extra) {
+  const s = LOTE_STYLE[k] || {color:'#888780', punto:'circle', activo:false};
+  const hueco = s.punto === 'star' || s.punto === 'crossRot';
+  return Object.assign({
+    label: (typeof LABELS !== 'undefined' && LABELS[k]) ? LABELS[k] : ('L.' + k),
+    data: data,
+    borderColor: s.activo ? s.color : s.color + 'B3',
+    backgroundColor: s.color + '18',
+    borderWidth: s.activo ? 3 : 1.6,
+    pointStyle: s.punto,
+    pointRadius: radioPunto(s.activo),
+    pointHoverRadius: s.activo ? 7 : 5.5,
+    pointBackgroundColor: hueco ? 'transparent' : s.color,
+    pointBorderColor: s.color,
+    pointBorderWidth: hueco ? 2 : 1,
+    borderDash: [],
+    tension: 0.28,
+    spanGaps: false,
+    fill: false,
+    order: s.activo ? 3 : 2,
+    esActivo: s.activo
+  }, extra || {});
+}
+
+// Dibuja el nombre del lote al final de su linea (solo lotes activos): asi se
+// identifican sin depender de la leyenda, que es lo que costaba en movil.
+const etiquetaFinal = {
+  id: 'etiquetaFinal',
+  afterDatasetsDraw(chart) {
+    const area = chart.chartArea;
+    if (!area) return;
+    const ctx = chart.ctx;
+    chart.data.datasets.forEach((ds, i) => {
+      if (!ds.esActivo) return;
+      const meta = chart.getDatasetMeta(i);
+      if (meta.hidden || !meta.data || !meta.data.length) return;
+      let pt = null;
+      for (let j = meta.data.length - 1; j >= 0; j--) {
+        const v = ds.data[j];
+        if (v !== null && v !== undefined && meta.data[j]) { pt = meta.data[j]; break; }
+      }
+      if (!pt) return;
+      const txt = String(ds.label || '').replace(' (activo)', '');
+      ctx.save();
+      ctx.font = '600 ' + (IS_MOBILE ? 10 : 11) + 'px -apple-system, sans-serif';
+      const w = ctx.measureText(txt).width, h = IS_MOBILE ? 14 : 16;
+      let x = pt.x + 8;
+      let y = Math.min(Math.max(pt.y, area.top + h / 2 + 1), area.bottom - h / 2 - 1);
+      if (x + w + 6 > area.right) x = pt.x - w - 14;
+      ctx.fillStyle = isDark ? 'rgba(22,24,29,.88)' : 'rgba(255,255,255,.88)';
+      if (ctx.roundRect) {
+        ctx.beginPath(); ctx.roundRect(x - 4, y - h / 2, w + 8, h, 4); ctx.fill();
+      } else {
+        ctx.fillRect(x - 4, y - h / 2, w + 8, h);
+      }
+      ctx.fillStyle = ds.borderColor;
+      ctx.textBaseline = 'middle';
+      ctx.fillText(txt, x, y);
+      ctx.restore();
+    });
+  }
+};
+if (window.Chart) Chart.register(etiquetaFinal);
 const gridC = isDark ? 'rgba(255,255,255,.06)' : 'rgba(16,24,40,.06)';
 const tickC = isDark ? '#8b95a3' : '#6b7684';
 
@@ -1078,6 +1182,8 @@ if (window.Chart) {
   Chart.defaults.plugins.legend.labels.boxHeight = 8;
   Chart.defaults.plugins.legend.labels.padding = 14;
   Chart.defaults.elements.point.hoverBorderWidth = 2;
+  // con varias series encimadas, la mas alta primero: se lee mucho mas rapido
+  tt.itemSort = (a, b) => (b.parsed.y || 0) - (a.parsed.y || 0);
 }
 const fmt = v => { if(Math.abs(v)>=1e6) return '$'+(v/1e6).toFixed(1)+'M'; if(Math.abs(v)>=1e3) return '$'+(v/1e3).toFixed(0)+'K'; return '$'+Math.round(v); };
 
@@ -1087,24 +1193,24 @@ const DATA = {
     '1625': [15,6,5,8,10,20,8,8,3,44,2,2,1,3,2,0],
     '1725': [27,8,4,6,3,5,2,3,4,3,3,2,7,4,4,5],
     '2025': [46,33,24,16,9,6,4,8,11,50,110,256,142,153,84,33,15,5], // @@L2025_MORT_W@@
-    '2526': [54,11,4,4,16,8,3,2,3,4,4,3], // @@L2526_MORT_W@@
-    '2626': [18,7,4,3,12,19,5,3], // @@L2626_MORT_W@@
+    '2526': [54,11,4,4,16,8,3,2,3,4,4,3,6,3,1], // @@L2526_MORT_W@@
+    '2626': [18,7,4,3,12,19,5,3,7,4], // @@L2626_MORT_W@@
   },
   mort_acum: {
     '1525': [0.54,0.77,0.88,0.95,9.07,9.12,9.23,9.27,9.33,9.40,9.44,9.48,9.53,9.55,9.59,9.59],
     '1625': [0.34,0.48,0.59,0.77,1.00,1.45,1.64,1.82,1.89,2.89,2.93,2.98,3.00,3.07,3.11,3.11],
     '1725': [0.47,0.61,0.68,0.78,0.83,0.92,0.96,1.01,1.08,1.13,1.18,1.22,1.34,1.41,1.48,1.57],
     '2025': [0.61,1.04,1.36,1.57,1.68,1.76,1.82,1.92,2.07,2.72,4.17,7.54,9.41,11.42,12.53,12.96,13.16,13.22], // @@L2025_MORT_A@@
-    '2526': [1.69,2.03,2.16,2.28,2.78,3.03,3.12,3.19,3.28,3.41,3.53,3.62], // @@L2526_MORT_A@@
-    '2626': [0.41,0.57,0.66,0.73,1,1.43,1.55,1.61], // @@L2626_MORT_A@@
+    '2526': [1.69,2.03,2.16,2.28,2.78,3.03,3.12,3.19,3.28,3.41,3.53,3.62,3.81,3.91,3.94], // @@L2526_MORT_A@@
+    '2626': [0.41,0.57,0.66,0.73,1,1.43,1.55,1.61,1.77,1.86], // @@L2626_MORT_A@@
   },
   peso_real: {
     '1525': [68.6,127.6,209.4,297.3,384.2,467.6,558.5,667.1,775.8,878.5,968.8,1055.7,1132.4,1190.7,1286.5,1355],
     '1625': [72.3,114.6,171.4,244.8,335.4,417.8,524.5,631.2,738.8,854.3,976,1055.3,1146.7,1224.5,1322.4,null],
     '1725': [63.6,110.3,196.5,273.7,355.8,468.4,553.7,651.6,754.8,837.7,943,1051.3,1138,1207,1303,1376.5],
     '2025': [81.3,131.0,195.0,261.4,355.3,448.6,552.4,632.2,723.5,822.5,903.0,973.3,1056.0,1130.0,1118.0,1294.0,null,null], // @@L2025_PESO_R@@
-    '2526': [66.2,115.4,177.7,247.4,336.2,418.7,502.5,597.0,683.4,786.3,873.5,948.4], // @@L2526_PESO_R@@
-    '2626': [69.0,117.4,194.7,278.4,365.6,465.3,560.0,651.5], // @@L2626_PESO_R@@
+    '2526': [66.2,115.4,177.7,247.4,336.2,418.7,502.5,597.0,683.4,786.3,873.5,948.4,1028.4,1098.4,null], // @@L2526_PESO_R@@
+    '2626': [69.0,117.4,194.7,278.4,365.6,465.3,560.0,651.5,747.7,831.3], // @@L2626_PESO_R@@
   },
   peso_guia: {
     '1525': [67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380],
@@ -1119,16 +1225,16 @@ const DATA = {
     '1625': {Pollitas:21171894,Alimento:36559540,'M.Obra':7735333,Arriendo:3140000,Vacunas:6818694,Medicam:2524450,Fletes:2538750,Otros:4638300},
     '1725': {Pollitas:27967600,Alimento:56703742,'M.Obra':7196433,Arriendo:4560000,Vacunas:10554970,Medicam:255500,Fletes:4703500,Otros:4687300},
     '2025': {Pollitas:39159364,Alimento:77134600,'M.Obra':0,Arriendo:18631000,Vacunas:10024810,Medicam:5749615,Fletes:7595895,Otros:6789800}, // @@L2025_COSTS_CAT@@
-    '2526': {Pollitas:15395840,Alimento:23849975,'M.Obra':0,Arriendo:7942500,Vacunas:4507200,Medicam:0,Fletes:1520935,Otros:4702300}, // @@L2526_COSTS_CAT@@
-    '2626': {Pollitas:21293280,Alimento:15324366,'M.Obra':0,Arriendo:5782500,Vacunas:4610600,Medicam:270000,Fletes:818500,Otros:3695400}, // @@L2626_COSTS_CAT@@
+    '2526': {Pollitas:15395840,Alimento:30344956,'M.Obra':0,Arriendo:7942500,Vacunas:4507200,Medicam:0,Fletes:1845935,Otros:4702300}, // @@L2526_COSTS_CAT@@
+    '2626': {Pollitas:21293280,Alimento:23006604,'M.Obra':0,Arriendo:5782500,Vacunas:4610600,Medicam:270000,Fletes:1203500,Otros:3695400}, // @@L2626_COSTS_CAT@@
   },
   totals: {
     '1525': {costo:109016773, ingreso:130221000, utilidad:21204227, aves:4837, pollitas:5350},
     '1625': {costo:85126961, ingreso:103281320, utilidad:18154359, aves:4282, pollitas:4400},
     '1725': {costo:116628045, ingreso:146899000, utilidad:30270955, aves:5630, pollitas:5750},
     '2025': {costo:165085084, ingreso:179202500, utilidad:14117416, aves:6647, pollitas:7600}, // @@L2025_TOTALS@@
-    '2526': {costo:57918750, ingreso:0, utilidad:0, aves:0, pollitas:3200}, // @@L2526_TOTALS@@
-    '2626': {costo:51794646, ingreso:0, utilidad:0, aves:0, pollitas:4400}, // @@L2626_TOTALS@@
+    '2526': {costo:64738731, ingreso:0, utilidad:0, aves:0, pollitas:3200}, // @@L2526_TOTALS@@
+    '2626': {costo:59861884, ingreso:0, utilidad:0, aves:0, pollitas:4400}, // @@L2626_TOTALS@@
   }
 };
 
@@ -1160,7 +1266,7 @@ function showSec(id, el) {
   if(id==='lote2025' && !charts.l2025) init2025();
   if(id==='proyecciones' && !charts.proy) initProy();
   if(id==='sensibilidad' && !charts.heat) initSens();
-  if(id==='pereira') { renderPereira2726(); if(!charts.pereira) initPereira(); }
+  if(id==='pereira') { renderPereira(); if(!charts.pereira) initPereira(); }
 }
 
 function toggleSidebar() {
@@ -1199,7 +1305,19 @@ function initResumen() {
         {label:'Utilidad',data:lts.map(k=>M(DATA.totals[k].utilidad)),backgroundColor:'#1D9E75',borderRadius:3}
       ]
     },
-    options:{...baseOpts(v=>'$'+v+'M'),plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}}}}
+    // En movil van horizontales: 6 lotes x 3 series no caben legibles en vertical
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      indexAxis: IS_MOBILE ? 'y' : 'x',
+      interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}},
+        tooltip:{itemSort:null, callbacks:{label:c=>' '+c.dataset.label+': $'+c.parsed[IS_MOBILE?'x':'y']+'M'}}},
+      scales: IS_MOBILE
+        ? {x:{ticks:{font:{size:10},color:tickC,callback:v=>'$'+v+'M'},grid:{color:gridC}},
+           y:{ticks:{font:{size:11},color:tickC},grid:{display:false}}}
+        : {x:{ticks:{font:{size:11},color:tickC},grid:{display:false}},
+           y:{ticks:{font:{size:11},color:tickC,callback:v=>'$'+v+'M',padding:6},grid:{color:gridC},border:{display:false}}}
+    }
   });
 }
 
@@ -1289,8 +1407,8 @@ const MP_STATS = {
   '1625': {pollitas:4400, mort_total:137, mort_pct:3.11, peso_final:1322, peso_guia:1300, cumpl:1.7, uniformidad:86.3, semanas:16, evento:'Sem 10: frio (44 aves)'},
   '1725': {pollitas:5750, mort_total:94, mort_pct:1.63, peso_final:1376, peso_guia:1380, cumpl:-0.25, uniformidad:90.0, semanas:17, evento:'Sin eventos criticos'},
   '2025': {pollitas:7600, mort_total:1005, mort_pct:13.22, peso_final:1294, peso_guia:1330, cumpl:-2.7, uniformidad:86.0, semanas:18, evento:'Sem 10-14: brote (745 aves)'},
-  '2526': {pollitas:3200, mort_total:116, mort_pct:3.62, peso_final:948, peso_guia:960, cumpl:-1.2, uniformidad:90.5, semanas:12, evento:'Sem 1: 54 aves; Sem 5: 12 ahogadas', activo:true}, // @@L2526_MPSTATS@@
-  '2626': {pollitas:4000, extra:400, mort_total:71, mort_pct:1.61, peso_final:652, peso_guia:665, cumpl:-2.0, uniformidad:91.0, semanas:8, evento:'Sin eventos criticos', activo:true}, // @@L2626_MPSTATS@@
+  '2526': {pollitas:3200, mort_total:126, mort_pct:3.94, peso_final:1098, peso_guia:1100, cumpl:-0.1, uniformidad:92.0, semanas:15, evento:'Sem 1: 54 aves; Sem 5: 12 ahogadas', activo:true}, // @@L2526_MPSTATS@@
+  '2626': {pollitas:4000, extra:400, mort_total:82, mort_pct:1.86, peso_final:831, peso_guia:848, cumpl:-2.0, uniformidad:91.0, semanas:10, evento:'Sin eventos criticos', activo:true}, // @@L2626_MPSTATS@@
 };
 
 function init2025() { build2025(); renderMPStats(); }
@@ -1334,7 +1452,7 @@ function build2025() {
   const notes = {
     mort_sem:'Mortalidad semanal por lote. El pico del Lote 2025 (sem 10\u201314) es la referencia de riesgo para los lotes activos.',
     mort_acum:'Mortalidad acumulada %. Lote 2025 divergio desde semana 10. Lotes 2526/2626 en curso.',
-    peso:'Peso corporal real vs guia genetica. Lineas punteadas = guia del estandar de la raza.',
+    peso:'Peso corporal por semana. La linea gris punteada es la guia del estandar de la raza.',
     cumpl:'% de cumplimiento del peso estandar. Negativo = por debajo de la guia.'
   };
   document.getElementById('note2025').textContent = notes[view2025];
@@ -1342,31 +1460,29 @@ function build2025() {
   const datasets = [];
   const lotes = Object.keys(active2025).filter(k => active2025[k]);
 
+  // UNA sola guia genetica de referencia. Antes se dibujaba una por lote:
+  // con 6 lotes activos eran 12 lineas y la grafica no se podia leer.
+  if (view2025 === 'peso' && lotes.length) {
+    const ref = lotes.find(k => LOTE_STYLE[k] && LOTE_STYLE[k].activo) || lotes[0];
+    datasets.push({
+      label: 'Guia genetica', data: DATA.peso_guia[ref].slice(0,16),
+      borderColor: GUIA_COLOR(), borderWidth: 1.5, pointRadius: 0,
+      tension: .3, borderDash: [4,4], spanGaps: false, fill: false, order: 1
+    });
+  }
+
   lotes.forEach(k => {
-    let data, label = LABELS[k];
+    let data;
     if(view2025 === 'mort_sem') data = DATA.mort_weekly[k];
     else if(view2025 === 'mort_acum') data = DATA.mort_acum[k];
-    else if(view2025 === 'peso') {
-      data = DATA.peso_real[k];
-      datasets.push({
-        label: label+' (guia)', data: DATA.peso_guia[k].slice(0,16),
-        borderColor: COLORS[k]+'55', borderWidth:1, pointRadius:0, tension:.35, borderDash:[3,3], spanGaps:false
-      });
-    }
+    else if(view2025 === 'peso') data = DATA.peso_real[k];
     else if(view2025 === 'cumpl') {
       data = DATA.peso_real[k].map((v,i) => {
         if(v===null) return null;
         return +((v - DATA.peso_guia[k][i]) / DATA.peso_guia[k][i] * 100).toFixed(1);
       });
     }
-
-    const esActivo = (k==='2526'||k==='2626');
-    datasets.push({
-      label, data: data.slice(0,16),
-      borderColor: COLORS[k], backgroundColor: COLORS[k]+'18',
-      borderWidth: esActivo?2.5:1.8, pointRadius:3, pointHoverRadius:5,
-      tension:.35, spanGaps:false, borderDash: esActivo?[5,3]:[], fill:false
-    });
+    datasets.push(lineaLote(k, data.slice(0,16)));
   });
 
   const units = {mort_sem:' aves', mort_acum:'%', peso:' g', cumpl:'%'};
@@ -1593,13 +1709,13 @@ const CONSUMO_LOTES = {
   '1625':{label:'L.1625',color:'#1D9E75',pollitas:4420,kg_sem:[440,640,840,880,1040,1040,1260,1360,1440,1520,1720,1820,1900,1000,1040,1120],gr_ave:[14.3,20.9,27.4,28.8,34.5,36.8,44.6,48.3,51.1,54.6,61.8,65.4,null,74.0,77.1,83.0],peso_real:[72.3,114.6,171.4,244.8,335.4,417.8,524.5,631.2,738.8,854.3,976,1055.3,1146.7,1224.5,1322.4,null],peso_guia:[70,125,190,265,360,460,560,670,780,890,990,1080,1160,1230,1300,1370],mort:[15,6,5,8,10,20,8,8,3,44,2,2,1,3,2,0],consumo_total:19060,utilidad:18154359,mortalidad_pct:7.2},
   '1725':{label:'L.1725',color:'#BA7517',pollitas:5700,kg_sem:[440,680,1000,1320,1440,1680,1760,1960,2120,2320,2440,2480,2600,2640,2720,2800,200],gr_ave:[11.0,17.0,25.0,33.1,36.1,43.0,45.1,50.5,54.7,59.9,63.0,66.6,70.6,71.7,73.9,76.2,null],peso_real:[63.6,110.3,196.5,273.7,355.8,468.4,553.7,651.6,754.8,837.7,943,1051.3,1138,1207,1303,1376.5,null],peso_guia:[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380,1468],mort:[27,8,4,6,3,5,2,3,4,3,3,2,7,4,4,5,4],consumo_total:30600,utilidad:30270955,mortalidad_pct:5.1},
   '2025':{label:'L.2025',color:'#D4537E',pollitas:7600,kg_sem:[600,840,1240,1520,1840,2120,2520,2720,2920,3080,2960,3160,3280,3360,3280,3360,1880,800],gr_ave:[11.3,16.0,23.6,29.0,35.2,40.6,48.2,52.5,56.4,59.9,58.5,64.7,68.6,71.8,71.0,73.1,76.2,null],peso_real:[81.3,131.0,195.0,261.4,355.3,448.6,552.4,632.2,723.5,822.5,903.0,973.3,1056.0,1130.0,1118.0,1294.0,null,null],peso_guia:[75.0,130.0,195.0,275.0,367.0,475.0,583.0,685.0,782.0,874.0,961.0,1043.0,1123.0,1197.0,1264.0,1330.0,1400.0,1475.0],mort:[46,33,24,16,9,6,4,8,11,50,110,256,142,153,84,33,15,5],consumo_total:41480,utilidad:14117416,mortalidad_pct:13.22}, // @@L2025_CONSUMO@@
-  '2526':{label:'L.2526',color:'#7E57C2',pollitas:3200,kg_sem:[260,360,440,680,840,920,940,1020,1040,1120,1160,1200],gr_ave:[11.8,16.4,20.1,31.1,38.6,42.4,43.3,47.0,48.0,51.8,53.7,55.6],peso_real:[66.2,115.4,177.7,247.4,336.2,418.7,502.5,597.0,683.4,786.3,873.5,948.4],peso_guia:[65,115,180,250,330,420,510,600,690,790,880,960,1030,1100,1170,1210,1250,1280],mort:[54,11,4,4,16,8,3,2,3,4,4,3],consumo_total:9980,utilidad:null,mortalidad_pct:3.62,activo:true}, // @@L2526_CONSUMO@@
-  '2626':{label:'L.2626',color:'#0D9488',pollitas:4000,kg_sem:[340,520,800,1000,1140,1300,1400,1520],gr_ave:[11.1,17.0,26.1,32.7,37.4,42.8,46.2,50.2],peso_real:[69.0,117.4,194.7,278.4,365.6,465.3,560.0,651.5],peso_guia:[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380,1468,1550],mort:[18,7,4,3,12,19,5,3],consumo_total:8020,utilidad:null,mortalidad_pct:1.61,activo:true}, // @@L2626_CONSUMO@@
+  '2526':{label:'L.2526',color:'#7E57C2',pollitas:3200,kg_sem:[260,360,440,680,840,920,940,1020,1040,1120,1160,1200,1240,1280,720],gr_ave:[11.8,16.4,20.1,31.1,38.6,42.4,43.3,47.0,48.0,51.8,53.7,55.6,57.6,59.5,33.5],peso_real:[66.2,115.4,177.7,247.4,336.2,418.7,502.5,597.0,683.4,786.3,873.5,948.4,1028.4,1098.4,null],peso_guia:[65,115,180,250,330,420,510,600,690,790,880,960,1030,1100,1170,1210,1250,1280],mort:[54,11,4,4,16,8,3,2,3,4,4,3,6,3,1],consumo_total:13220,utilidad:null,mortalidad_pct:3.94,activo:true}, // @@L2526_CONSUMO@@
+  '2626':{label:'L.2626',color:'#0D9488',pollitas:4000,kg_sem:[340,520,800,1000,1140,1300,1400,1520,1620,1680],gr_ave:[11.1,17.0,26.1,32.7,37.4,42.8,46.2,50.2,56.2,58.3],peso_real:[69.0,117.4,194.7,278.4,365.6,465.3,560.0,651.5,747.7,831.3],peso_guia:[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380,1468,1550],mort:[18,7,4,3,12,19,5,3,7,4],consumo_total:11320,utilidad:null,mortalidad_pct:1.86,activo:true}, // @@L2626_CONSUMO@@
 };
 const C_METRICS = {
   kg_sem:{note:'Consumo total en kg por semana de vida. Lotes 2526 y 2626 en curso.',yLabel:'kg',getData:l=>l.kg_sem.map((v,i)=>v===0&&i>3?null:v)},
   gr_ave:{note:'Gramos consumidos por ave por semana. Normaliza diferencias de tamano de lote.',yLabel:'gr/ave',getData:l=>l.gr_ave.map(v=>(v&&v>0&&v<500)?Math.round(v*10)/10:null)},
-  peso:{note:'Peso promedio del lote por semana. Lineas punteadas = guia genetica.',yLabel:'gr',getData:l=>l.peso_real,getGuia:l=>l.peso_guia},
+  peso:{note:'Peso promedio del lote por semana. La linea gris punteada es la guia genetica de referencia.',yLabel:'gr',getData:l=>l.peso_real,getGuia:l=>l.peso_guia},
   mort:{note:'Aves muertas por semana. Lote 2025 presenta pico critico semanas 10-14.',yLabel:'aves',getData:l=>l.mort}
 };
 let cMetric='kg_sem', activeC={1525:true,1625:true,1725:true,2025:true,2526:true,2626:true};
@@ -1626,12 +1742,18 @@ function buildConsumo(){
     if(!activeC[key]) return;
     const data=m.getData(lot);
     const padded=Array.from({length:maxL},(_,i)=>data[i]!==undefined?data[i]:null);
-    datasets.push({label:lot.label,data:padded,borderColor:lot.color,backgroundColor:lot.color+'22',borderWidth:lot.activo?2.5:1.8,pointRadius:3,pointHoverRadius:5,tension:0.35,spanGaps:false,borderDash:lot.activo?[5,3]:[]});
-    if(cMetric==='peso'&&m.getGuia){
-      const guia=m.getGuia(lot);
-      datasets.push({label:lot.label+' (guia)',data:Array.from({length:maxL},(_,i)=>guia[i]!==undefined?guia[i]:null),borderColor:lot.color+'55',borderWidth:1,pointRadius:0,tension:0.35,borderDash:[3,3],spanGaps:false});
-    }
+    datasets.push(lineaLote(key, padded, {label: lot.label}));
   });
+  // guia genetica unica (antes se dibujaba una por lote y saturaba)
+  if(cMetric==='peso'&&m.getGuia){
+    const act=Object.keys(CONSUMO_LOTES).filter(k=>activeC[k]);
+    const ref=act.find(k=>LOTE_STYLE[k]&&LOTE_STYLE[k].activo)||act[0];
+    if(ref){
+      const guia=m.getGuia(CONSUMO_LOTES[ref]);
+      datasets.unshift({label:'Guia genetica',data:Array.from({length:maxL},(_,i)=>guia[i]!==undefined?guia[i]:null),
+        borderColor:GUIA_COLOR(),borderWidth:1.5,pointRadius:0,tension:.3,borderDash:[4,4],spanGaps:false,fill:false,order:1});
+    }
+  }
   charts.consumo=new Chart(document.getElementById('chartConsumo'),{
     type:'line',data:{labels,datasets},
     options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
@@ -1660,8 +1782,8 @@ const G_POLLITAS={'1525':5350,'1625':4420,'1725':5700,'2025':7600,'2526':3200,'2
 const G_CAT_COLORS={'Pollitas':'#378ADD','Alimento':'#1D9E75','Medicamentos':'#D4537E','Vacunas':'#BA7517','Arrendamiento':'#534AB7','Servicios':'#888780','Fletes y otros':'#639922','Costos comunes':'#9FE1CB'};
 const G_GROUPS=['Pollitas','Alimento','Medicamentos','Vacunas','Arrendamiento','Servicios','Fletes y otros','Costos comunes'];
 const G_RAW={"1525":{"pollitas":5350,"group_totals":{"Pollitas":23427200,"Alimento":51092640,"Medicamentos":1645800,"Vacunas":11992800,"Arrendamiento":4500000,"Servicios":11570333,"Fletes y otros":3140000,"Costos comunes":1498000},"weekly_by_group":{"Pollitas":[21087200,2340000,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[15190140,0,0,8340000,0,0,0,0,0,5512500,7350000,0,7350000,0,7350000,0,0,0],"Medicamentos":[0,0,0,79400,48500,64000,0,0,0,0,0,496200,0,0,957700,0,0,0],"Vacunas":[4963000,994200,394000,0,0,1240000,1021600,480000,400000,0,0,0,0,820000,780000,620000,280000,0],"Arrendamiento":[1000000,0,0,0,1000000,0,0,0,1000000,0,0,0,0,1500000,0,0,0,0],"Servicios":[3450000,950000,950000,950000,1433000,964000,520000,400000,400000,0,0,400000,400000,420000,0,0,333333,0],"Fletes y otros":[500000,0,0,350000,0,0,350000,0,0,70000,350000,0,370000,0,0,850000,300000,0],"Costos comunes":[98000,0,0,225000,0,0,315000,0,0,0,285000,0,0,0,0,575000,0,0]},"grand_total":108866773},"1625":{"pollitas":4420,"group_totals":{"Pollitas":21171894,"Alimento":36559540,"Medicamentos":2524450,"Vacunas":8204694,"Arrendamiento":3140000,"Servicios":8185333,"Fletes y otros":2538750,"Costos comunes":2802300},"weekly_by_group":{"Pollitas":[21171894,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[2108400,0,2108000,6255000,0,2668800,3870300,0,3870300,5512500,3565800,2336600,0,1776600,2487240,0,0,0],"Medicamentos":[425000,0,0,0,0,1449450,0,0,0,380000,0,0,0,270000,0,0,0,0],"Vacunas":[1848300,1319000,567200,0,0,500000,0,2090700,0,0,0,0,1235000,0,364494,280000,0,0],"Arrendamiento":[880000,0,0,0,0,880000,0,0,0,880000,0,0,0,500000,0,0,0,0],"Servicios":[2810000,560000,660000,550000,400000,400000,400000,733333,0,418000,0,418000,0,0,418000,0,418000,0],"Fletes y otros":[700000,0,0,350000,0,70000,175000,0,175000,185000,175000,175000,0,213750,0,120000,200000,0],"Costos comunes":[638800,0,0,0,0,575000,0,300000,0,400000,0,98500,300000,0,290000,0,200000,0]},"grand_total":85126961},"1725":{"pollitas":5700,"group_totals":{"Pollitas":27967600,"Alimento":56703742,"Medicamentos":255500,"Vacunas":11655770,"Arrendamiento":4560000,"Servicios":8615433,"Fletes y otros":4703500,"Costos comunes":2166500},"weekly_by_group":{"Pollitas":[27967600,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[2108400,2108400,0,3638082,3870300,3870300,0,3870300,5969800,0,3553200,6395760,7106400,0,7106400,7106400,0,0],"Medicamentos":[0,0,0,0,0,108000,0,0,0,0,0,0,0,0,147500,0,0,0],"Vacunas":[4128320,592000,1471000,0,420000,0,775000,420000,0,0,0,0,1257450,0,1392000,0,1200000,0],"Arrendamiento":[1140000,0,0,0,1140000,0,0,0,1140000,0,0,0,0,1140000,0,0,0,0],"Servicios":[1330000,750000,400000,514284,333333,0,418000,0,418000,0,418000,0,836000,0,0,754816,404000,2039000],"Fletes y otros":[70000,0,0,175000,175000,255000,0,245000,175000,138500,150000,270000,0,300000,0,150000,2600000,0],"Costos comunes":[150000,63000,325000,0,300000,150000,0,0,98500,300000,230000,0,0,0,550000,0,0,0]},"grand_total":116628045},"2025":{"pollitas":7600,"group_totals":{"Pollitas":39159364,"Alimento":77134600,"Medicamentos":5749615,"Vacunas":10024810,"Arrendamiento":18631000,"Servicios":0,"Fletes y otros":7595895,"Costos comunes":6789800},"weekly_by_group":{"Pollitas":[39159364, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"Alimento":[6478200, 1923600, 0, 2353680, 5884200, 3922800, 790000, 9807000, 0, 3570000, 4641000, 5355000, 8942850, 8734280, 0, 12519990, 1422000, 790000],"Medicamentos":[105000, 0, 251600, 0, 0, 0, 0, 1019320, 675000, 1112100, 327000, 0, 1691795, 0, 567800, 0, 0, 0],"Vacunas":[1480000, 802000, 729850, 500000, 0, 1150000, 0, 1770000, 0, 0, 0, 0, 0, 0, 2787900, 0, 230000, 575060],"Arrendamiento":[2546000, 1955000, 0, 0, 1710000, 0, 1125000, 0, 2835000, 0, 1125000, 0, 2835000, 0, 1125000, 0, 1125000, 1125000],"Servicios":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],"Fletes y otros":[0, 3410000, 0, 0, 252895, 0, 0, 0, 173000, 0, 0, 0, 0, 0, 0, 300000, 1540000, 1920000],"Costos comunes":[3271800, 0, 333000, 250000, 0, 180000, 434000, 285000, 718000, 0, 0, 0, 418000, 300000, 80000, 360000, 80000, 80000]},"grand_total":165085084}, // @@L2025_GRAW@@
-"2526":{"pollitas":3200,"group_totals":{"Pollitas":15395840,"Alimento":23849975,"Medicamentos":0,"Vacunas":4507200,"Arrendamiento":7942500,"Servicios":0,"Fletes y otros":1520935,"Costos comunes":4702300},"weekly_by_group":{"Pollitas":[15395840,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[2441597,0,0,3871194,0,2322716,1926041,1954601,1954601,5672164,0,2127061,1580000,0,0,0,0,0],"Medicamentos":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Vacunas":[1247300,320000,236400,305700,580000,0,393900,550000,0,0,0,0,873900,0,0,0,0,0],"Arrendamiento":[1845000,0,1125000,0,1282500,0,562500,0,1282500,0,562500,0,0,1282500,0,0,0,0],"Servicios":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Fletes y otros":[87500,0,0,461020,0,105000,87500,87500,87500,280000,0,324915,0,0,0,0,0,0],"Costos comunes":[2688800,250000,0,0,150000,120000,200000,150000,0,150000,0,993500,0,0,0,0,0,0]},"grand_total":57918750}, // @@L2526_GRAW@@
-"2626":{"pollitas":4400,"group_totals":{"Pollitas":21293280,"Alimento":15324366,"Medicamentos":270000,"Vacunas":4610600,"Arrendamiento":5782500,"Servicios":0,"Fletes y otros":818500,"Costos comunes":3695400},"weekly_by_group":{"Pollitas":[17632800,0,3660480,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[1105439,0,1926041,1954601,1954601,2345521,781847,3518316,1738000,0,0,0,0,0,0,0,0,0],"Medicamentos":[0,0,0,0,0,0,270000,0,0,0,0,0,0,0,0,0,0,0],"Vacunas":[1349100,681100,128400,0,620000,0,1252000,580000,0,0,0,0,0,0,0,0,0,0],"Arrendamiento":[1552500,0,562500,0,1552500,0,562500,0,1552500,0,0,0,0,0,0,0,0,0],"Servicios":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Fletes y otros":[38500,0,87500,87500,87500,105000,35000,157500,220000,0,0,0,0,0,0,0,0,0],"Costos comunes":[2566000,0,799400,0,0,0,0,330000,0,0,0,0,0,0,0,0,0,0]},"grand_total":51794646}, // @@L2626_GRAW@@
+"2526":{"pollitas":3200,"group_totals":{"Pollitas":15395840,"Alimento":30344956,"Medicamentos":0,"Vacunas":4507200,"Arrendamiento":7942500,"Servicios":0,"Fletes y otros":1845935,"Costos comunes":4702300},"weekly_by_group":{"Pollitas":[15395840,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[2441597,0,0,3871194,0,2322716,1926041,1954601,1954601,5672164,0,2127061,1580000,0,6494981,0,0,0],"Medicamentos":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Vacunas":[1247300,320000,236400,305700,580000,0,393900,550000,0,0,0,0,873900,0,0,0,0,0],"Arrendamiento":[1845000,0,1125000,0,1282500,0,562500,0,1282500,0,562500,0,0,1282500,0,0,0,0],"Servicios":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Fletes y otros":[87500,0,0,461020,0,105000,87500,87500,87500,280000,0,324915,0,0,325000,0,0,0],"Costos comunes":[2688800,250000,0,0,150000,120000,200000,150000,0,150000,0,993500,0,0,0,0,0,0]},"grand_total":64738731}, // @@L2526_GRAW@@
+"2626":{"pollitas":4400,"group_totals":{"Pollitas":21293280,"Alimento":23006604,"Medicamentos":270000,"Vacunas":4610600,"Arrendamiento":5782500,"Servicios":0,"Fletes y otros":1203500,"Costos comunes":3695400},"weekly_by_group":{"Pollitas":[17632800,0,3660480,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Alimento":[1105439,0,1926041,1954601,1954601,2345521,781847,3518316,1738000,7682238,0,0,0,0,0,0,0,0],"Medicamentos":[0,0,0,0,0,0,270000,0,0,0,0,0,0,0,0,0,0,0],"Vacunas":[1349100,681100,128400,0,620000,0,1252000,580000,0,0,0,0,0,0,0,0,0,0],"Arrendamiento":[1552500,0,562500,0,1552500,0,562500,0,1552500,0,0,0,0,0,0,0,0,0],"Servicios":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"Fletes y otros":[38500,0,87500,87500,87500,105000,35000,157500,220000,0,385000,0,0,0,0,0,0,0],"Costos comunes":[2566000,0,799400,0,0,0,0,330000,0,0,0,0,0,0,0,0,0,0]},"grand_total":59861884}, // @@L2626_GRAW@@
 };
 
 let gView='semanal', activeG={1525:true,1625:true,1725:true,2025:true,2526:true,2626:true};
@@ -1691,15 +1813,15 @@ function buildGastos(){
   let cfg;
   if(gView==='semanal'){
     const labels=Array.from({length:18},(_,i)=>'S'+(i+1));
-    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k).map((v,i)=>v===0&&i>0?null:v);return{label:G_LABELS[k],data:wt,borderColor:G_COLORS[k],backgroundColor:G_COLORS[k]+'20',borderWidth:(k==='2526'||k==='2626')?2.5:1.8,pointRadius:3,pointHoverRadius:5,tension:.3,spanGaps:false,borderDash:(k==='2526'||k==='2626')?[5,3]:[]};});
+    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k).map((v,i)=>v===0&&i>0?null:v);return lineaLote(k, wt, {label:G_LABELS[k]});});
     cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': '+gFmtFull(c.parsed.y)}}},scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:IS_MOBILE},grid:{color:gridC}},y:{ticks:{font:{size:11},color:tickC,callback:v=>gFmt(v)},grid:{color:gridC}}}}};
   } else if(gView==='acumulado'){
     const labels=Array.from({length:18},(_,i)=>'S'+(i+1));
-    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k);let acc=0;const data=wt.map((v,i)=>{if(v===0&&i>2&&acc===wt.slice(0,i).reduce((s,x)=>s+x,0))return null;acc+=v;return acc;});return{label:G_LABELS[k],data,borderColor:G_COLORS[k],backgroundColor:G_COLORS[k]+'15',borderWidth:(k==='2526'||k==='2626')?2.5:1.8,pointRadius:2,tension:.3,spanGaps:false,fill:true,borderDash:(k==='2526'||k==='2626')?[5,3]:[]};});
+    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k);let acc=0;const data=wt.map((v,i)=>{if(v===0&&i>2&&acc===wt.slice(0,i).reduce((s,x)=>s+x,0))return null;acc+=v;return acc;});return lineaLote(k, data, {label:G_LABELS[k], fill:true, backgroundColor:G_COLORS[k]+'10'});});
     cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': '+gFmtFull(c.parsed.y)}}},scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:IS_MOBILE},grid:{color:gridC}},y:{ticks:{font:{size:11},color:tickC,callback:v=>gFmt(v)},grid:{color:gridC}}}}};
   } else if(gView==='por_ave'){
     const labels=Array.from({length:18},(_,i)=>'S'+(i+1));
-    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k);const pol=G_POLLITAS[k];let acc=0;const data=wt.map((v,i)=>{if(v===0&&i>2)return null;acc+=v;return Math.round(acc/pol);});return{label:G_LABELS[k],data,borderColor:G_COLORS[k],backgroundColor:G_COLORS[k]+'18',borderWidth:(k==='2526'||k==='2626')?2.5:1.8,pointRadius:2,tension:.3,spanGaps:false,borderDash:(k==='2526'||k==='2626')?[5,3]:[]};});
+    const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k);const pol=G_POLLITAS[k];let acc=0;const data=wt.map((v,i)=>{if(v===0&&i>2)return null;acc+=v;return Math.round(acc/pol);});return lineaLote(k, data, {label:G_LABELS[k]});});
     cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': $'+c.parsed.y.toLocaleString('es-CO')+'/ave'}}},scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:IS_MOBILE},grid:{color:gridC}},y:{ticks:{font:{size:11},color:tickC,callback:v=>'$'+v.toLocaleString()},grid:{color:gridC}}}}};
   } else {
     const labels=aLotes.map(k=>G_LABELS[k]);
@@ -1723,39 +1845,55 @@ function renderGStats(){
 // ========== PEREIRA (proyecto independiente) ==========
 // Datos REALES del lote 2726. Los actualiza update_dashboard.py desde el
 // Consolidado (hoja UTILIDAD Pereira 2726) y el Registro Lote Pereira.
-const P2726 = {"pollitas":4800,"estirpe":"Babcock Brown","nacimiento":"2026-07-23","semanas":3,"mort_total":35,"mort_pct":0.73,"saldo":4765,"peso_final":131,"peso_guia":115,"cumpl":13.7,"uniformidad":78.0,"peso_dia1":39.1,"kg":1620,"invertido":40292204,"gastos":[["Pollitas",19925760,"4,800 Babcock Brown (San Marino)"],["Alimento",6749480,"Concentrado del ciclo"],["Equipos y montaje",4517412,"Comederos, bebederos y montaje"],["Mano de obra",3156452,"Galponero"],["Cama",1323350,"Cal, cascarilla y papel"],["Calefaccion",1270000,"Gas"],["Fletes",1100000,"Transporte de insumos"],["Vacunas y servicio",1063650,"Plan vacunal"],["Arrendamiento",850000,"Arriendo del galpon"],["Cortinas y desinfeccion",241600,"Carton plast, termometro, desinfectantes"],["Medicamentos",94500,"Tratamientos"]]}; // @@P2726_DATA@@
+const PEREIRA = {"2726":{"pollitas":4896,"estirpe":"Babcock Brown","nacimiento":"2026-07-23","semanas":5,"mort_total":42,"mort_pct":0.86,"saldo":4854,"peso_final":331,"peso_guia":390,"cumpl":-15.2,"uniformidad":79.0,"peso_dia1":39.1,"kg":4180,"invertido":47806577,"gastos":[["Pollitas",19925760,"4,896 Babcock Brown"],["Alimento",13035383,"Concentrado del ciclo"],["Equipos y montaje",4820882,"Comederos, bebederos y montaje"],["Mano de obra",3131452,"Galponero"],["Arrendamiento",1700000,"Arriendo del galpon"],["Cama",1323350,"Cal, cascarilla y papel"],["Calefaccion",1270000,"Gas"],["Fletes",1200000,"Transporte de insumos"],["Vacunas y servicio",1063650,"Plan vacunal"],["Cortinas y desinfeccion",241600,"Carton plast, termometro, desinfectantes"],["Medicamentos",94500,"Tratamientos"]],"lote":"2726","galpon":1},"2826":{"pollitas":4596,"estirpe":"Babcock Brown","nacimiento":"2026-08-20","semanas":1,"mort_total":7,"mort_pct":0.15,"saldo":4589,"peso_final":54,"peso_guia":67,"cumpl":-19.4,"uniformidad":72.2,"peso_dia1":35.3,"kg":240,"invertido":28268286,"gastos":[["Pollitas",18680400,"4,596 Babcock Brown"],["Equipos y montaje",4603470,"Comederos, bebederos y montaje"],["Calefaccion",1423200,"Gas"],["Alimento",1282216,"Concentrado del ciclo"],["Cama",1027500,"Cal, cascarilla y papel"],["Arrendamiento",850000,"Arriendo del galpon"],["Fletes",300000,"Transporte de insumos"],["Medicamentos",101500,"Tratamientos"]],"lote":"2826","galpon":2}}; // @@PEREIRA_DATA@@
 
-function renderPereira2726() {
-  const d = P2726;
+// Renderiza un bloque por cada lote de Pereira (KPIs + inversion ejecutada).
+// Es generico: si manana abren el 2926 solo lo agrega el actualizador.
+function renderPereira() {
+  const cont = document.getElementById('pereira-lotes');
+  if (!cont) return;
+  const N = v => Number(v).toLocaleString('en-US');
   const M = v => '$' + (v/1e6).toFixed(1) + 'M';
-  const N = v => v.toLocaleString('en-US');
-  const dias = Math.max(0, Math.round((Date.now() - new Date(d.nacimiento + 'T00:00:00').getTime()) / 86400000));
-  const sem = d.semanas > 0 ? d.semanas : Math.floor(dias / 7) + 1;
-  const fnac = new Date(d.nacimiento + 'T00:00:00').toLocaleDateString('es-CO', {day:'numeric', month:'short', year:'numeric'});
-
-  const kpis = [
-    ['#0D9488', 'Estado del lote', 'Sem ' + sem, dias + ' dias de vida &middot; inicio ' + fnac],
-    ['#378ADD', 'Aves', N(d.saldo), N(d.pollitas) + ' recibidas &middot; ' + d.estirpe],
-    [d.mort_pct > 3 ? '#D4537E' : '#1D9E75', 'Mortalidad', d.mort_pct.toFixed(2) + '%', N(d.mort_total) + ' aves'],
-    ['#BA7517', 'Invertido a la fecha', M(d.invertido), '$' + N(Math.round(d.invertido / d.pollitas)) + ' / ave'],
-    ['#378ADD', d.peso_final ? 'Peso actual' : 'Peso 1er dia', (d.peso_final || d.peso_dia1) + ' g',
-      d.cumpl !== null && d.cumpl !== undefined ? 'Guia ' + d.peso_guia + 'g (' + (d.cumpl >= 0 ? '+' : '') + d.cumpl + '%)' : 'Uniformidad ' + d.uniformidad + '%'],
-    ['#1D9E75', 'Alimento consumido', d.kg ? N(d.kg) + ' kg' : '&mdash;', d.kg ? N(Math.round(d.kg * 1000 / d.saldo)) + ' g/ave' : 'Sin semanas cerradas aun']
-  ];
-  document.getElementById('p2726-kpis').innerHTML = kpis.map(k =>
-    '<div class="kpi" style="--kpi-accent:' + k[0] + '"><p class="kpi-label">' + k[1] +
-    '</p><p class="kpi-val">' + k[2] + '</p><p class="kpi-sub">' + k[3] + '</p></div>').join('');
-
-  const tot = d.invertido || 1;
-  document.getElementById('p2726-gastos').innerHTML =
-    d.gastos.map(g => '<tr><td>' + g[0] + '</td><td class="r">$' + N(g[1]) +
-      '</td><td class="c">' + (g[1] / tot * 100).toFixed(1) + '%</td><td>' + g[2] + '</td></tr>').join('') +
-    '<tr class="tot"><td>TOTAL INVERTIDO</td><td class="r">$' + N(tot) + '</td><td class="c">100%</td><td></td></tr>';
+  const claves = Object.keys(PEREIRA).sort();
+  cont.innerHTML = claves.map((k, idx) => {
+    const d = PEREIRA[k];
+    const dias = Math.max(0, Math.round((Date.now() - new Date(d.nacimiento + 'T00:00:00').getTime()) / 86400000));
+    const sem = d.semanas > 0 ? d.semanas : Math.floor(dias / 7) + 1;
+    const fnac = new Date(d.nacimiento + 'T00:00:00').toLocaleDateString('es-CO', {day:'numeric', month:'short', year:'numeric'});
+    const bajoPeso = d.cumpl !== null && d.cumpl !== undefined && d.cumpl < -5;
+    const kpis = [
+      ['#0D9488', 'Estado', 'Sem ' + sem, dias + ' dias &middot; inicio ' + fnac],
+      ['#378ADD', 'Aves vivas', N(d.saldo), N(d.pollitas) + ' recibidas &middot; galpon ' + (d.galpon || '-')],
+      [d.mort_pct > 3 ? '#D4537E' : '#1D9E75', 'Mortalidad', Number(d.mort_pct).toFixed(2) + '%', N(d.mort_total) + ' aves'],
+      ['#BA7517', 'Invertido', M(d.invertido), '$' + N(Math.round(d.invertido / d.pollitas)) + ' / ave'],
+      [bajoPeso ? '#D4537E' : '#378ADD', d.peso_final ? 'Peso' : 'Peso 1er dia',
+        (d.peso_final || d.peso_dia1) + ' g',
+        (d.cumpl !== null && d.cumpl !== undefined)
+          ? 'Guia ' + d.peso_guia + 'g (' + (d.cumpl >= 0 ? '+' : '') + d.cumpl + '%)'
+          : d.estirpe],
+      ['#1D9E75', 'Alimento', d.kg ? N(d.kg) + ' kg' : '&mdash;',
+        d.kg ? N(Math.round(d.kg * 1000 / d.saldo)) + ' g/ave' : 'Sin semanas cerradas']
+    ];
+    const tot = d.invertido || 1;
+    const filas = d.gastos.map(g => '<tr><td>' + g[0] + '</td><td class="r">$' + N(g[1]) +
+        '</td><td class="c">' + (g[1] / tot * 100).toFixed(1) + '%</td><td>' + g[2] + '</td></tr>').join('');
+    return (idx ? '<hr class="divider">' : '') +
+      '<p class="sec-title">Lote ' + d.lote + ' &mdash; galpon ' + (d.galpon || '-') + ' (datos reales)</p>' +
+      (bajoPeso ? '<div class="alert"><strong>Peso por debajo de la guia (' + d.cumpl + '%).</strong> ' +
+        'Revisar consumo, densidad y calidad del alimento: un lote que llega liviano a la venta se paga menos.</div>' : '') +
+      '<div class="kpi-grid">' + kpis.map(x =>
+        '<div class="kpi" style="--kpi-accent:' + x[0] + '"><p class="kpi-label">' + x[1] +
+        '</p><p class="kpi-val">' + x[2] + '</p><p class="kpi-sub">' + x[3] + '</p></div>').join('') + '</div>' +
+      '<div class="tbl-wrap"><table class="tbl">' +
+      '<tr><th>Rubro</th><th class="r">Invertido</th><th class="c">% del total</th><th>Observacion</th></tr>' +
+      filas + '<tr class="tot"><td>TOTAL INVERTIDO</td><td class="r">$' + N(tot) +
+      '</td><td class="c">100%</td><td></td></tr></table></div>';
+  }).join('');
 }
 
 // Proyeccion del Modelo Financiero Pereira (Drive). Flujo acumulado del fondo.
 function initPereira() {
-  renderPereira2726();
+  renderPereira();
   charts.pereira = new Chart(document.getElementById('chartPereira'), {
     type:'line',
     data:{labels:['Mes 0','Mes 12','Mes 24','Mes 36','Mes 48'],datasets:[
@@ -1765,6 +1903,30 @@ function initPereira() {
     options:{...baseOpts(v=>'$'+v+'M'),plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}},
       tooltip:{callbacks:{label:c=>' '+c.dataset.label+': $'+c.parsed.y.toFixed(1)+'M'}}}}
   });
+}
+
+
+// Filtro rapido: aisla los lotes en curso. Con 6 lotes encimados y picos
+// historicos (el L.1525 llego a 434 aves en una semana) la escala aplasta a
+// los lotes activos, que son los que se consultan a diario.
+const FILTRO = {consumo:false, gastos:false, mp:false};
+function filtroLotes(sec, btn) {
+  const solo = FILTRO[sec] = !FILTRO[sec];
+  btn.textContent = solo ? 'Ver todos' : 'Solo en curso';
+  btn.classList.toggle('active', solo);
+  const cfg = {
+    consumo: {estado: activeC,     pre: 'togc-', redraw: () => { buildConsumo(); renderCStats(); }},
+    gastos:  {estado: activeG,     pre: 'togg-', redraw: () => { buildGastos();  renderGStats(); }},
+    mp:      {estado: active2025,  pre: 'tog2-', redraw: () => { build2025();    renderMPStats(); }}
+  }[sec];
+  if (!cfg) return;
+  Object.keys(LOTE_STYLE).forEach(k => {
+    const on = solo ? LOTE_STYLE[k].activo : true;
+    cfg.estado[k] = on;
+    const chip = document.getElementById(cfg.pre + k);
+    if (chip) chip.classList.toggle('on', on);
+  });
+  cfg.redraw();
 }
 
 // ========== DATOS EN VIVO (lotes activos) ==========
