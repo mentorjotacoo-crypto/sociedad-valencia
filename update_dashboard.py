@@ -386,6 +386,7 @@ def main():
     corte_max = None
 
     for lote, lc in cfg["lotes_activos"].items():
+      try:
         if lote in liquidados:
             log(f"AVISO: el lote {lote} figura LIQUIDADO en el Consolidado. "
                 f"Actualiza el dashboard manualmente (estructura) y retiralo de config_local.json.")
@@ -405,25 +406,42 @@ def main():
         corte_max = max(corte_max, corte_lote) if corte_max else corte_lote
         log(f"Lote {lote}: sem {cl['semanas']}, mort {cl['mort_pct']:.2f}%, "
             f"peso {cl['peso_final']}g, gastos ${ga['grand_total']:,}")
+      except Exception as e:
+        log(f"ERROR en lote {lote}: {e}. Se continua con el resto.")
 
-    # ---- Pereira (proyecto independiente): un solo marcador con todo ----
+    # ---- Pereira (proyecto independiente): un solo marcador con TODOS los lotes.
+    # Si un lote falla (archivo renombrado, hoja nueva, etc.) se registra el aviso
+    # y se sigue con los demas: nunca debe bloquear la actualizacion completa.
+    pereira = {}
     for lote, pc in cfg.get("lotes_pereira", {}).items():
-        registro = copiar_a_temp(src_dir / pc["registro"])
-        datos = leer_pereira(consolidado, registro, pc)
-        if datos is None:
-            log(f"AVISO: no existe la hoja '{pc['hoja_utilidad']}' en el Consolidado; Pereira {lote} sin actualizar.")
-            continue
-        marker = f"@@P{lote}_DATA@@"
+        try:
+            ruta = src_dir / pc["registro"]
+            if not ruta.exists():
+                log(f"AVISO: Pereira {lote}: no encuentro '{pc['registro']}' en Drive "
+                    f"(se renombro?). Revisa config_local.json.")
+                continue
+            datos = leer_pereira(consolidado, copiar_a_temp(ruta), pc)
+            if datos is None:
+                log(f"AVISO: Pereira {lote}: falta la hoja '{pc['hoja_utilidad']}' en el Consolidado.")
+                continue
+            datos["lote"] = lote
+            datos["galpon"] = pc.get("galpon")
+            pereira[lote] = datos
+            log(f"Pereira {lote}: sem {datos['semanas']}, {datos['saldo']:,} aves, "
+                f"mort {datos['mort_pct']}%, invertido ${datos['invertido']:,}")
+        except Exception as e:
+            log(f"ERROR en Pereira {lote}: {e}. Se continua con el resto.")
+
+    if pereira:
+        marker = "@@PEREIRA_DATA@@"
         pat = re.compile(rf"^.*// {re.escape(marker)}.*$", re.M)
-        if not pat.search(html):
+        if pat.search(html):
+            linea = ("const PEREIRA = "
+                     + json.dumps(pereira, ensure_ascii=False, separators=(",", ":"))
+                     + f"; // {marker}")
+            html = pat.sub(lambda _m: linea, html)
+        else:
             log(f"AVISO: marcador {marker} no encontrado en index.html")
-            continue
-        linea = ("const P" + lote + " = "
-                 + json.dumps(datos, ensure_ascii=False, separators=(",", ":"))
-                 + f"; // {marker}")
-        html = pat.sub(lambda _m: linea, html)
-        log(f"Pereira {lote}: sem {datos['semanas']}, {datos['saldo']:,} aves, "
-            f"mort {datos['mort_pct']}%, invertido ${datos['invertido']:,}")
 
     if corte_max:
         html = actualizar_corte(html, corte_max)
