@@ -340,6 +340,68 @@
   .tbl .warn { color: var(--neg); font-weight: 600; }
   .tbl .good { color: var(--pos); font-weight: 600; }
 
+  .tbl .grupo td {
+    background: var(--color-background-secondary);
+    font-size: 10.5px; font-weight: 700; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--color-text-muted);
+    padding: 9px 12px; border-bottom: 1px solid var(--color-border-secondary);
+  }
+  .tbl .grupo:hover td { background: var(--color-background-secondary); }
+  .pill { display:inline-block; padding:2px 9px; border-radius:20px; font-size:11px; font-weight:600; }
+  .pill-ok  { background:#1D9E7518; color:var(--pos); }
+  .pill-act { background:#BA751720; color:#8a5612; }
+
+  /* Comparativo en movil: tarjeta por lote (leer 7 columnas en un telefono
+     es imposible, mas aun para vista cansada) */
+  .cmp-card {
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-tertiary);
+    border-left: 4px solid var(--color-border-secondary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    padding: 14px 16px; margin-bottom: 14px;
+  }
+  .cmp-card.cmp-activo { border-left-color: #BA7517; }
+  .cmp-titulo { font-size: 17px; font-weight: 700; color: var(--color-text-primary); margin-bottom: 6px; }
+  .cmp-grupo {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em;
+    color: var(--color-text-muted); margin: 14px 0 4px; padding-top: 8px;
+    border-top: 1px solid var(--color-border-tertiary);
+  }
+  .cmp-fila {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
+    padding: 7px 0; border-bottom: 1px solid var(--color-border-tertiary);
+  }
+  .cmp-fila:last-child { border-bottom: none; }
+  .cmp-et  { font-size: 14px; color: var(--color-text-secondary); }
+  .cmp-val { font-size: 15px; font-weight: 650; color: var(--color-text-primary);
+             font-variant-numeric: tabular-nums; text-align: right; }
+
+  /* Simulador: campos grandes, comodos de tocar y de leer */
+  .sim-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px; margin: 16px 0 12px;
+  }
+  .sim-campo { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+  .sim-campo label {
+    font-size: 12px; font-weight: 600; color: var(--color-text-secondary);
+    letter-spacing: .01em;
+  }
+  .sim-campo input {
+    font-family: inherit; font-size: 17px; font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    padding: 11px 13px; border-radius: 9px;
+    border: 1px solid var(--color-border-secondary);
+    background: var(--color-surface-raised); color: var(--color-text-primary);
+    width: 100%; box-sizing: border-box;
+  }
+  .sim-campo input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(55,138,221,.15); }
+  @media(max-width: 768px) {
+    .sim-grid { grid-template-columns: 1fr 1fr; gap: 11px; }
+    .sim-campo label { font-size: 13px; }
+    .sim-campo input { font-size: 18px; padding: 13px; }
+  }
+
   .alert, .info {
     border-radius: var(--radius-lg);
     padding: 13px 15px 13px 16px;
@@ -417,14 +479,33 @@
     .app-header-sub { display: none; }
     .app-header-badge { font-size: 10px; padding: 3px 8px; }
 
-    /* Contenido */
-    .content-pad { padding: 16px 14px 32px; }
-    .sec-heading { font-size: 15px; }
+    /* Contenido: todo un punto mas grande. El informe lo leen personas
+       mayores en el telefono, no cabe la letra de 11px. */
+    .content-pad { padding: 18px 15px 36px; }
+    .sec-title { font-size: 11.5px; letter-spacing: .07em; }
+    .sec-heading { font-size: 20px; }
+    .sec-sub { font-size: 14.5px; line-height: 1.6; }
+    .note { font-size: 13px; line-height: 1.6; color: var(--color-text-secondary); }
+    .alert, .info { font-size: 14.5px; line-height: 1.65; padding: 14px 16px; }
+    .rec-list li { font-size: 14.5px; line-height: 1.6; padding: 11px 14px; }
 
-    /* KPIs: 2 columnas */
-    .kpi-grid { grid-template-columns: 1fr 1fr; }
-    .kpi { padding: 10px; }
-    .kpi-val { font-size: 16px; }
+    /* KPIs: 2 columnas, cifra grande y etiqueta legible */
+    .kpi-grid { grid-template-columns: 1fr 1fr; gap: 11px; }
+    .kpi { padding: 13px 13px 13px 15px; }
+    .kpi-label { font-size: 12px; letter-spacing: .03em; }
+    .kpi-val { font-size: 24px; }
+    .kpi-sub { font-size: 13px; line-height: 1.45; }
+
+    /* Tarjetas de resumen */
+    .stat-card { padding: 15px; }
+    .cat-row { font-size: 14px; padding: 7px 0; }
+    .cat-pct { font-size: 13px; }
+
+    /* Botones y chips: mas grandes para el dedo y para la vista */
+    .btn { font-size: 14px; padding: 10px 15px; border-radius: 9px; }
+    .lote-tog { font-size: 14px; padding: 9px 13px; border-radius: 9px; }
+    .dot { width: 11px; height: 11px; }
+    .dot-star, .dot-crossRot { width: 13px; height: 13px; }
 
     /* Charts más bajos */
     .chart-wrap { height: 290px; }
@@ -451,7 +532,8 @@
     .tbl tr:nth-child(even) td:first-child { background: #f8fafb; }
     .tbl .tot td:first-child { background: var(--color-background-secondary); }
     .tbl tr:hover td:first-child { background: var(--color-background-secondary); }
-    .tbl th, .tbl td { padding: 6px 8px; font-size: 11px; }
+    .tbl th, .tbl td { padding: 10px 11px; font-size: 13.5px; }
+    .tbl th { font-size: 11px; }
 
     /* Controles: las metricas scrollean, pero los lotes SIEMPRE se ven
        (antes el ultimo chip y el filtro quedaban escondidos) */
@@ -462,6 +544,18 @@
     /* Legend: scroll horizontal */
     .legend { flex-wrap: nowrap; overflow-x: auto; }
     .legend::-webkit-scrollbar { display: none; }
+  }
+
+  /* En pantalla pequena subimos el contraste: el gris claro que se ve bien
+     en un monitor se pierde en un telefono al sol. */
+  @media(max-width: 768px) {
+    :root {
+      --color-text-secondary: #46505e;
+      --color-text-muted: #667283;
+    }
+    @media(prefers-color-scheme:dark){
+      :root { --color-text-secondary: #b3bcc9; --color-text-muted: #8b95a3; }
+    }
   }
 
   /* Teléfonos muy pequeños: una sola columna solo si de verdad no cabe */
@@ -568,8 +662,7 @@
   <button class="mob-tab" onclick="showSec('gastos',this)"><span class="mob-icon">&#9632;</span>Gastos</button>
   <button class="mob-tab" onclick="showSec('costos',this)"><span class="mob-icon">&#9636;</span>Costos</button>
   <button class="mob-tab" onclick="showSec('lote2025',this)"><span class="mob-icon">&#8767;</span>Mort/Peso</button>
-  <button class="mob-tab" onclick="showSec('proyecciones',this)"><span class="mob-icon">&#8594;</span>Proyecc.</button>
-  <button class="mob-tab" onclick="showSec('sensibilidad',this)"><span class="mob-icon">&#9670;</span>Sensib.</button>
+  <button class="mob-tab" onclick="showSec('simulador',this)"><span class="mob-icon">&#8734;</span>Simulador</button>
   <button class="mob-tab" onclick="showSec('recomendaciones',this)"><span class="mob-icon">&#10003;</span>Recom.</button>
   <button class="mob-tab" onclick="showSec('pereira',this)"><span class="mob-icon">&#9672;</span>Pereira</button>
 </nav>
@@ -602,11 +695,8 @@
     </button>
 
     <div class="sidebar-group-label">Analisis</div>
-    <button class="nav-item" onclick="showSec('proyecciones',this)">
-      <span class="nav-icon">&#8594;</span> Proyecciones
-    </button>
-    <button class="nav-item" onclick="showSec('sensibilidad',this)">
-      <span class="nav-icon">&#9670;</span> Sensibilidad
+    <button class="nav-item" onclick="showSec('simulador',this)">
+      <span class="nav-icon">&#8734;</span> Simulador
     </button>
     <button class="nav-item" onclick="showSec('recomendaciones',this)">
       <span class="nav-icon">&#10003;</span> Recomendaciones
@@ -644,6 +734,16 @@
   </div>
 
   <hr class="divider">
+  <p class="sec-title">Rentabilidad mensual &mdash; que tanto rinde la plata aqui</p>
+  <div class="kpi-grid" id="rentab-kpis"></div>
+  <div class="panel">
+    <div class="chart-wrap" style="height:280px"><canvas id="chartRentab"></canvas></div>
+    <p class="note">Rendimiento mensual sobre el capital empleado en cada lote, comparado con alternativas de referencia. El L.2025 cae por el brote sanitario.</p>
+  </div>
+  <div id="rentab-tabla"></div>
+  <p class="note">Rendimiento mensual = utilidad del socio 2 dividida entre el costo del lote y entre los meses que duro el ciclo. Las tasas de referencia (CDT, inflacion) son aproximadas y se pueden cambiar en el simulador.</p>
+
+  <hr class="divider">
   <p class="sec-title">Distribucion de utilidades por lote &mdash; Socio 1 / Socio 2</p>
   <div class="tbl-wrap"><table class="tbl">
     <tr><th>Lote</th><th class="r">Utilidad bruta</th><th class="c">% Socio 1</th><th class="r">Socio 1 (operador)</th><th class="r">Socio 2 (capital)</th><th class="c">Margen neto</th><th class="r">Neta / ave</th></tr>
@@ -663,30 +763,7 @@
   <p class="sec-title">Cuadro comparativo de lotes</p>
   <h2 class="sec-heading">Todos los indicadores lado a lado</h2>
 
-  <div class="tbl-wrap"><table class="tbl">
-    <tr><th>Indicador</th><th class="r">L.1525</th><th class="r">L.1625</th><th class="r">L.1725</th><th class="r">L.2025</th><th class="r">L.2526</th><th class="r">L.2626</th></tr>
-    <tr><td>Estado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c warn">ACTIVO</td></tr>
-    <tr><td>Raza</td><td class="c">Babcock Brown</td><td class="c">Hy Line Brown</td><td class="c">Babcock Brown</td><td class="c">Lohmann Brown</td><td class="c">Hy Line W-80 + Brown</td><td class="c">Babcock Brown + Azur</td></tr>
-    <tr><td>Proveedor</td><td class="c">San Marino</td><td class="c">San Marino</td><td class="c">San Marino</td><td class="c warn">Pronavicola</td><td class="c">Hy Line</td><td class="c good">San Marino</td></tr>
-    <tr><td>Fecha inicio</td><td class="c">30/05/2025</td><td class="c">09/08/2025</td><td class="c">01/09/2025</td><td class="c">19/12/2025</td><td class="c">16/05/2026</td><td class="c">16/06/2026</td></tr>
-    <tr><td>Aves recibidas</td><td class="r">5,350</td><td class="r">4,400</td><td class="r">5,750</td><td class="r">7,600</td><td class="r">3,200</td><td class="r">4,400</td></tr>
-    <tr><td>Aves vendidas / vivas</td><td class="r">4,837</td><td class="r">4,282</td><td class="r">5,630</td><td class="r">6,647</td><td class="r">3,200</td><td class="r" id="cmp-2626-vivas">4,371 vivas</td></tr>
-    <tr><td>Mortalidad</td><td class="r">9.59%</td><td class="r">3.11%</td><td class="r good">1.63%</td><td class="r warn">13.22%</td><td class="r" id="cmp-2526-mort">3.19%</td><td class="r good" id="cmp-2626-mort">0.73%</td></tr>
-    <tr><td>Peso final (g)</td><td class="r">1,355</td><td class="r">1,322</td><td class="r">1,376</td><td class="r">1,294</td><td class="r" id="cmp-2526-peso">597 (S8)</td><td class="r" id="cmp-2626-peso">195 (S3)</td></tr>
-    <tr><td>Cumpl. peso</td><td class="r">-1.8%</td><td class="r good">+1.7%</td><td class="r">-0.25%</td><td class="r warn">-2.7%</td><td class="r" id="cmp-2526-cumpl">-0.5%</td><td class="r" id="cmp-2626-cumpl">-4.1%</td></tr>
-    <tr><td>Ingreso total</td><td class="r">$130,221,000</td><td class="r">$103,281,320</td><td class="r">$146,899,000</td><td class="r">$179,202,500</td><td class="r">$85,700,000</td><td class="r">&mdash;</td></tr>
-    <tr><td>Costo total</td><td class="r">$109,016,773</td><td class="r">$85,126,961</td><td class="r">$116,628,045</td><td class="r">$165,085,084</td><td class="r">$69,213,731</td><td class="r" id="cmp-2626-costo">$34,131,861*</td></tr>
-    <tr><td>Utilidad bruta</td><td class="r">$21,204,227</td><td class="r">$18,154,359</td><td class="r good">$30,270,955</td><td class="r">$14,117,416</td><td class="r good">$16,486,269</td><td class="r">&mdash;</td></tr>
-    <tr><td>Particip. socio 1</td><td class="c">17.5%</td><td class="c">17.5%</td><td class="c">17.5%</td><td class="c warn">35%</td><td class="c warn">35%</td><td class="c warn">35%</td></tr>
-    <tr><td>Utilidad socio 2 (capital)</td><td class="r">$17,493,487</td><td class="r">$14,977,346</td><td class="r good">$24,973,538</td><td class="r">$9,176,320</td><td class="r good">$10,716,075</td><td class="r">&mdash;</td></tr>
-    <tr><td>Margen (bruto)</td><td class="r">16.3%</td><td class="r">17.6%</td><td class="r good">20.6%</td><td class="r warn">7.9%</td><td class="r good">19.2%</td><td class="r">&mdash;</td></tr>
-    <tr><td>Precio / ave</td><td class="r">$26,922</td><td class="r">$24,120</td><td class="r">$26,092</td><td class="r good">$26,960</td><td class="r">$26,781</td><td class="r">&mdash;</td></tr>
-    <tr><td>Costo / ave</td><td class="r">$22,538</td><td class="r">$19,880</td><td class="r good">$20,715</td><td class="r warn">$24,836</td><td class="r good">$21,629</td><td class="r" id="cmp-2626-costoave">$7,757*</td></tr>
-    <tr><td>Utilidad / ave</td><td class="r">$4,384</td><td class="r">$4,240</td><td class="r good">$5,377</td><td class="r warn">$2,124</td><td class="r good">$5,152</td><td class="r">&mdash;</td></tr>
-    <tr><td>Arriendo / mes</td><td class="r">$1,000,000</td><td class="r">$880,000</td><td class="r">$1,140,000</td><td class="r warn">$1,710,000</td><td class="r good">$720,000</td><td class="r">$990,000</td></tr>
-    <tr><td>Medicamentos</td><td class="r">$1,645,800</td><td class="r">$2,524,450</td><td class="r good">$255,500</td><td class="r warn">$5,749,615</td><td class="r good">$0</td><td class="r good">$0</td></tr>
-  </table></div>
-  <p class="note">* Cifras parciales del lote en curso (a la fecha de corte del encabezado). L.2526: 2,500 Hy Line W-80 (blanca) + 700 Hy Line Brown. L.2626: 4,000 Babcock Brown (San Marino) + 400 Azur. Peso y mortalidad de L.2626 sobre las 4,000 Babcock.</p>
+  <div id="comparativo-cont"></div>
 
   <hr class="divider">
   <p class="sec-title">Evolucion de indicadores clave</p>
@@ -814,155 +891,98 @@
   <div class="stats-grid" id="mp-stats-grid"></div>
 </div>
 
-<!-- ============ PROYECCIONES ============ -->
-<div class="section" id="sec-proyecciones">
-  <p class="sec-title">Lote 2025 &mdash; resultado real vs escenarios</p>
-  <h2 class="sec-heading">La liquidacion supero el mejor escenario</h2>
+<!-- ============ SIMULADOR ============ -->
+<div class="section" id="sec-simulador">
+  <p class="sec-title">Simulador</p>
+  <h2 class="sec-heading">Simulador de liquidacion de lotes</h2>
+  <p class="sec-sub">Mueve los valores y mira como cerraria un lote antes de comprometerlo. Arranca con los datos del ultimo lote liquidado (L.2526).</p>
 
-  <div class="scenario-grid cols4">
-    <div class="scenario" style="background:#378ADD15;border:1px solid #378ADD66">
-      <p class="s-title" style="color:#378ADD">REAL (may 2026)</p>
-      <p class="s-val" style="color:#378ADD">+$14.1M</p>
-      <p class="s-sub">6,647 aves &middot; $26,960/ave</p>
-      <p class="s-sub">Margen: +7.9%</p>
-    </div>
-    <div class="scenario" style="background:#1D9E7515;border:0.5px solid #1D9E7544">
-      <p class="s-title" style="color:#1D9E75">Optimista (proy.)</p>
-      <p class="s-val" style="color:#1D9E75">+$7.6M</p>
-      <p class="s-sub">6,500 aves &middot; $27,000/ave</p>
-      <p class="s-sub">Margen: +4.4%</p>
-    </div>
-    <div class="scenario" style="background:#BA751715;border:0.5px solid #BA751744">
-      <p class="s-title" style="color:#BA7517">Base (proy.)</p>
-      <p class="s-val" style="color:#BA7517">&minus;$19.7M</p>
-      <p class="s-sub">6,300 aves &middot; $24,000/ave</p>
-      <p class="s-sub">Margen: -13.0%</p>
-    </div>
-    <div class="scenario" style="background:#D4537E15;border:0.5px solid #D4537E44">
-      <p class="s-title" style="color:#D4537E">Pesimista (proy.)</p>
-      <p class="s-val" style="color:#D4537E">&minus;$57.9M</p>
-      <p class="s-sub">5,800 aves &middot; $20,000/ave</p>
-      <p class="s-sub">Margen: -49.9%</p>
-    </div>
+  <div class="sim-grid">
+    <div class="sim-campo"><label for="sim-aves">Pollitas recibidas</label>
+      <input type="number" id="sim-aves" value="4000" min="500" max="20000" step="100" oninput="simular()"></div>
+    <div class="sim-campo"><label for="sim-mort">Mortalidad esperada (%)</label>
+      <input type="number" id="sim-mort" value="4" min="0" max="30" step="0.1" oninput="simular()"></div>
+    <div class="sim-campo"><label for="sim-sem">Semanas de ciclo</label>
+      <input type="number" id="sim-sem" value="17" min="10" max="24" step="1" oninput="simular()"></div>
+    <div class="sim-campo"><label for="sim-precio">Precio de venta por ave</label>
+      <input type="number" id="sim-precio" value="26781" min="10000" max="45000" step="100" oninput="simular()"></div>
+    <div class="sim-campo"><label for="sim-cpollita">Costo pollita por ave</label>
+      <input type="number" id="sim-cpollita" value="4811" min="0" max="15000" step="50" oninput="simular()"></div>
+    <div class="sim-campo"><label for="sim-calimento">Alimento por ave</label>
+      <input type="number" id="sim-calimento" value="9483" min="0" max="25000" step="100" oninput="simular()"></div>
+    <div class="sim-campo"><label for="sim-cotros">Otros costos por ave</label>
+      <input type="number" id="sim-cotros" value="7335" min="0" max="20000" step="100" oninput="simular()"></div>
+    <div class="sim-campo"><label for="sim-socio1">Participacion socio 1 (%)</label>
+      <input type="number" id="sim-socio1" value="35" min="0" max="60" step="0.5" oninput="simular()"></div>
+    <div class="sim-campo"><label for="sim-alt">Alternativa: interes mensual (%)</label>
+      <input type="number" id="sim-alt" value="0.8" min="0" max="5" step="0.05" oninput="simular()"></div>
+  </div>
+  <div class="controls" style="margin-top:4px">
+    <button class="btn" onclick="simPreset('2526')">Cargar L.2526</button>
+    <button class="btn" onclick="simPreset('1725')">Cargar L.1725 (el mejor)</button>
+    <button class="btn" onclick="simPreset('2025')">Cargar L.2025 (el del brote)</button>
   </div>
 
+  <div class="kpi-grid" id="sim-kpis"></div>
+  <div id="sim-veredicto"></div>
+
+  <hr class="divider">
+  <p class="sec-title">Como cambia el resultado con el precio de venta</p>
   <div class="panel">
-    <div class="chart-wrap"><canvas id="chartProy"></canvas></div>
-    <p class="note">Resultado real de liquidacion vs escenarios proyectados en abril 2026. Se vendieron mas aves y a mejor precio de lo previsto.</p>
+    <div class="chart-wrap"><canvas id="chartSim"></canvas></div>
+    <p class="note" id="sim-nota">La linea marca el precio de equilibrio: por debajo de ahi el lote pierde plata.</p>
   </div>
 
   <hr class="divider">
-  <p class="sec-title">Impacto real en el negocio acumulado</p>
-  <div class="tbl-wrap"><table class="tbl">
-    <tr><th>Metrica</th><th class="r">Hasta L.2025</th><th class="r">Con L.2526</th></tr>
-    <tr><td>Utilidad bruta acum.</td><td class="r">$83,746,957</td><td class="r good">$100,233,226</td></tr>
-    <tr><td>Socio 1 (operador)</td><td class="r">$17,126,266</td><td class="r">$22,896,460</td></tr>
-    <tr><td>Socio 2 (capital)</td><td class="r">$66,620,691</td><td class="r good">$77,336,766</td></tr>
-    <tr><td>ROI socio 2</td><td class="r">44.4%</td><td class="r good">51.6%</td></tr>
-    <tr><td>Margen neto s/ingresos</td><td class="r">11.9%</td><td class="r good">12.0%</td></tr>
-    <tr><td>Neta / ave vendida</td><td class="r">$3,114</td><td class="r good">$3,144</td></tr>
-  </table></div>
-  <p class="note">El socio 1 (operador) participa con 17.5% de la utilidad en L.1525&ndash;1725 y 35% desde el L.2025 en adelante. El socio 2 (capital, $150M) recibe el resto.</p>
-
-  <hr class="divider">
-  <p class="sec-title">Proyeccion a 12 meses (jul 2026 &ndash; jun 2027)</p>
-  <div class="controls">
-    <button class="btn active" onclick="setProy12('acum')" id="btn-p12-acum">Utilidad acumulada</button>
-    <button class="btn" onclick="setProy12('socios')" id="btn-p12-socios">Por socio</button>
-  </div>
-  <div class="panel">
-    <div class="chart-wrap"><canvas id="chartProy12"></canvas></div>
-    <p class="note" id="note-p12">2 galpones en paralelo (~5 lotes/ano, ~4,000 aves/lote), ingreso estimado ~$525M/ano. Cifras netas para la sociedad (65% de la utilidad bruta).</p>
-  </div>
-
-  <div class="info"><strong>Proyeccion base (margen 15%, neta 65%):</strong> En 12 meses la sociedad podria generar ~$51.2M netos adicionales (utilidad bruta ~$78.8M, de la cual 35% es del socio operador). Neta acumulada: ~$118M. ROI neto: ~79% sobre capital de $150M.</div>
-</div>
-
-<!-- ============ SENSIBILIDAD ============ -->
-<div class="section" id="sec-sensibilidad">
-  <p class="sec-title">Punto de equilibrio y sensibilidad</p>
-  <h2 class="sec-heading">Lote 2025 &mdash; analisis de break-even (historico)</h2>
-
-  <div class="info"><strong>Resultado real:</strong> el lote se liquido en mayo 2026 con 6,647 aves a $26,960/ave = $179.2M de ingreso y <strong>+$14.1M</strong> de utilidad &mdash; muy cerca de la celda 6,500 aves &times; $27K de la matriz. Este analisis se conserva como referencia metodologica para los lotes activos.</div>
-
-  <div class="tbl-wrap"><table class="tbl">
-    <tr><th>Escenario</th><th class="r">Costo total</th><th class="c">Aves</th><th class="r">Precio min./ave</th><th class="r">vs precio historico</th></tr>
-    <tr><td>Optimista</td><td class="r">$167,855,224</td><td class="c">6,500</td><td class="r">$25,824</td><td class="r good">+$33</td></tr>
-    <tr><td>Base</td><td class="r">$170,855,224</td><td class="c">6,300</td><td class="r warn">$27,119</td><td class="r warn">-$1,328</td></tr>
-    <tr><td>Pesimista</td><td class="r">$173,855,224</td><td class="c">5,800</td><td class="r warn">$29,975</td><td class="r warn">-$4,184</td></tr>
-  </table></div>
-  <p class="note">Precio historico promedio: $25,791/ave. Solo en escenario optimista se alcanza break-even.</p>
-
-  <hr class="divider">
-  <p class="sec-title">Matriz de sensibilidad &mdash; resultado neto segun precio y aves vendidas</p>
-  <div class="panel">
-    <div class="chart-wrap" style="height:340px"><canvas id="chartHeat"></canvas></div>
-    <p class="note">Valores en millones COP. Costo base: $170M. Verde = ganancia, rojo = perdida.</p>
-  </div>
-
-  <hr class="divider">
-  <p class="sec-title">Sensibilidad por variable</p>
-  <div class="controls">
-    <button class="btn active" onclick="setSens('price')" id="btn-sens-price">Precio/ave</button>
-    <button class="btn" onclick="setSens('mortality')" id="btn-sens-mortality">Mortalidad</button>
-    <button class="btn" onclick="setSens('feed')" id="btn-sens-feed">Costo alimento</button>
-    <button class="btn" onclick="setSens('rent')" id="btn-sens-rent">Arriendo</button>
-  </div>
-  <div class="panel">
-    <div class="chart-wrap"><canvas id="chartSens"></canvas></div>
-    <p class="note" id="note-sens">Impacto en utilidad al variar el precio de venta por ave (base: $24,000, 6,300 aves).</p>
-  </div>
+  <p class="sec-title">Detalle del calculo</p>
+  <div id="sim-detalle"></div>
 </div>
 
 <!-- ============ RECOMENDACIONES ============ -->
 <div class="section" id="sec-recomendaciones">
-  <p class="sec-title">Conclusiones y recomendaciones</p>
-  <h2 class="sec-heading">Plan de accion</h2>
+  <p class="sec-title">Conclusiones y plan de accion</p>
+  <h2 class="sec-heading">Donde esta el negocio y que sigue</h2>
+  <p class="sec-sub">Actualizado con el cierre del lote 2526. Las acciones se revisan cada vez que se liquida un lote.</p>
 
   <div class="info">
-    <strong>Hallazgos positivos</strong><br>
-    &bull; $100.2M utilidad bruta en 5 lotes ($77.3M netos socio 2), ROI neto 51.6%<br>
-    &bull; El L.2526 cerro en 19.2% de margen y $5,152/ave &mdash; el segundo mejor de la granja, y la primera experiencia con polla blanca fue exitosa<br>
-    &bull; Lote 2025 se recupero: pese a mortalidad 13.22%, cerro en +$14.1M con precio record ($26,960/ave)<br>
-    &bull; Recomendaciones implementadas: regreso a San Marino/Babcock (L.2626) y operacion con 2 galpones en paralelo<br>
-    &bull; Arriendos de los lotes activos muy por debajo del L.2025: $720K y $990K/mes (vs $1.71M)<br>
-    &bull; Cero gasto en medicamentos en ambos lotes activos a la fecha
+    <strong>Lo que va bien</strong><br>
+    &bull; <strong>$100.2M de utilidad bruta</strong> en 5 lotes liquidados; al socio 2 le han quedado <strong>$77.3M</strong> sobre $150M aportados (ROI neto 51.6%)<br>
+    &bull; El negocio rinde alrededor de <strong>3.6% mensual</strong> sobre el capital de cada lote: unas 4 veces un CDT<br>
+    &bull; El L.2526 cerro en 19.2% de margen y $5,152 por ave &mdash; segundo mejor de la granja &mdash; y valido la polla blanca, que se vendio a $27,000<br>
+    &bull; La mortalidad volvio a niveles sanos: 4.06% en el 2526 y 2.16% en el 2626, lejos del 13.22% del brote<br>
+    &bull; El concentrado, que es el 45% del costo, lleva un ano estable e incluso mas barato que hace doce meses
   </div>
   <div class="alert">
-    <strong>Alertas y pendientes</strong><br>
-    &bull; El brote del L.2025 costo ~10 puntos de margen (8.1% vs 18.3% historico): ~$18M de utilidad no realizada<br>
-    &bull; La participacion del socio operador subio de 17.5% a 35%: con margenes normales (~18%) el negocio sigue siendo atractivo (ROI neto ~12%/lote), pero con margenes bajos (L.2025: 8.1%) la neta se adelgaza mucho &mdash; cuidar costos y precio de venta<br>
-    &bull; L.2526 entra a las semanas 10&ndash;14, la ventana del brote del L.2025 &mdash; maxima vigilancia<br>
-    &bull; L.2526: mortalidad 3.19% concentrada en sem 1 (54 aves) + 12 ahogadas en sem 5 &mdash; revisar recepcion y bebederos<br>
-    &bull; Estirpes nuevas sin historial propio: Hy Line W-80 (blanca) y Azur &mdash; monitorear curvas vs guia<br>
-    &bull; Pereira arranco su lote 2726 (23-jul, 4,800 aves): exige seguimiento propio y no debe mezclarse con las cifras de Tulua
+    <strong>Lo que hay que vigilar</strong><br>
+    &bull; <strong>Pereira viene liviano:</strong> los lotes 2726 y 2826 estan por debajo de la guia de peso, muy distinto a Tulua. Un lote liviano se paga menos<br>
+    &bull; <strong>Compras de alimento de afan:</strong> los pedidos de menos de 25 bultos se pagan ~11% mas caros. En lo que va de 2026 eso costo cerca de <strong>$1M</strong><br>
+    &bull; <strong>Cruce de aves entre lotes:</strong> el 2526 facturo 3,200 aves cuando tenia 3,070 vivas, y le paso 12 bultos de alimento al 2626. Hay que dejar claro como se liquidan esos cruces<br>
+    &bull; Quedan <strong>$119,980 a favor de la sociedad</strong> por el ajuste del L.2025 con el socio 1
   </div>
 
   <hr class="divider">
-  <p class="sec-title">Acciones urgentes (30 dias)</p>
+  <p class="sec-title">Ahora (proximas semanas)</p>
   <ul class="rec-list">
-    <li class="urg"><strong>Revisar el peso en Pereira</strong>: los lotes 2726 y 2826 vienen por debajo de la guia, muy distinto a Tulua</li>
-    <li class="urg"><strong>Completar plan vacunal</strong> de ambos lotes segun calendario (Plan Vac. del registro)</li>
-    <li class="urg"><strong>Formalizar por escrito</strong> el esquema del socio operador (17.5% lotes 1525&ndash;1725, 35% desde L.2025 en adelante)</li>
-    <li class="urg"><strong>Cerrar el ajuste de $119,980</strong> con el socio 1 por la liquidacion del L.2025 (formulas corregidas jul-2026)</li>
+    <li class="urg"><strong>Revisar el peso en Pereira</strong> con el galponero: consumo real por ave, densidad y calidad del concentrado</li>
+    <li class="urg"><strong>Pre-negociar la venta del L.2626</strong> (liquida en octubre) con minimo 3 compradores, como se hizo con el 2526</li>
+    <li class="urg"><strong>Cerrar el cruce de aves y alimento</strong> entre el 2526 y el 2626 para que cada lote cargue lo suyo</li>
   </ul>
 
   <p class="sec-title" style="margin-top:16px">Mediano plazo (3-6 meses)</p>
   <ul class="rec-list">
-    <li class="med"><strong>Pre-negociar venta L.2626</strong> (liquidacion estimada oct 2026) con minimo 3 compradores, como se hizo con el 2526</li>
-    <li class="med"><strong>Documentar protocolos bioseguridad</strong> basados en L.1725 y L.2626 (mejores arranques)</li>
-    <li class="med"><strong>Seguro avicola</strong> para mitigar eventos sanitarios (el brote del L.2025 costo ~$18M)</li>
-    <li class="med"><strong>Galponero de respaldo</strong> para eliminar dependencia de Orlando</li>
-    <li class="med"><strong>Evaluar mercado de polla blanca</strong> (Hy Line W-80): precio y demanda vs marron antes de repetir</li>
+    <li class="med"><strong>Comprar el concentrado en pedidos de 25 bultos o mas</strong>: por debajo de eso se paga ~11% mas caro, y es el insumo que mas pesa</li>
+    <li class="med"><strong>Repetir la formula del 2526</strong>: arriendo bajo, cero medicamentos y venta pre-negociada</li>
+    <li class="med"><strong>Documentar los protocolos</strong> de los mejores lotes (1725 y 2526) para que no dependan de la memoria de una persona</li>
+    <li class="med"><strong>Seguro avicola</strong>: el brote del 2025 costo cerca de $18M de utilidad</li>
+    <li class="med"><strong>Galponero de respaldo</strong> para no depender de una sola persona</li>
   </ul>
 
   <p class="sec-title" style="margin-top:16px">Largo plazo (6-24 meses)</p>
   <ul class="rec-list">
-    <li class="lng"><strong>Galpon propio</strong> ($80-150M inversion, ahorro $40-60M/ano en arriendo)</li>
-    <li class="lng"><strong>Escalar a 10,000+ aves</strong> simultaneas entre galpones para economias de escala</li>
-    <li class="lng"><strong>Produccion de huevo</strong> &mdash; evaluar integracion vertical</li>
-    <li class="lng"><strong>Certificacion BPA-ICA</strong> para mercados premium</li>
-    <li class="lng"><strong>Acuerdo formal de socios</strong> con reglas claras por escrito</li>
+    <li class="lng"><strong>Galpon propio</strong>: el arriendo se lleva entre $700K y $1.7M al mes</li>
+    <li class="lng"><strong>Acuerdo de socios por escrito</strong>, incluyendo el esquema del operador (17.5% / 35%)</li>
+    <li class="lng"><strong>Escalar lotes simultaneos</strong> aprovechando que la operacion ya maneja dos galpones</li>
+    <li class="lng"><strong>Certificacion BPA-ICA</strong> para abrir mercados que pagan mejor</li>
   </ul>
 
   <hr class="divider">
@@ -1179,13 +1199,14 @@ const totalesBarra = {
   }
 };
 if (window.Chart) Chart.register(totalesBarra);
+const IS_MOBILE_EARLY = matchMedia('(max-width:768px)').matches;
 const gridC = isDark ? 'rgba(255,255,255,.06)' : 'rgba(16,24,40,.06)';
 const tickC = isDark ? '#8b95a3' : '#6b7684';
 
 // Defaults globales de Chart.js: tipografia consistente y tooltips legibles
 if (window.Chart) {
   Chart.defaults.font.family = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-  Chart.defaults.font.size = 11.5;
+  Chart.defaults.font.size = IS_MOBILE_EARLY ? 13 : 11.5;
   Chart.defaults.color = tickC;
   Chart.defaults.animation.duration = 500;
   Chart.defaults.animation.easing = 'easeOutQuart';
@@ -1279,13 +1300,12 @@ function showSec(id, el) {
   const mc = document.querySelector('.main-content');
   if(mc) mc.scrollTop = 0;
   if(id==='resumen' && !charts.resumen) initResumen();
-  if(id==='comparativo' && !charts.comp) initComp();
+  if(id==='comparativo') { renderComparativo(); if(!charts.comp) buildComp(); }
   if(id==='consumo' && !charts.consumo) initConsumo();
   if(id==='gastos' && !charts.gastos) initGastos();
   if(id==='costos' && !charts.costos) initCostos();
   if(id==='lote2025' && !charts.l2025) init2025();
-  if(id==='proyecciones' && !charts.proy) initProy();
-  if(id==='sensibilidad' && !charts.heat) initSens();
+  if(id==='simulador') simular();
   if(id==='pereira') { renderPereira(); initPereira(); }
 }
 
@@ -1304,8 +1324,8 @@ const baseOpts = (yFmt) => ({
   interaction:{mode:'index',intersect:false},
   plugins:{legend:{display:false}},
   scales:{
-    x:{ticks:{font:{size:11},color:tickC},grid:{display:false},border:{color:gridC}},
-    y:{ticks:{font:{size:11},color:tickC,callback:yFmt||((v)=>v),padding:6},grid:{color:gridC},border:{display:false}}
+    x:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC},grid:{display:false},border:{color:gridC}},
+    y:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,callback:yFmt||((v)=>v),padding:6},grid:{color:gridC},border:{display:false}}
   }
 });
 
@@ -1335,9 +1355,9 @@ function initResumen() {
         tooltip:{itemSort:null, callbacks:{label:c=>' '+c.dataset.label+': $'+c.parsed[IS_MOBILE?'x':'y']+'M'}}},
       scales: IS_MOBILE
         ? {x:{ticks:{font:{size:10},color:tickC,callback:v=>'$'+v+'M'},grid:{color:gridC}},
-           y:{ticks:{font:{size:11},color:tickC},grid:{display:false}}}
-        : {x:{ticks:{font:{size:11},color:tickC},grid:{display:false}},
-           y:{ticks:{font:{size:11},color:tickC,callback:v=>'$'+v+'M',padding:6},grid:{color:gridC},border:{display:false}}}
+           y:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC},grid:{display:false}}}
+        : {x:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC},grid:{display:false}},
+           y:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,callback:v=>'$'+v+'M',padding:6},grid:{color:gridC},border:{display:false}}}
     }
   });
 }
@@ -1352,7 +1372,122 @@ const COMP_DATA = {
   meds: {label:'Medicamentos (M COP)',data:[1.65,2.52,0.26,5.75,0,0],labels:['L.1525','L.1625','L.1725','L.2025','L.2526','L.2626'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2','#0D9488'],note:'Medicamentos L.2025 ($5.75M) fueron 4x el promedio. Lotes activos: $0 a la fecha.'}
 };
 
-function initComp() { buildComp(); }
+
+// ====== COMPARATIVO (se arma desde los datos, no a mano) ======
+// Solo van aqui los datos que no estan en DATA: raza, proveedor, fecha y arriendo.
+const CMP_META = {
+  '1525': {raza:'Babcock Brown',          prov:'San Marino',  inicio:'30/05/2025', arriendo:1000000},
+  '1625': {raza:'Hy Line Brown',          prov:'San Marino',  inicio:'09/08/2025', arriendo:880000},
+  '1725': {raza:'Babcock Brown',          prov:'San Marino',  inicio:'01/09/2025', arriendo:1140000},
+  '2025': {raza:'Lohmann Brown',          prov:'Pronavicola', inicio:'19/12/2025', arriendo:1710000, alerta:'prov'},
+  '2526': {raza:'Hy Line W-80 + Brown',   prov:'Hy Line',     inicio:'16/05/2026', arriendo:720000},
+  '2626': {raza:'Babcock Brown + Azur',   prov:'San Marino',  inicio:'16/06/2026', arriendo:990000, bueno:'prov'}
+};
+const SOCIO1_PCT = {'1525':0.175,'1625':0.175,'1725':0.175,'2025':0.35,'2526':0.35,'2626':0.35};
+
+function cmpFilas() {
+  const N = v => Number(v).toLocaleString('en-US');
+  const $ = v => '$' + N(Math.round(v));
+  const lotes = Object.keys(DATA.totals);
+  const val = k => {
+    const t = DATA.totals[k] || {}, s = MP_STATS[k] || {}, m = CMP_META[k] || {};
+    const cat = DATA.costs_cat[k] || {};
+    const liq = !!t.ingreso;
+    const aves = liq ? t.aves : (s.pollitas - s.mort_total);
+    const bruta = t.utilidad || 0;
+    const s1 = SOCIO1_PCT[k] || 0.35;
+    return {liq, aves, bruta, s1, t, s, m, cat};
+  };
+  const G = [
+    ['Identificacion', [
+      ['Estado',        k => { const d = val(k); return d.liq
+          ? '<span class="pill pill-ok">Liquidado</span>'
+          : '<span class="pill pill-act">Activo</span>'; }, 'c'],
+      ['Raza',          k => (CMP_META[k]||{}).raza || '-', 'c'],
+      ['Proveedor',     k => { const m = CMP_META[k]||{};
+          const cls = m.alerta === 'prov' ? ' class="warn"' : (m.bueno === 'prov' ? ' class="good"' : '');
+          return '<span' + cls + '>' + (m.prov||'-') + '</span>'; }, 'c'],
+      ['Fecha inicio',  k => (CMP_META[k]||{}).inicio || '-', 'c']
+    ]],
+    ['Desempeno operativo', [
+      ['Aves recibidas',  k => N((MP_STATS[k]||{}).pollitas || 0), 'r'],
+      ['Aves vendidas',   k => { const d = val(k); return N(d.aves) + (d.liq ? '' : ' vivas'); }, 'r'],
+      ['Mortalidad',      k => { const s = MP_STATS[k]||{}; const v = Number(s.mort_pct||0);
+          const cls = v <= 2 ? 'good' : (v > 8 ? 'warn' : '');
+          return '<span class="' + cls + '">' + v.toFixed(2) + '%</span>'; }, 'r'],
+      ['Peso final (g)',  k => { const s = MP_STATS[k]||{}; const d = val(k);
+          return N(s.peso_final || 0) + (d.liq ? '' : ' (S' + (s.semanas||0) + ')'); }, 'r'],
+      ['Cumpl. peso',     k => { const s = MP_STATS[k]||{}; const v = Number(s.cumpl||0);
+          const cls = v >= 0 ? 'good' : (v < -5 ? 'warn' : '');
+          return '<span class="' + cls + '">' + (v>=0?'+':'') + v + '%</span>'; }, 'r'],
+      ['Semanas',         k => (MP_STATS[k]||{}).semanas || '-', 'r']
+    ]],
+    ['Resultado financiero', [
+      ['Ingreso total',   k => { const d = val(k); return d.liq ? $(d.t.ingreso) : '&mdash;'; }, 'r'],
+      ['Costo total',     k => $( (DATA.totals[k]||{}).costo || 0 ) + (val(k).liq ? '' : '*'), 'r'],
+      ['Utilidad bruta',  k => { const d = val(k); return d.liq
+          ? '<span class="' + (d.bruta/d.t.ingreso > 0.18 ? 'good' : '') + '">' + $(d.bruta) + '</span>' : '&mdash;'; }, 'r'],
+      ['Particip. socio 1', k => '<span class="' + (SOCIO1_PCT[k] > 0.2 ? 'warn' : '') + '">' +
+          (SOCIO1_PCT[k]*100) + '%</span>', 'c'],
+      ['Utilidad socio 2', k => { const d = val(k); return d.liq ? $(d.bruta * (1 - d.s1)) : '&mdash;'; }, 'r'],
+      ['Margen bruto',    k => { const d = val(k); if (!d.liq) return '&mdash;';
+          const v = d.bruta / d.t.ingreso * 100;
+          return '<span class="' + (v >= 18 ? 'good' : (v < 10 ? 'warn' : '')) + '">' + v.toFixed(1) + '%</span>'; }, 'r'],
+      ['Precio / ave',    k => { const d = val(k); return d.liq ? $(d.t.ingreso / d.aves) : '&mdash;'; }, 'r'],
+      ['Costo / ave',     k => { const d = val(k);
+          return $( (DATA.totals[k]||{}).costo / (d.liq ? d.aves : (MP_STATS[k]||{}).pollitas || 1) ) + (d.liq ? '' : '*'); }, 'r'],
+      ['Utilidad / ave',  k => { const d = val(k); if (!d.liq) return '&mdash;';
+          const v = d.bruta / d.aves;
+          return '<span class="' + (v >= 5000 ? 'good' : (v < 3000 ? 'warn' : '')) + '">' + $(v) + '</span>'; }, 'r']
+    ]],
+    ['Costos de referencia', [
+      ['Arriendo / mes',  k => { const a = (CMP_META[k]||{}).arriendo || 0;
+          return '<span class="' + (a > 1500000 ? 'warn' : (a < 900000 ? 'good' : '')) + '">' + $(a) + '</span>'; }, 'r'],
+      ['Medicamentos',    k => { const v = (DATA.costs_cat[k]||{}).Medicam || 0;
+          return '<span class="' + (v < 500000 ? 'good' : (v > 3000000 ? 'warn' : '')) + '">' + $(v) + '</span>'; }, 'r']
+    ]]
+  ];
+  return {lotes, G};
+}
+
+function renderComparativo() {
+  const cont = document.getElementById('comparativo-cont');
+  if (!cont) return;
+  const {lotes, G} = cmpFilas();
+  let html;
+
+  if (IS_MOBILE) {
+    // En movil: una tarjeta por lote. Leer una tabla de 7 columnas en un
+    // telefono es imposible, sobre todo para vista cansada.
+    html = lotes.slice().reverse().map(k => {
+      const liq = !!(DATA.totals[k]||{}).ingreso;
+      let filas = '';
+      G.forEach(grupo => {
+        filas += '<p class="cmp-grupo">' + grupo[0] + '</p>';
+        grupo[1].forEach(f => {
+          filas += '<div class="cmp-fila"><span class="cmp-et">' + f[0] + '</span>' +
+                   '<span class="cmp-val">' + f[1](k) + '</span></div>';
+        });
+      });
+      return '<div class="cmp-card' + (liq ? '' : ' cmp-activo') + '">' +
+        '<p class="cmp-titulo">Lote ' + k + (liq ? '' : ' &middot; en curso') + '</p>' + filas + '</div>';
+    }).join('');
+  } else {
+    html = '<div class="tbl-wrap"><table class="tbl"><tr><th>Indicador</th>' +
+      lotes.map(k => '<th class="r">L.' + k + '</th>').join('') + '</tr>';
+    G.forEach(grupo => {
+      html += '<tr class="grupo"><td colspan="' + (lotes.length + 1) + '">' + grupo[0] + '</td></tr>';
+      grupo[1].forEach(f => {
+        html += '<tr><td>' + f[0] + '</td>' +
+          lotes.map(k => '<td class="' + f[2] + '">' + f[1](k) + '</td>').join('') + '</tr>';
+      });
+    });
+    html += '</table></div>';
+  }
+  cont.innerHTML = html + '<p class="note">* Cifras parciales del lote en curso, a la fecha de corte del encabezado.</p>';
+}
+
+function initComp() { renderComparativo(); buildComp(); }
 function setCompMetric(m) {
   compMetric = m;
   ['margin','profit_bird','mortality','rent','meds'].forEach(x=>document.getElementById('btn-comp-'+x).classList.toggle('active',x===m));
@@ -1398,7 +1533,7 @@ function buildCostos() {
       type:'bar',
       data:{labels, datasets},
       options:{...baseOpts(costView==='pct'?v=>v+'%':v=>fmt(v)),
-        scales:{x:{stacked:true,ticks:{font:{size:11},color:tickC},grid:{display:false}},y:{stacked:true,ticks:{font:{size:11},color:tickC,callback:costView==='pct'?v=>v+'%':v=>fmt(v)},grid:{color:gridC}}},
+        scales:{x:{stacked:true,ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC},grid:{display:false}},y:{stacked:true,ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,callback:costView==='pct'?v=>v+'%':v=>fmt(v)},grid:{color:gridC}}},
         plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10},usePointStyle:true,pointStyle:'rectRounded'}},
           totalesBarra:{fmt:v=>costView==='pct'?Math.round(v)+'%':fmt(v)},
           tooltip:{callbacks:{label:c=>c.parsed.y>0?' '+c.dataset.label+': '+(costView==='pct'?c.parsed.y+'%':'$'+Math.round(c.parsed.y).toLocaleString('es-CO')):null}}}}
@@ -1414,7 +1549,7 @@ function buildCostos() {
       type:'bar',
       data:{labels, datasets},
       options:{...baseOpts(v=>'$'+v.toLocaleString()),
-        scales:{x:{stacked:true,ticks:{font:{size:11},color:tickC},grid:{display:false}},y:{stacked:true,ticks:{font:{size:11},color:tickC,callback:v=>'$'+v.toLocaleString()},grid:{color:gridC}}},
+        scales:{x:{stacked:true,ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC},grid:{display:false}},y:{stacked:true,ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,callback:v=>'$'+v.toLocaleString()},grid:{color:gridC}}},
         plugins:{legend:{display:true,position:'bottom',labels:{font:{size:10},usePointStyle:true,pointStyle:'rectRounded'}},
           totalesBarra:{fmt:v=>'$'+Math.round(v).toLocaleString('es-CO')},
           tooltip:{callbacks:{label:c=>c.parsed.y>0?' '+c.dataset.label+': $'+c.parsed.y.toLocaleString('es-CO')+'/ave':null}}}}
@@ -1523,41 +1658,13 @@ function build2025() {
         label:c=>c.parsed.y===null?null:' '+c.dataset.label+': '+c.parsed.y.toLocaleString('es-CO')+units[view2025]
       }}},
       scales:{
-        x:{ticks:{font:{size:11},color:tickC,autoSkip:IS_MOBILE},grid:{color:gridC}},
-        y:{ticks:{font:{size:11},color:tickC,callback:yFmt},grid:{color:gridC}}
+        x:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,autoSkip:IS_MOBILE},grid:{color:gridC}},
+        y:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,callback:yFmt},grid:{color:gridC}}
       }
     }
   });
 }
 
-// ========== PROYECCIONES CHART ==========
-function initProy() {
-  charts.proy = new Chart(document.getElementById('chartProy'), {
-    type:'bar',
-    data:{
-      labels:['Ingreso','Costo total','Resultado'],
-      datasets:[
-        {label:'REAL',data:[179.2,165.1,14.1],backgroundColor:'#378ADD',borderRadius:3},
-        {label:'Optimista',data:[175.5,167.9,7.6],backgroundColor:'#1D9E75',borderRadius:3},
-        {label:'Base',data:[151.2,170.9,-19.7],backgroundColor:'#BA7517',borderRadius:3},
-        {label:'Pesimista',data:[116.0,173.9,-57.9],backgroundColor:'#D4537E',borderRadius:3}
-      ]
-    },
-    options:{...baseOpts(v=>'$'+v+'M'),
-      plugins:{legend:{display:true,position:'top',labels:{font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}},
-        totalesBarra:{enabled:!IS_MOBILE, fmt:v=>'$'+v.toFixed(0)+'M'},
-        tooltip:{callbacks:{label:c=>' '+c.dataset.label+': $'+c.parsed.y.toFixed(1)+'M'}}}}
-  });
-  initProy12();
-}
-
-let proy12View = 'acum';
-function initProy12() { buildProy12(); }
-function setProy12(v) {
-  proy12View = v;
-  ['acum','socios'].forEach(x=>document.getElementById('btn-p12-'+x).classList.toggle('active',x===v));
-  buildProy12();
-}
 function buildProy12() {
   if(charts.proy12) charts.proy12.destroy();
   const months = ['Jul','Ago','Sep','Oct','Nov','Dic','Ene','Feb','Mar','Abr','May','Jun'];
@@ -1595,141 +1702,6 @@ function buildProy12() {
   }
 }
 
-// ========== SENSIBILIDAD ==========
-function initSens() {
-  buildHeatmap();
-  buildSensChart();
-}
-
-function buildHeatmap() {
-  const prices = [18000,20000,22000,24000,26000,28000,30000];
-  const priceLabels = ['$18K','$20K','$22K','$24K','$26K','$28K','$30K'];
-  const birds = [5500,5800,6000,6300,6500,6800];
-  const birdLabels = birds.map(b=>b.toLocaleString('es-CO'));
-  const cost = 170000000;
-
-  const canvas = document.getElementById('chartHeat');
-  const ctx2 = canvas.getContext('2d');
-
-  charts.heat = {destroy:()=>{}};
-
-  function drawHeat() {
-    const rect = canvas.parentElement.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
-    canvas.style.width = rect.width + 'px';
-    canvas.style.height = rect.height + 'px';
-    ctx2.scale(dpr, dpr);
-
-    const W = rect.width, H = rect.height;
-    const compacto = W < 480;
-    const padL = compacto ? 42 : 60, padR = compacto ? 8 : 15, padT = 10, padB = compacto ? 42 : 50;
-    const cols = birds.length, rows = prices.length;
-    const cellW = (W - padL - padR) / cols;
-    const cellH = (H - padT - padB) / rows;
-    const fCell = cellW < 48 ? 8 : (cellW < 62 ? 10 : 12);
-    const fAxis = compacto ? 10 : 12;
-
-    ctx2.clearRect(0, 0, W, H);
-
-    prices.forEach((p, pi) => {
-      birds.forEach((b, bi) => {
-        const val = (p * b - cost) / 1e6;
-        const x = padL + bi * cellW;
-        const y = padT + (rows - 1 - pi) * cellH;
-
-        const ratio = Math.max(-1, Math.min(1, val / 60));
-        let r, g, bl;
-        if (ratio < 0) {
-          r = 220; g = Math.round(180 + ratio * 140); bl = Math.round(180 + ratio * 100);
-        } else {
-          r = Math.round(220 - ratio * 180); g = 180; bl = 100;
-        }
-        ctx2.fillStyle = 'rgba(' + r + ',' + g + ',' + bl + ',0.75)';
-        ctx2.fillRect(x + 1, y + 1, cellW - 2, cellH - 2);
-
-        ctx2.strokeStyle = isDark ? '#333' : '#fff';
-        ctx2.lineWidth = 1;
-        ctx2.strokeRect(x + 1, y + 1, cellW - 2, cellH - 2);
-
-        ctx2.fillStyle = Math.abs(val) > 25 ? '#fff' : (isDark ? '#ddd' : '#333');
-        ctx2.font = '600 ' + fCell + 'px -apple-system, sans-serif';
-        ctx2.textAlign = 'center';
-        ctx2.textBaseline = 'middle';
-        ctx2.fillText((val >= 0 ? '+' : '') + val.toFixed(1) + 'M', x + cellW / 2, y + cellH / 2);
-      });
-    });
-
-    ctx2.fillStyle = tickC;
-    ctx2.font = fAxis + 'px -apple-system, sans-serif';
-    ctx2.textAlign = 'right';
-    ctx2.textBaseline = 'middle';
-    prices.forEach((p, pi) => {
-      const y = padT + (rows - 1 - pi) * cellH + cellH / 2;
-      ctx2.fillText(priceLabels[pi], padL - 8, y);
-    });
-
-    ctx2.textAlign = 'center';
-    ctx2.textBaseline = 'top';
-    birds.forEach((b, bi) => {
-      const x = padL + bi * cellW + cellW / 2;
-      ctx2.fillText(birdLabels[bi], x, padT + rows * cellH + 8);
-    });
-
-    ctx2.font = '600 ' + (compacto ? 9 : 11) + 'px -apple-system, sans-serif';
-    ctx2.fillStyle = isDark ? '#aaa' : '#555';
-    ctx2.textAlign = 'center';
-    ctx2.fillText('Aves vendidas', padL + (W - padL - padR) / 2, H - 6);
-    ctx2.save();
-    ctx2.translate(compacto ? 10 : 14, padT + (H - padT - padB) / 2);
-    ctx2.rotate(-Math.PI / 2);
-    ctx2.fillText('Precio / ave', 0, 0);
-    ctx2.restore();
-  }
-  setTimeout(drawHeat, 100);
-  window.addEventListener('resize', drawHeat);
-}
-
-let sensVar = 'price';
-function setSens(v) {
-  sensVar = v;
-  ['price','mortality','feed','rent'].forEach(x=>document.getElementById('btn-sens-'+x).classList.toggle('active',x===v));
-  buildSensChart();
-}
-function buildSensChart() {
-  if(charts.sens) charts.sens.destroy();
-  const base_birds = 6300, base_price = 24000, base_cost = 170855224;
-  let labels, data, note;
-
-  if(sensVar === 'price') {
-    labels = ['$18K','$20K','$22K','$24K','$26K','$28K','$30K'];
-    data = [18000,20000,22000,24000,26000,28000,30000].map(p=>+((p*base_birds-base_cost)/1e6).toFixed(1));
-    note = 'Resultado neto variando precio de venta (6,300 aves, costo $170.9M).';
-  } else if(sensVar === 'mortality') {
-    labels = ['2%','5%','8%','10%','13%','15%','20%'];
-    data = [2,5,8,10,13,15,20].map(m=>{const a=Math.round(7600*(1-m/100));return +((a*base_price-base_cost)/1e6).toFixed(1);});
-    note = 'Resultado variando mortalidad total (7,600 aves iniciales, $24K/ave).';
-  } else if(sensVar === 'feed') {
-    labels = ['-10%','-5%','0%','+5%','+10%','+15%','+20%'];
-    data = [-10,-5,0,5,10,15,20].map(p=>{const fc=74922600*(1+p/100);const tc=base_cost-74922600+fc;return +((base_birds*base_price-tc)/1e6).toFixed(1);});
-    note = 'Resultado variando costo de alimento (base: $74.9M, 48% del costo total).';
-  } else {
-    labels = ['$800K','$1M','$1.2M','$1.4M','$1.7M','$2M','$2.5M'];
-    data = [800000,1000000,1200000,1400000,1710000,2000000,2500000].map(r=>{const rc=r*4;const tc=base_cost-6840000+rc;return +((base_birds*base_price-tc)/1e6).toFixed(1);});
-    note = 'Resultado variando arriendo mensual (4 meses de ciclo).';
-  }
-
-  const colors = data.map(v=>v>=0?'#1D9E75':'#D4537E');
-  charts.sens = new Chart(document.getElementById('chartSens'), {
-    type:'bar',
-    data:{labels, datasets:[{data,backgroundColor:colors,borderRadius:3,borderSkipped:false}]},
-    options:{...baseOpts(v=>'$'+v+'M'),plugins:{legend:{display:false},
-      totalesBarra:{fmt:v=>'$'+v.toFixed(0)+'M'},
-      tooltip:{callbacks:{label:c=>' Resultado: $'+c.parsed.y+'M'}}}}
-  });
-  document.getElementById('note-sens').textContent = note;
-}
 
 // ========== CONSUMO SECTION ==========
 const CONSUMO_LOTES = {
@@ -1786,7 +1758,7 @@ function buildConsumo(){
     type:'line',data:{labels,datasets},
     options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y===null?null:' '+c.dataset.label+': '+c.parsed.y.toLocaleString('es-CO')+' '+m.yLabel}}},
-      scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:IS_MOBILE},grid:{color:gridC}},y:{ticks:{font:{size:11},color:tickC,callback:v=>v.toLocaleString('es-CO')},grid:{color:gridC}}}}
+      scales:{x:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,autoSkip:IS_MOBILE},grid:{color:gridC}},y:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,callback:v=>v.toLocaleString('es-CO')},grid:{color:gridC}}}}
   });
 }
 function renderCStats(){
@@ -1842,19 +1814,19 @@ function buildGastos(){
   if(gView==='semanal'){
     const labels=Array.from({length:18},(_,i)=>'S'+(i+1));
     const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k).map((v,i)=>v===0&&i>0?null:v);return lineaLote(k, wt, {label:G_LABELS[k]});});
-    cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': '+gFmtFull(c.parsed.y)}}},scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:IS_MOBILE},grid:{color:gridC}},y:{ticks:{font:{size:11},color:tickC,callback:v=>gFmt(v)},grid:{color:gridC}}}}};
+    cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': '+gFmtFull(c.parsed.y)}}},scales:{x:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,autoSkip:IS_MOBILE},grid:{color:gridC}},y:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,callback:v=>gFmt(v)},grid:{color:gridC}}}}};
   } else if(gView==='acumulado'){
     const labels=Array.from({length:18},(_,i)=>'S'+(i+1));
     const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k);let acc=0;const data=wt.map((v,i)=>{if(v===0&&i>2&&acc===wt.slice(0,i).reduce((s,x)=>s+x,0))return null;acc+=v;return acc;});return lineaLote(k, data, {label:G_LABELS[k], fill:true, backgroundColor:G_COLORS[k]+'10'});});
-    cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': '+gFmtFull(c.parsed.y)}}},scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:IS_MOBILE},grid:{color:gridC}},y:{ticks:{font:{size:11},color:tickC,callback:v=>gFmt(v)},grid:{color:gridC}}}}};
+    cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': '+gFmtFull(c.parsed.y)}}},scales:{x:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,autoSkip:IS_MOBILE},grid:{color:gridC}},y:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,callback:v=>gFmt(v)},grid:{color:gridC}}}}};
   } else if(gView==='por_ave'){
     const labels=Array.from({length:18},(_,i)=>'S'+(i+1));
     const datasets=aLotes.map(k=>{const wt=gWeeklyTotal(k);const pol=G_POLLITAS[k];let acc=0;const data=wt.map((v,i)=>{if(v===0&&i>2)return null;acc+=v;return Math.round(acc/pol);});return lineaLote(k, data, {label:G_LABELS[k]});});
-    cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': $'+c.parsed.y.toLocaleString('es-CO')+'/ave'}}},scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:IS_MOBILE},grid:{color:gridC}},y:{ticks:{font:{size:11},color:tickC,callback:v=>'$'+v.toLocaleString()},grid:{color:gridC}}}}};
+    cfg={type:'line',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y==null?null:' '+c.dataset.label+': $'+c.parsed.y.toLocaleString('es-CO')+'/ave'}}},scales:{x:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,autoSkip:IS_MOBILE},grid:{color:gridC}},y:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,callback:v=>'$'+v.toLocaleString()},grid:{color:gridC}}}}};
   } else {
     const labels=aLotes.map(k=>G_LABELS[k]);
     const datasets=G_GROUPS.map(g=>({label:g,data:aLotes.map(k=>G_RAW[k].group_totals[g]||0),backgroundColor:G_CAT_COLORS[g],borderRadius:3,borderSkipped:false}));
-    cfg={type:'bar',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},totalesBarra:{fmt:v=>gFmt(v)},tooltip:{callbacks:{label:c=>c.parsed.y>0?' '+c.dataset.label+': '+gFmtFull(c.parsed.y):null}}},scales:{x:{stacked:true,ticks:{font:{size:12},color:tickC},grid:{display:false}},y:{stacked:true,ticks:{font:{size:11},color:tickC,callback:v=>gFmt(v)},grid:{color:gridC}}}}};
+    cfg={type:'bar',data:{labels,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},totalesBarra:{fmt:v=>gFmt(v)},tooltip:{callbacks:{label:c=>c.parsed.y>0?' '+c.dataset.label+': '+gFmtFull(c.parsed.y):null}}},scales:{x:{stacked:true,ticks:{font:{size:IS_MOBILE_EARLY?13:12},color:tickC},grid:{display:false}},y:{stacked:true,ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,callback:v=>gFmt(v)},grid:{color:gridC}}}}};
   }
   charts.gastos=new Chart(document.getElementById('chartGastos'),cfg);
 }
@@ -2015,8 +1987,8 @@ function buildPCons() {
     options:{responsive:true, maintainAspectRatio:false, interaction:{mode:'index',intersect:false},
       plugins:{legend:{display:false}, tooltip:{callbacks:{
         label:function(c){ return c.parsed.y === null ? null : ' ' + c.dataset.label + ': ' + c.parsed.y.toLocaleString('es-CO') + u; }}}},
-      scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:IS_MOBILE},grid:{display:false}},
-              y:{ticks:{font:{size:11},color:tickC,padding:6},grid:{color:gridC},border:{display:false}}}}
+      scales:{x:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,autoSkip:IS_MOBILE},grid:{display:false}},
+              y:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,padding:6},grid:{color:gridC},border:{display:false}}}}
   });
 }
 
@@ -2065,8 +2037,8 @@ function buildPGastos() {
     cfg = {type:'bar', data:{labels:labelsC, datasets:dsC}, options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},totalesBarra:{fmt:function(v){ return gFmt(v); }},
         tooltip:{itemSort:null,callbacks:{label:function(c){ return c.parsed.y>0?' '+c.dataset.label+': '+gFmtFull(c.parsed.y):null; }}}},
-      scales:{x:{stacked:true,ticks:{font:{size:12},color:tickC},grid:{display:false}},
-              y:{stacked:true,ticks:{font:{size:11},color:tickC,callback:function(v){ return gFmt(v); }},grid:{color:gridC},border:{display:false}}}}};
+      scales:{x:{stacked:true,ticks:{font:{size:IS_MOBILE_EARLY?13:12},color:tickC},grid:{display:false}},
+              y:{stacked:true,ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,callback:function(v){ return gFmt(v); }},grid:{color:gridC},border:{display:false}}}}};
   } else {
     var labels = Array.from({length:18},function(_,i){ return 'S'+(i+1); });
     var esAve = pgView === 'por_ave';
@@ -2087,8 +2059,8 @@ function buildPGastos() {
       interaction:{mode:'index',intersect:false},
       plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){
         return c.parsed.y == null ? null : ' ' + c.dataset.label + ': ' + (esAve ? '$'+c.parsed.y.toLocaleString('es-CO')+'/ave' : gFmtFull(c.parsed.y)); }}}},
-      scales:{x:{ticks:{font:{size:11},color:tickC,autoSkip:IS_MOBILE},grid:{display:false}},
-              y:{ticks:{font:{size:11},color:tickC,callback:function(v){ return esAve?'$'+v.toLocaleString():gFmt(v); }},grid:{color:gridC},border:{display:false}}}}};
+      scales:{x:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,autoSkip:IS_MOBILE},grid:{display:false}},
+              y:{ticks:{font:{size:IS_MOBILE_EARLY?12.5:11},color:tickC,callback:function(v){ return esAve?'$'+v.toLocaleString():gFmt(v); }},grid:{color:gridC},border:{display:false}}}}};
   }
   charts.pgastos = new Chart(document.getElementById('chartPGastos'), cfg);
 }
@@ -2141,6 +2113,194 @@ function filtroLotes(sec, btn) {
   cfg.redraw();
 }
 
+
+// ====== SIMULADOR DE LIQUIDACION ======
+// Todo se calcula por ave para que los numeros sean faciles de contrastar
+// con un lote real. Meses = semanas / 4.345 (semanas promedio de un mes).
+const SIM_PRESETS = {
+  '2526': {aves:3200, mort:4.06, sem:17, precio:26781, cpollita:4811, calimento:9483, cotros:7335, socio1:35},
+  '1725': {aves:5750, mort:1.63, sem:17, precio:26092, cpollita:4864, calimento:9862, cotros:5545, socio1:17.5},
+  '2025': {aves:7600, mort:13.22, sem:18, precio:26960, cpollita:5153, calimento:10149, cotros:6425, socio1:35}
+};
+const simNum = id => { const e = document.getElementById(id); return e ? (parseFloat(e.value) || 0) : 0; };
+
+function simPreset(k) {
+  const p = SIM_PRESETS[k];
+  if (!p) return;
+  const set = (id, v) => { const e = document.getElementById(id); if (e) e.value = v; };
+  set('sim-aves', p.aves); set('sim-mort', p.mort); set('sim-sem', p.sem);
+  set('sim-precio', p.precio); set('sim-cpollita', p.cpollita);
+  set('sim-calimento', p.calimento); set('sim-cotros', p.cotros); set('sim-socio1', p.socio1);
+  simular();
+}
+
+function simCalc(precio) {
+  const aves = simNum('sim-aves');
+  const mort = simNum('sim-mort') / 100;
+  const vendidas = Math.round(aves * (1 - mort));
+  const costo = aves * (simNum('sim-cpollita') + simNum('sim-calimento') + simNum('sim-cotros'));
+  const ingreso = vendidas * precio;
+  const bruta = ingreso - costo;
+  const s1 = bruta > 0 ? bruta * (simNum('sim-socio1') / 100) : 0;   // si pierde, el operador no cobra %
+  const s2 = bruta - s1;
+  const meses = simNum('sim-sem') / 4.345;
+  return {aves, vendidas, costo, ingreso, bruta, s1, s2, meses,
+          margen: ingreso ? bruta / ingreso * 100 : 0,
+          equilibrio: vendidas ? costo / vendidas : 0,
+          mensual: (costo && meses) ? (s2 / costo) / meses * 100 : 0};
+}
+
+function simular() {
+  const N = v => Math.round(v).toLocaleString('en-US');
+  const $ = v => '$' + N(v);
+  const r = simCalc(simNum('sim-precio'));
+  const gana = r.bruta >= 0;
+
+  const kpis = [
+    [gana ? '#1D9E75' : '#D4537E', 'Utilidad bruta', (gana ? '' : '\u2212') + '$' + N(Math.abs(r.bruta)),
+      'Margen ' + r.margen.toFixed(1) + '%'],
+    ['#378ADD', 'Socio 2 (capital)', (r.s2 >= 0 ? '' : '\u2212') + '$' + N(Math.abs(r.s2)),
+      '$' + N(r.vendidas ? r.s2 / r.vendidas : 0) + ' por ave'],
+    ['#BA7517', 'Socio 1 (operador)', $(r.s1), simNum('sim-socio1') + '% de la utilidad'],
+    ['#7E57C2', 'Precio de equilibrio', $(r.equilibrio), 'Por debajo de ahi, pierde'],
+    ['#0D9488', 'Rentabilidad mensual', r.mensual.toFixed(2) + '%', 'Sobre el capital del lote'],
+    ['#378ADD', 'Aves vendidas', N(r.vendidas), 'de ' + N(r.aves) + ' recibidas']
+  ];
+  const cont = document.getElementById('sim-kpis');
+  if (cont) cont.innerHTML = kpis.map(k =>
+    '<div class="kpi" style="--kpi-accent:' + k[0] + '"><p class="kpi-label">' + k[1] +
+    '</p><p class="kpi-val">' + k[2] + '</p><p class="kpi-sub">' + k[3] + '</p></div>').join('');
+
+  // veredicto en palabras, comparando con la alternativa financiera
+  const alt = simNum('sim-alt');
+  const v = document.getElementById('sim-veredicto');
+  if (v) {
+    const cuantas = alt > 0 ? (r.mensual / alt) : 0;
+    let texto, clase;
+    if (!gana) {
+      clase = 'alert';
+      texto = '<strong>El lote pierde plata a ese precio.</strong> Necesita vender al menos a <strong>' +
+        $(r.equilibrio) + ' por ave</strong> para no perder. Faltan ' +
+        $(r.equilibrio - simNum('sim-precio')) + ' por ave.';
+    } else if (r.mensual < alt) {
+      clase = 'alert';
+      texto = '<strong>Gana, pero rinde menos que dejar la plata quieta.</strong> El lote da ' +
+        r.mensual.toFixed(2) + '% mensual y la alternativa da ' + alt.toFixed(2) + '%. ' +
+        'Para igualarla habria que vender a ' + $(r.equilibrio * (1 + alt * r.meses / 100)) + ' por ave.';
+    } else {
+      clase = 'info';
+      texto = '<strong>Rinde ' + (cuantas ? cuantas.toFixed(1) + ' veces' : 'mas que') + ' la alternativa.</strong> ' +
+        r.mensual.toFixed(2) + '% mensual contra ' + alt.toFixed(2) + '%. ' +
+        'El ciclo de ' + simNum('sim-sem') + ' semanas (' + r.meses.toFixed(1) + ' meses) deja ' +
+        $(r.s2) + ' al socio 2 sobre ' + $(r.costo) + ' invertidos.';
+    }
+    v.innerHTML = '<div class="' + clase + '">' + texto + '</div>';
+  }
+
+  // detalle
+  const det = document.getElementById('sim-detalle');
+  if (det) {
+    const cp = simNum('sim-cpollita'), ca = simNum('sim-calimento'), co = simNum('sim-cotros');
+    const filas = [
+      ['Pollitas', r.aves * cp, cp],
+      ['Alimento', r.aves * ca, ca],
+      ['Otros costos', r.aves * co, co]
+    ];
+    det.innerHTML = '<div class="tbl-wrap"><table class="tbl">' +
+      '<tr><th>Concepto</th><th class="r">Total</th><th class="r">Por ave</th></tr>' +
+      filas.map(f => '<tr><td>' + f[0] + '</td><td class="r">' + $(f[1]) + '</td><td class="r">' + $(f[2]) + '</td></tr>').join('') +
+      '<tr class="tot"><td>Costo total</td><td class="r">' + $(r.costo) + '</td><td class="r">' + $(r.costo / r.aves) + '</td></tr>' +
+      '<tr><td>Ingreso (' + N(r.vendidas) + ' aves)</td><td class="r">' + $(r.ingreso) + '</td><td class="r">' + $(simNum('sim-precio')) + '</td></tr>' +
+      '<tr class="tot"><td>Utilidad bruta</td><td class="r ' + (gana ? 'good' : 'warn') + '">' + (gana ? '' : '\u2212') + '$' + N(Math.abs(r.bruta)) +
+      '</td><td class="r ' + (gana ? 'good' : 'warn') + '">' + (gana ? '' : '\u2212') + '$' + N(Math.abs(r.bruta) / r.vendidas) + '</td></tr>' +
+      '</table></div>';
+  }
+
+  // grafica: utilidad segun precio de venta
+  const base = simNum('sim-precio');
+  const paso = Math.max(500, Math.round(base * 0.04 / 100) * 100);
+  const precios = [], util = [];
+  for (let i = -5; i <= 5; i++) { const p = base + i * paso; if (p > 0) { precios.push(p); util.push(simCalc(p).bruta / 1e6); } }
+  if (charts.sim) charts.sim.destroy();
+  const cv = document.getElementById('chartSim');
+  if (cv && window.Chart) {
+    charts.sim = new Chart(cv, {
+      type: 'bar',
+      data: {labels: precios.map(p => '$' + (p / 1000).toFixed(1) + 'K'),
+        datasets: [{data: util, backgroundColor: util.map(u => u >= 0 ? '#1D9E75' : '#D4537E'),
+          borderRadius: 4, borderSkipped: false}]},
+      options: {...baseOpts(v => '$' + v.toFixed(0) + 'M'),
+        plugins: {legend: {display: false},
+          totalesBarra: {enabled: !IS_MOBILE, fmt: v => '$' + v.toFixed(1) + 'M'},
+          tooltip: {callbacks: {label: c => ' Utilidad: $' + c.parsed.y.toFixed(1) + 'M'}}}}
+    });
+  }
+  const nota = document.getElementById('sim-nota');
+  if (nota) nota.textContent = 'Utilidad bruta del lote segun el precio de venta. Equilibrio en $' +
+    N(r.equilibrio) + ' por ave: por debajo de ahi el lote pierde.';
+}
+
+// ====== RENTABILIDAD MENSUAL (Resumen) ======
+// Cuanto rinde el negocio al mes, para compararlo con dejar la plata en otro lado.
+const CICLO_SEM = {'1525':16,'1625':16,'1725':17,'2025':18,'2526':17};
+const ALT_REF = [['CDT 12 meses', 0.76], ['Inflacion', 0.41]];
+
+function renderRentabilidad() {
+  const cont = document.getElementById('rentab-tabla');
+  if (!cont) return;
+  const N = v => Math.round(v).toLocaleString('en-US');
+  const $ = v => '$' + N(v);
+  const liq = Object.keys(DATA.totals).filter(k => (DATA.totals[k] || {}).ingreso);
+  let filas = '', sumaS2 = 0, sumaCosto = 0, sumaMeses = 0;
+  const labels = [], datos = [], colores = [];
+  liq.forEach(k => {
+    const t = DATA.totals[k];
+    const s1 = (typeof SOCIO1_PCT !== 'undefined' ? SOCIO1_PCT[k] : 0.35) || 0.35;
+    const s2 = t.utilidad * (1 - s1);
+    const meses = (CICLO_SEM[k] || 17) / 4.345;
+    const mensual = (s2 / t.costo) / meses * 100;
+    sumaS2 += s2; sumaCosto += t.costo; sumaMeses += meses * t.costo;
+    const cls = mensual >= 4 ? 'good' : (mensual < 2 ? 'warn' : '');
+    filas += '<tr><td>L.' + k + '</td><td class="r">' + $(t.costo) + '</td><td class="r">' + $(s2) +
+      '</td><td class="c">' + meses.toFixed(1) + '</td><td class="r ' + cls + '">' + mensual.toFixed(2) + '%</td></tr>';
+    labels.push('L.' + k); datos.push(+mensual.toFixed(2));
+    colores.push((LOTE_STYLE[k] || {}).color || '#378ADD');
+  });
+  const mesesProm = sumaMeses / sumaCosto;
+  const promedio = (sumaS2 / sumaCosto) / mesesProm * 100;
+  filas += '<tr class="tot"><td>Promedio</td><td class="r">' + $(sumaCosto) + '</td><td class="r">' + $(sumaS2) +
+    '</td><td class="c">' + mesesProm.toFixed(1) + '</td><td class="r good">' + promedio.toFixed(2) + '%</td></tr>';
+  cont.innerHTML = '<div class="tbl-wrap"><table class="tbl">' +
+    '<tr><th>Lote</th><th class="r">Capital del lote</th><th class="r">Utilidad socio 2</th>' +
+    '<th class="c">Meses</th><th class="r">Rendimiento mensual</th></tr>' + filas + '</table></div>';
+
+  const kp = document.getElementById('rentab-kpis');
+  if (kp) {
+    const anual = (Math.pow(1 + promedio / 100, 12) - 1) * 100;
+    const veces = promedio / ALT_REF[0][1];
+    kp.innerHTML = [
+      ['#1D9E75', 'Rendimiento mensual', promedio.toFixed(2) + '%', 'Promedio de los lotes liquidados'],
+      ['#378ADD', 'Equivalente anual', anual.toFixed(0) + '%', 'Si se reinvierte cada ciclo'],
+      ['#BA7517', 'Veces un CDT', veces.toFixed(1) + 'x', 'CDT referencia ' + ALT_REF[0][1] + '% mensual']
+    ].map(k => '<div class="kpi" style="--kpi-accent:' + k[0] + '"><p class="kpi-label">' + k[1] +
+      '</p><p class="kpi-val">' + k[2] + '</p><p class="kpi-sub">' + k[3] + '</p></div>').join('');
+  }
+
+  if (charts.rentab) charts.rentab.destroy();
+  const cv = document.getElementById('chartRentab');
+  if (cv && window.Chart) {
+    ALT_REF.forEach(a => { labels.push(a[0]); datos.push(a[1]); colores.push('#888780'); });
+    charts.rentab = new Chart(cv, {
+      type: 'bar',
+      data: {labels, datasets: [{data: datos, backgroundColor: colores, borderRadius: 4, borderSkipped: false}]},
+      options: {...baseOpts(v => v + '%'),
+        plugins: {legend: {display: false},
+          totalesBarra: {fmt: v => v.toFixed(2) + '%'},
+          tooltip: {callbacks: {label: c => ' ' + c.parsed.y.toFixed(2) + '% mensual'}}}}
+    });
+  }
+}
+
 // ========== DATOS EN VIVO (lotes activos) ==========
 // Rellena KPIs y celdas del comparativo desde MP_STATS/G_RAW para que el
 // auto-update solo necesite regenerar los bloques de datos marcados con @@.
@@ -2170,6 +2330,7 @@ function renderDesglose() {
 
 function fillLive() {
   renderDesglose();
+  renderRentabilidad();
   Object.keys(MP_STATS).forEach(k => {
     const s = MP_STATS[k];
     if (!s.activo) return;
