@@ -151,6 +151,7 @@ def leer_gastos(consolidado: Path, lote: str, nacimiento: date, pollitas: int, h
     wb = openpyxl.load_workbook(consolidado, data_only=True, read_only=True)
     ws = wb[hoja or f"LOTE {lote}"]
     section, presta = None, 0
+    sin_fecha = []
     weekly = {g: [0] * 18 for g in GROUPS}
     totals = {g: 0 for g in GROUPS}
     for row in ws.iter_rows(min_row=1, max_row=1000, max_col=6, values_only=True):
@@ -170,12 +171,17 @@ def leer_gastos(consolidado: Path, lote: str, nacimiento: date, pollitas: int, h
             elif not key.startswith("LEVANTE") and not key[0].isdigit():
                 section = None
             continue
+        # La fila TOTAL cierra la seccion: lo que venga despues son resumenes
+        # del Excel (incluida la fila del gran total) y no se debe sumar.
+        if isinstance(fecha, str) and "TOTAL" in fecha.upper():
+            section = None
+            continue
         if section is None or valor is None or not isinstance(valor, (int, float)) or valor == 0:
             continue
         fdate = None
         if isinstance(fecha, datetime):
             fdate = fecha.date()
-        elif isinstance(fecha, str) and fecha.strip() and "TOTAL" not in fecha.upper():
+        elif isinstance(fecha, str) and fecha.strip():
             partes = [p for p in fecha.replace("/", "-").split("-") if p.strip().isdigit()]
             if len(partes) >= 3:
                 a1, a2, yy = int(partes[0]), int(partes[1]), int(partes[2])
@@ -191,17 +197,19 @@ def leer_gastos(consolidado: Path, lote: str, nacimiento: date, pollitas: int, h
                     except ValueError:
                         continue
         if fdate is None:
-            # Sin fecha utilizable. Si la fila tiene descripcion es un gasto real
-            # (fecha mal digitada) y se carga a la semana 1; si no la tiene es una
-            # fila de totales del Excel y se ignora.
-            if not (isinstance(_nombre, str) and _nombre.strip()):
-                continue
+            # Gasto dentro de una seccion pero sin fecha utilizable (se les olvido
+            # digitarla). Se cuenta igual —si no, el total no cuadra— y se carga
+            # a la semana 1; la verificacion contra el Excel valida que sume bien.
+            sin_fecha.append(valor)
             wk = 0
         else:
             wk = max(0, min(17, (fdate - nacimiento).days // 7))
         weekly[section][wk] += int(round(valor))
         totals[section] += int(round(valor))
     wb.close()
+    if sin_fecha:
+        log(f"AVISO: {hoja or ('LOTE ' + lote)} tiene {len(sin_fecha)} gasto(s) sin fecha "
+            f"por ${sum(sin_fecha):,.0f}; se cargaron a la semana 1. Conviene completarlos en el Excel.")
     return {"pollitas": pollitas, "group_totals": totals,
             "weekly_by_group": weekly, "grand_total": sum(totals.values())}
 
@@ -291,6 +299,36 @@ def leer_pereira(consolidado: Path, registro: Path, cfg: dict):
         },
         "gastos_sem": gsem,
     }
+
+
+
+def total_oficial(consolidado: Path, hoja_utilidad: str):
+    """TOTAL COSTOS (B46) de una hoja UTILIDAD; None si no existe la hoja."""
+    wb = openpyxl.load_workbook(consolidado, data_only=True, read_only=True)
+    try:
+        if hoja_utilidad not in wb.sheetnames:
+            return None
+        v = wb[hoja_utilidad].cell(row=46, column=2).value
+        return float(v) if isinstance(v, (int, float)) else None
+    finally:
+        wb.close()
+
+
+def verificar(consolidado: Path, etiqueta: str, hoja_utilidad: str, calculado: float, alertas: list):
+    """Compara lo que calculamos contra el Excel. Cualquier diferencia significa
+    que una seccion nueva no esta mapeada o que una fila se esta perdiendo:
+    asi se detectaron el bug de la mano de obra y la fecha al reves."""
+    ofi = total_oficial(consolidado, hoja_utilidad)
+    if ofi is None:
+        return
+    dif = calculado - ofi
+    if abs(dif) > 1000:
+        msg = (f"DESCUADRE en {etiqueta}: calculado ${calculado:,.0f} vs Excel ${ofi:,.0f} "
+               f"(diferencia ${dif:,.0f}). Revisar secciones nuevas o fechas mal digitadas.")
+        log("ALERTA: " + msg)
+        alertas.append(f"{etiqueta}: ${dif:,.0f}")
+    else:
+        log(f"Verificado {etiqueta}: cuadra con el Excel (${ofi:,.0f})")
 
 
 def lotes_liquidados(consolidado: Path):
@@ -417,6 +455,7 @@ def main():
 
     consolidado = copiar_a_temp(src_dir / "Consolidado Gastos Levantes.xlsx")
     liquidados = lotes_liquidados(consolidado)
+    alertas = []   # descuadres detectados en esta corrida
 
     html = INDEX.read_text(encoding="utf-8")
     corte_max = None
@@ -442,6 +481,7 @@ def main():
         corte_max = max(corte_max, corte_lote) if corte_max else corte_lote
         log(f"Lote {lote}: sem {cl['semanas']}, mort {cl['mort_pct']:.2f}%, "
             f"peso {cl['peso_final']}g, gastos ${ga['grand_total']:,}")
+        verificar(consolidado, f"L.{lote}", f"UTILIDAD {lote}", ga["grand_total"], alertas)
       except Exception as e:
         log(f"ERROR en lote {lote}: {e}. Se continua con el resto.")
 
@@ -465,6 +505,9 @@ def main():
             pereira[lote] = datos
             log(f"Pereira {lote}: sem {datos['semanas']}, {datos['saldo']:,} aves, "
                 f"mort {datos['mort_pct']}%, invertido ${datos['invertido']:,}")
+            suma_sem = sum(sum(v) for v in (datos.get("gastos_sem") or {}).values())
+            if suma_sem:
+                verificar(consolidado, f"Pereira {lote}", pc["hoja_utilidad"], suma_sem, alertas)
         except Exception as e:
             log(f"ERROR en Pereira {lote}: {e}. Se continua con el resto.")
 
@@ -478,6 +521,19 @@ def main():
             html = pat.sub(lambda _m: linea, html)
         else:
             log(f"AVISO: marcador {marker} no encontrado en index.html")
+
+    # Sello de verificacion visible en el tablero (no solo en el log)
+    marker = "@@VERIFICACION@@"
+    pat_v = re.compile(rf"^.*<!-- {re.escape(marker)} -->.*$", re.M)
+    if pat_v.search(html):
+        if alertas:
+            sello = ('<div class="alert"><strong>Revisar el Consolidado.</strong> Al verificar contra el Excel '
+                     'quedaron diferencias en: ' + "; ".join(alertas) +
+                     '. Suele ser una seccion nueva sin clasificar o una fecha mal digitada.</div>')
+        else:
+            sello = ('<p class="note" style="text-align:center">Cifras verificadas contra el Consolidado el '
+                     + datetime.now().strftime("%d/%m/%Y") + ': todos los lotes cuadran.</p>')
+        html = pat_v.sub(lambda _m: f"  {sello} <!-- {marker} -->", html)
 
     if corte_max:
         html = actualizar_corte(html, corte_max)
