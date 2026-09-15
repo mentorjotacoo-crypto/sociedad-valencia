@@ -42,8 +42,10 @@ MESES_ABR = ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
              "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
 
 # Mapeo seccion de la hoja "LOTE XXXX" del Consolidado -> grupo del dashboard.
-# 'PRESTACION DE SERVIC' aparece dos veces: la 1a (vacunacion) -> Vacunas,
-# la 2a (galponero) -> Arrendamiento (mismo criterio del historico).
+# 'PRESTACION DE SERVIC' aparece dos veces: la 1a (servicio de vacunacion) va a
+# Vacunas y la 2a (pago del galponero) es MANO DE OBRA -> grupo "Servicios".
+# Antes la 2a caia en Arrendamiento: la mano de obra aparecia en 0% y el
+# arriendo inflado al triple.
 SECTION_GROUP = {
     "POLLITAS": "Pollitas",
     "ALIMENTO": "Alimento",
@@ -160,7 +162,7 @@ def leer_gastos(consolidado: Path, lote: str, nacimiento: date, pollitas: int, h
                 continue
             if key.startswith("PRESTACION DE SERVIC"):
                 presta += 1
-                section = "Vacunas" if presta == 1 else "Arrendamiento"
+                section = "Vacunas" if presta == 1 else "Servicios"
                 continue
             matched = next((g for sk, g in SECTION_GROUP.items() if key.startswith(sk)), None)
             if matched:
@@ -173,19 +175,30 @@ def leer_gastos(consolidado: Path, lote: str, nacimiento: date, pollitas: int, h
         fdate = None
         if isinstance(fecha, datetime):
             fdate = fecha.date()
-        elif isinstance(fecha, str) and fecha.strip() and fecha.strip().upper() != "TOTAL":
-            parts = [p for p in fecha.replace("/", "-").split("-") if p.strip().isdigit()]
-            if len(parts) >= 3:
-                dd, mm, yy = int(parts[0]), int(parts[1]), int(parts[2])
+        elif isinstance(fecha, str) and fecha.strip() and "TOTAL" not in fecha.upper():
+            partes = [p for p in fecha.replace("/", "-").split("-") if p.strip().isdigit()]
+            if len(partes) >= 3:
+                a1, a2, yy = int(partes[0]), int(partes[1]), int(partes[2])
                 if yy < 100:
                     yy += 2000
-                try:
-                    fdate = date(yy, mm, dd)
-                except ValueError:
-                    pass
+                # En el Consolidado la fecha es dd-mm-aa, pero a veces se digita
+                # al reves (p.ej. "1-15-26"). Si el 2do numero no puede ser mes,
+                # se asume dd-mm; si el 1ro no puede serlo, se asume mm-dd.
+                for dd, mm in ((a1, a2), (a2, a1)):
+                    try:
+                        fdate = date(yy, mm, dd)
+                        break
+                    except ValueError:
+                        continue
         if fdate is None:
-            continue
-        wk = max(0, min(17, (fdate - nacimiento).days // 7))
+            # Sin fecha utilizable. Si la fila tiene descripcion es un gasto real
+            # (fecha mal digitada) y se carga a la semana 1; si no la tiene es una
+            # fila de totales del Excel y se ignora.
+            if not (isinstance(_nombre, str) and _nombre.strip()):
+                continue
+            wk = 0
+        else:
+            wk = max(0, min(17, (fdate - nacimiento).days // 7))
         weekly[section][wk] += int(round(valor))
         totals[section] += int(round(valor))
     wb.close()
@@ -333,7 +346,7 @@ def generar_lineas(lote: str, cfg: dict, cl: dict, ga: dict):
         "PESO_R": f"    '{lote}': {js_f1_arr(cl['peso'])},",
         "PESO_G": f"    '{lote}': {js_int_arr(cl['peso_guia_full'])},",
         "COSTS_CAT": (
-            f"    '{lote}': {{Pollitas:{gt['Pollitas']},Alimento:{gt['Alimento']},'M.Obra':0,"
+            f"    '{lote}': {{Pollitas:{gt['Pollitas']},Alimento:{gt['Alimento']},'M.Obra':{gt['Servicios']},"
             f"Arriendo:{gt['Arrendamiento']},Vacunas:{gt['Vacunas']},Medicam:{gt['Medicamentos']},"
             f"Fletes:{gt['Fletes y otros']},Otros:{gt['Costos comunes']}}},"
         ),
