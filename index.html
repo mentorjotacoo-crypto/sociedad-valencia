@@ -628,38 +628,19 @@
   <h1 class="sec-heading">Informe Ejecutivo &mdash; <span id="corte-heading">Corte septiembre 14, 2026</span></h1>
 
   <div class="kpi-grid">
-    <div class="kpi" style="--kpi-accent:#1D9E75"><p class="kpi-label">Utilidad bruta acum.</p><p class="kpi-val">$83.7M</p><p class="kpi-sub">4 lotes &middot; margen 15.0%</p></div>
-    <div class="kpi" style="--kpi-accent:#378ADD"><p class="kpi-label">Socio 2 (capital)</p><p class="kpi-val">$66.6M</p><p class="kpi-sub">Neto tras socio 1 (17.5% / 35%)</p></div>
-    <div class="kpi" style="--kpi-accent:#1D9E75"><p class="kpi-label">ROI neto</p><p class="kpi-val">44.4%</p><p class="kpi-sub">$150M invertidos &middot; bruto 55.8%</p></div>
-    <div class="kpi" style="--kpi-accent:#378ADD"><p class="kpi-label">Aves vendidas</p><p class="kpi-val">21,396</p><p class="kpi-sub">Precio prom: $26,155</p></div>
-    <div class="kpi" style="--kpi-accent:#7E57C2"><p class="kpi-label">Lote 2526 (activo)</p><p class="kpi-val" id="kpi-2526-val">Sem 8</p><p class="kpi-sub" id="kpi-2526-sub">3,098 aves &middot; mort. 3.19%</p></div>
+    <div class="kpi" style="--kpi-accent:#1D9E75"><p class="kpi-label">Utilidad bruta acum.</p><p class="kpi-val">$100.2M</p><p class="kpi-sub">5 lotes &middot; margen 15.5%</p></div>
+    <div class="kpi" style="--kpi-accent:#378ADD"><p class="kpi-label">Socio 2 (capital)</p><p class="kpi-val">$77.3M</p><p class="kpi-sub">Neto tras socio 1 (17.5% / 35%)</p></div>
+    <div class="kpi" style="--kpi-accent:#1D9E75"><p class="kpi-label">ROI neto</p><p class="kpi-val">51.6%</p><p class="kpi-sub">$150M invertidos &middot; bruto 66.8%</p></div>
+    <div class="kpi" style="--kpi-accent:#378ADD"><p class="kpi-label">Aves vendidas</p><p class="kpi-val">24,596</p><p class="kpi-sub">Precio prom: $26,236</p></div>
+    <div class="kpi" style="--kpi-accent:#7E57C2"><p class="kpi-label">Margen neto socio 2</p><p class="kpi-val">12.0%</p><p class="kpi-sub">$3,144 por ave vendida</p></div>
     <div class="kpi" style="--kpi-accent:#0D9488"><p class="kpi-label">Lote 2626 (activo)</p><p class="kpi-val" id="kpi-2626-val">Sem 3</p><p class="kpi-sub" id="kpi-2626-sub">4,371 aves &middot; mort. 0.73%</p></div>
   </div>
-
-  <div class="alert" id="cierre-2526">
-    <strong>Lote 2526 vendido &mdash; falta registrar la venta.</strong> El ciclo cerro en la semana 17 con
-    <strong>3,070 aves</strong> (mortalidad 4.06%, la segunda mejor de la granja) y peso final de 1,168 g,
-    practicamente en la guia (&minus;0.2%). El costo quedo en <strong>$69,213,731</strong>, o sea
-    <strong>$22,545 por ave</strong>, que es el precio de equilibrio. Las facturas de venta todavia no estan
-    cargadas en el Consolidado, por eso el lote aparece sin ingreso ni utilidad.
-  </div>
-
-  <p class="sec-title">Lote 2526 &mdash; utilidad segun el precio de venta (3,070 aves, costo $69.2M)</p>
-  <div class="tbl-wrap"><table class="tbl">
-    <tr><th>Precio / ave</th><th class="r">Ingreso</th><th class="r">Utilidad bruta</th><th class="c">Margen</th><th class="r">Socio 2 (65%)</th></tr>
-    <tr><td>$22,545 <span style="color:var(--color-text-muted)">equilibrio</span></td><td class="r">$69,213,731</td><td class="r">$0</td><td class="c">0.0%</td><td class="r">$0</td></tr>
-    <tr><td>$24,000</td><td class="r">$73,680,000</td><td class="r">$4,466,269</td><td class="c">6.1%</td><td class="r">$2,903,075</td></tr>
-    <tr><td>$25,000</td><td class="r">$76,750,000</td><td class="r">$7,536,269</td><td class="c">9.8%</td><td class="r">$4,898,575</td></tr>
-    <tr><td>$26,155 <span style="color:var(--color-text-muted)">prom. historico</span></td><td class="r">$80,295,850</td><td class="r good">$11,082,119</td><td class="c good">13.8%</td><td class="r good">$7,203,377</td></tr>
-    <tr><td>$27,000</td><td class="r">$82,890,000</td><td class="r good">$13,676,269</td><td class="c good">16.5%</td><td class="r good">$8,889,575</td></tr>
-  </table></div>
-  <p class="note">El promedio historico ($26,155/ave) sale de lotes de polla <strong>marron</strong>; el 2526 es el primer lote de <strong>polla blanca</strong> (Hy Line), cuyo precio de mercado suele ser distinto. Apenas se carguen las facturas este bloque se reemplaza por la utilidad real.</p>
 
   <hr class="divider">
   <p class="sec-title">Resumen por lote</p>
   <div class="panel">
     <div class="chart-wrap"><canvas id="chartResumen"></canvas></div>
-    <p class="note">Ingresos, costos y utilidad bruta de los 4 lotes liquidados. Lotes 2526 y 2626 activos (solo costos a la fecha).</p>
+    <p class="note">Ingresos, costos y utilidad bruta de los 5 lotes liquidados. El L.2626 sigue en curso (solo costos a la fecha).</p>
   </div>
 
   <hr class="divider">
@@ -670,7 +651,8 @@
     <tr><td>L.1625</td><td class="r">$18,154,359</td><td class="c">17.5%</td><td class="r">$3,177,013</td><td class="r">$14,977,346</td><td class="c">14.5%</td><td class="r">$3,498</td></tr>
     <tr><td>L.1725</td><td class="r">$30,270,955</td><td class="c">17.5%</td><td class="r">$5,297,417</td><td class="r good">$24,973,538</td><td class="c good">17.0%</td><td class="r good">$4,436</td></tr>
     <tr><td>L.2025</td><td class="r">$14,117,416</td><td class="c warn">35%</td><td class="r">$4,941,096</td><td class="r">$9,176,320</td><td class="c warn">5.1%</td><td class="r warn">$1,381</td></tr>
-    <tr class="tot"><td>TOTAL</td><td class="r">$83,746,957</td><td class="c"></td><td class="r">$17,126,266</td><td class="r">$66,620,691</td><td class="c">11.9%</td><td class="r">$3,114</td></tr>
+    <tr><td>L.2526</td><td class="r good">$16,486,269</td><td class="c warn">35%</td><td class="r">$5,770,194</td><td class="r good">$10,716,075</td><td class="c good">12.5%</td><td class="r good">$3,349</td></tr>
+    <tr class="tot"><td>TOTAL</td><td class="r">$100,233,226</td><td class="c"></td><td class="r">$22,896,460</td><td class="r">$77,336,766</td><td class="c">12.0%</td><td class="r">$3,144</td></tr>
   </table></div>
   <p class="note">Margen neto = utilidad socio 2 / ingreso del lote &middot; Neta/ave = utilidad socio 2 / aves vendidas.<br>
   <strong>Cifras corregidas (jul 2026):</strong> se arreglaron formulas del Consolidado que omitian las secciones PAPEL y PEAJES. Efecto: L.2025 &minus;$342,800 de utilidad ($14.46M &rarr; $14.12M) y L.1725 +$1,000. La liquidacion del L.2025 se pago sobre la cifra anterior, por lo que quedan <strong>$119,980 a favor de la sociedad</strong> por ajustar con el socio 1.</p>
@@ -683,28 +665,28 @@
 
   <div class="tbl-wrap"><table class="tbl">
     <tr><th>Indicador</th><th class="r">L.1525</th><th class="r">L.1625</th><th class="r">L.1725</th><th class="r">L.2025</th><th class="r">L.2526</th><th class="r">L.2626</th></tr>
-    <tr><td>Estado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c warn">VENDIDO*</td><td class="c warn">ACTIVO</td></tr>
+    <tr><td>Estado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c">Liquidado</td><td class="c warn">ACTIVO</td></tr>
     <tr><td>Raza</td><td class="c">Babcock Brown</td><td class="c">Hy Line Brown</td><td class="c">Babcock Brown</td><td class="c">Lohmann Brown</td><td class="c">Hy Line W-80 + Brown</td><td class="c">Babcock Brown + Azur</td></tr>
     <tr><td>Proveedor</td><td class="c">San Marino</td><td class="c">San Marino</td><td class="c">San Marino</td><td class="c warn">Pronavicola</td><td class="c">Hy Line</td><td class="c good">San Marino</td></tr>
     <tr><td>Fecha inicio</td><td class="c">30/05/2025</td><td class="c">09/08/2025</td><td class="c">01/09/2025</td><td class="c">19/12/2025</td><td class="c">16/05/2026</td><td class="c">16/06/2026</td></tr>
     <tr><td>Aves recibidas</td><td class="r">5,350</td><td class="r">4,400</td><td class="r">5,750</td><td class="r">7,600</td><td class="r">3,200</td><td class="r">4,400</td></tr>
-    <tr><td>Aves vendidas / vivas</td><td class="r">4,837</td><td class="r">4,282</td><td class="r">5,630</td><td class="r">6,647</td><td class="r" id="cmp-2526-vivas">3,098 vivas</td><td class="r" id="cmp-2626-vivas">4,371 vivas</td></tr>
+    <tr><td>Aves vendidas / vivas</td><td class="r">4,837</td><td class="r">4,282</td><td class="r">5,630</td><td class="r">6,647</td><td class="r">3,200</td><td class="r" id="cmp-2626-vivas">4,371 vivas</td></tr>
     <tr><td>Mortalidad</td><td class="r">9.59%</td><td class="r">3.11%</td><td class="r good">1.63%</td><td class="r warn">13.22%</td><td class="r" id="cmp-2526-mort">3.19%</td><td class="r good" id="cmp-2626-mort">0.73%</td></tr>
     <tr><td>Peso final (g)</td><td class="r">1,355</td><td class="r">1,322</td><td class="r">1,376</td><td class="r">1,294</td><td class="r" id="cmp-2526-peso">597 (S8)</td><td class="r" id="cmp-2626-peso">195 (S3)</td></tr>
     <tr><td>Cumpl. peso</td><td class="r">-1.8%</td><td class="r good">+1.7%</td><td class="r">-0.25%</td><td class="r warn">-2.7%</td><td class="r" id="cmp-2526-cumpl">-0.5%</td><td class="r" id="cmp-2626-cumpl">-4.1%</td></tr>
-    <tr><td>Ingreso total</td><td class="r">$130,221,000</td><td class="r">$103,281,320</td><td class="r">$146,899,000</td><td class="r">$179,202,500</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-    <tr><td>Costo total</td><td class="r">$109,016,773</td><td class="r">$85,126,961</td><td class="r">$116,628,045</td><td class="r">$165,085,084</td><td class="r" id="cmp-2526-costo">$40,747,609*</td><td class="r" id="cmp-2626-costo">$34,131,861*</td></tr>
-    <tr><td>Utilidad bruta</td><td class="r">$21,204,227</td><td class="r">$18,154,359</td><td class="r good">$30,270,955</td><td class="r">$14,117,416</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
+    <tr><td>Ingreso total</td><td class="r">$130,221,000</td><td class="r">$103,281,320</td><td class="r">$146,899,000</td><td class="r">$179,202,500</td><td class="r">$85,700,000</td><td class="r">&mdash;</td></tr>
+    <tr><td>Costo total</td><td class="r">$109,016,773</td><td class="r">$85,126,961</td><td class="r">$116,628,045</td><td class="r">$165,085,084</td><td class="r">$69,213,731</td><td class="r" id="cmp-2626-costo">$34,131,861*</td></tr>
+    <tr><td>Utilidad bruta</td><td class="r">$21,204,227</td><td class="r">$18,154,359</td><td class="r good">$30,270,955</td><td class="r">$14,117,416</td><td class="r good">$16,486,269</td><td class="r">&mdash;</td></tr>
     <tr><td>Particip. socio 1</td><td class="c">17.5%</td><td class="c">17.5%</td><td class="c">17.5%</td><td class="c warn">35%</td><td class="c warn">35%</td><td class="c warn">35%</td></tr>
-    <tr><td>Utilidad socio 2 (capital)</td><td class="r">$17,493,487</td><td class="r">$14,977,346</td><td class="r good">$24,973,538</td><td class="r">$9,176,320</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-    <tr><td>Margen (bruto)</td><td class="r">16.3%</td><td class="r">17.6%</td><td class="r good">20.6%</td><td class="r warn">7.9%</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-    <tr><td>Precio / ave</td><td class="r">$26,922</td><td class="r">$24,120</td><td class="r">$26,092</td><td class="r good">$26,960</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
-    <tr><td>Costo / ave</td><td class="r">$22,538</td><td class="r">$19,880</td><td class="r good">$20,715</td><td class="r warn">$24,836</td><td class="r" id="cmp-2526-costoave">$12,734*</td><td class="r" id="cmp-2626-costoave">$7,757*</td></tr>
-    <tr><td>Utilidad / ave</td><td class="r">$4,384</td><td class="r">$4,240</td><td class="r good">$5,377</td><td class="r warn">$2,124</td><td class="r">&mdash;</td><td class="r">&mdash;</td></tr>
+    <tr><td>Utilidad socio 2 (capital)</td><td class="r">$17,493,487</td><td class="r">$14,977,346</td><td class="r good">$24,973,538</td><td class="r">$9,176,320</td><td class="r good">$10,716,075</td><td class="r">&mdash;</td></tr>
+    <tr><td>Margen (bruto)</td><td class="r">16.3%</td><td class="r">17.6%</td><td class="r good">20.6%</td><td class="r warn">7.9%</td><td class="r good">19.2%</td><td class="r">&mdash;</td></tr>
+    <tr><td>Precio / ave</td><td class="r">$26,922</td><td class="r">$24,120</td><td class="r">$26,092</td><td class="r good">$26,960</td><td class="r">$26,781</td><td class="r">&mdash;</td></tr>
+    <tr><td>Costo / ave</td><td class="r">$22,538</td><td class="r">$19,880</td><td class="r good">$20,715</td><td class="r warn">$24,836</td><td class="r good">$21,629</td><td class="r" id="cmp-2626-costoave">$7,757*</td></tr>
+    <tr><td>Utilidad / ave</td><td class="r">$4,384</td><td class="r">$4,240</td><td class="r good">$5,377</td><td class="r warn">$2,124</td><td class="r good">$5,152</td><td class="r">&mdash;</td></tr>
     <tr><td>Arriendo / mes</td><td class="r">$1,000,000</td><td class="r">$880,000</td><td class="r">$1,140,000</td><td class="r warn">$1,710,000</td><td class="r good">$720,000</td><td class="r">$990,000</td></tr>
     <tr><td>Medicamentos</td><td class="r">$1,645,800</td><td class="r">$2,524,450</td><td class="r good">$255,500</td><td class="r warn">$5,749,615</td><td class="r good">$0</td><td class="r good">$0</td></tr>
   </table></div>
-  <p class="note">* L.2526: ciclo cerrado y vendido; falta cargar las facturas de venta, por eso no muestra ingreso ni utilidad. Cifras parciales de lotes en curso (a la fecha de corte del encabezado). L.2526: 2,500 Hy Line W-80 (blanca) + 700 Hy Line Brown. L.2626: 4,000 Babcock Brown (San Marino) + 400 Azur. Peso y mortalidad de L.2626 sobre las 4,000 Babcock.</p>
+  <p class="note">* Cifras parciales del lote en curso (a la fecha de corte del encabezado). L.2526: 2,500 Hy Line W-80 (blanca) + 700 Hy Line Brown. L.2626: 4,000 Babcock Brown (San Marino) + 400 Azur. Peso y mortalidad de L.2626 sobre las 4,000 Babcock.</p>
 
   <hr class="divider">
   <p class="sec-title">Evolucion de indicadores clave</p>
@@ -872,13 +854,13 @@
   <hr class="divider">
   <p class="sec-title">Impacto real en el negocio acumulado</p>
   <div class="tbl-wrap"><table class="tbl">
-    <tr><th>Metrica</th><th class="r">Sin L.2025</th><th class="r">Real con L.2025</th></tr>
-    <tr><td>Utilidad bruta acum.</td><td class="r">$69,629,541</td><td class="r good">$83,746,957</td></tr>
-    <tr><td>Socio 1 (operador)</td><td class="r">$12,185,170</td><td class="r">$17,126,266</td></tr>
-    <tr><td>Socio 2 (capital)</td><td class="r">$57,444,371</td><td class="r good">$66,620,691</td></tr>
-    <tr><td>ROI socio 2</td><td class="r">38.3%</td><td class="r good">44.4%</td></tr>
-    <tr><td>Margen neto s/ingresos</td><td class="r">15.1%</td><td class="r">11.9%</td></tr>
-    <tr><td>Neta / ave vendida</td><td class="r">$3,895</td><td class="r">$3,114</td></tr>
+    <tr><th>Metrica</th><th class="r">Hasta L.2025</th><th class="r">Con L.2526</th></tr>
+    <tr><td>Utilidad bruta acum.</td><td class="r">$83,746,957</td><td class="r good">$100,233,226</td></tr>
+    <tr><td>Socio 1 (operador)</td><td class="r">$17,126,266</td><td class="r">$22,896,460</td></tr>
+    <tr><td>Socio 2 (capital)</td><td class="r">$66,620,691</td><td class="r good">$77,336,766</td></tr>
+    <tr><td>ROI socio 2</td><td class="r">44.4%</td><td class="r good">51.6%</td></tr>
+    <tr><td>Margen neto s/ingresos</td><td class="r">11.9%</td><td class="r good">12.0%</td></tr>
+    <tr><td>Neta / ave vendida</td><td class="r">$3,114</td><td class="r good">$3,144</td></tr>
   </table></div>
   <p class="note">El socio 1 (operador) participa con 17.5% de la utilidad en L.1525&ndash;1725 y 35% desde el L.2025 en adelante. El socio 2 (capital, $150M) recibe el resto.</p>
 
@@ -939,7 +921,8 @@
 
   <div class="info">
     <strong>Hallazgos positivos</strong><br>
-    &bull; $83.7M utilidad bruta en 4 lotes ($66.6M netos socio 2 tras socio operador), ROI neto 44.4% en ~12 meses<br>
+    &bull; $100.2M utilidad bruta en 5 lotes ($77.3M netos socio 2), ROI neto 51.6%<br>
+    &bull; El L.2526 cerro en 19.2% de margen y $5,152/ave &mdash; el segundo mejor de la granja, y la primera experiencia con polla blanca fue exitosa<br>
     &bull; Lote 2025 se recupero: pese a mortalidad 13.22%, cerro en +$14.1M con precio record ($26,960/ave)<br>
     &bull; Recomendaciones implementadas: regreso a San Marino/Babcock (L.2626) y operacion con 2 galpones en paralelo<br>
     &bull; Arriendos de los lotes activos muy por debajo del L.2025: $720K y $990K/mes (vs $1.71M)<br>
@@ -958,7 +941,7 @@
   <hr class="divider">
   <p class="sec-title">Acciones urgentes (30 dias)</p>
   <ul class="rec-list">
-    <li class="urg"><strong>Vigilancia reforzada L.2526</strong> en semanas 10&ndash;14 (ventana del brote del L.2025): peso, mortalidad y bioseguridad diaria</li>
+    <li class="urg"><strong>Revisar el peso en Pereira</strong>: los lotes 2726 y 2826 vienen por debajo de la guia, muy distinto a Tulua</li>
     <li class="urg"><strong>Completar plan vacunal</strong> de ambos lotes segun calendario (Plan Vac. del registro)</li>
     <li class="urg"><strong>Formalizar por escrito</strong> el esquema del socio operador (17.5% lotes 1525&ndash;1725, 35% desde L.2025 en adelante)</li>
     <li class="urg"><strong>Cerrar el ajuste de $119,980</strong> con el socio 1 por la liquidacion del L.2025 (formulas corregidas jul-2026)</li>
@@ -966,7 +949,7 @@
 
   <p class="sec-title" style="margin-top:16px">Mediano plazo (3-6 meses)</p>
   <ul class="rec-list">
-    <li class="med"><strong>Pre-negociar venta L.2526</strong> (liquidacion estimada sep-oct 2026) con minimo 3 compradores</li>
+    <li class="med"><strong>Pre-negociar venta L.2626</strong> (liquidacion estimada oct 2026) con minimo 3 compradores, como se hizo con el 2526</li>
     <li class="med"><strong>Documentar protocolos bioseguridad</strong> basados en L.1725 y L.2626 (mejores arranques)</li>
     <li class="med"><strong>Seguro avicola</strong> para mitigar eventos sanitarios (el brote del L.2025 costo ~$18M)</li>
     <li class="med"><strong>Galponero de respaldo</strong> para eliminar dependencia de Orlando</li>
@@ -1051,7 +1034,7 @@ const LOTE_STYLE = {
   '1625': {color:'#1D9E75', punto:'rect',     activo:false},
   '1725': {color:'#BA7517', punto:'star',     activo:false},
   '2025': {color:'#D4537E', punto:'crossRot', activo:false},
-  '2526': {color:'#7E57C2', punto:'rectRot',  activo:true},
+  '2526': {color:'#7E57C2', punto:'rectRot',  activo:false},
   '2626': {color:'#0D9488', punto:'triangle', activo:true}
 };
 const GUIA_COLOR = () => isDark ? 'rgba(255,255,255,.3)' : 'rgba(16,24,40,.3)';
@@ -1270,7 +1253,7 @@ const DATA = {
     '1625': {costo:85126961, ingreso:103281320, utilidad:18154359, aves:4282, pollitas:4400},
     '1725': {costo:116628045, ingreso:146899000, utilidad:30270955, aves:5630, pollitas:5750},
     '2025': {costo:165085084, ingreso:179202500, utilidad:14117416, aves:6647, pollitas:7600}, // @@L2025_TOTALS@@
-    '2526': {costo:69213731, ingreso:0, utilidad:0, aves:0, pollitas:3200}, // @@L2526_TOTALS@@
+    '2526': {costo:69213731, ingreso:85700000, utilidad:16486269, aves:3200, pollitas:3200},
     '2626': {costo:69549142, ingreso:0, utilidad:0, aves:0, pollitas:4400}, // @@L2626_TOTALS@@
   }
 };
@@ -1362,8 +1345,8 @@ function initResumen() {
 // ========== COMPARATIVO CHART ==========
 let compMetric = 'margin';
 const COMP_DATA = {
-  margin: {label:'Margen de utilidad %',data:[16.3,17.6,20.6,7.9],labels:['L.1525','L.1625','L.1725','L.2025'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E'],note:'Margen crecio hasta 20.6% (L.1725); el brote sanitario del L.2025 lo redujo a 7.9%.'},
-  profit_bird: {label:'Utilidad por ave (COP)',data:[4384,4240,5377,2124],labels:['L.1525','L.1625','L.1725','L.2025'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E'],note:'Utilidad por ave. L.1725 logro $5,377/ave; L.2025 cayo a $2,124 por el brote.'},
+  margin: {label:'Margen de utilidad %',data:[16.3,17.6,20.6,7.9,19.2],labels:['L.1525','L.1625','L.1725','L.2025','L.2526'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2'],note:'El L.2526 recupero el margen a 19.2%, el segundo mejor despues del L.1725 (20.6%).'},
+  profit_bird: {label:'Utilidad por ave (COP)',data:[4384,4240,5377,2124,5152],labels:['L.1525','L.1625','L.1725','L.2025','L.2526'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2'],note:'El L.2526 dejo $5,152/ave, casi el nivel del mejor lote (L.1725, $5,377).'},
   mortality: {label:'Mortalidad %',data:[9.59,3.11,1.63,13.22,3.19,0.73],labels:['L.1525','L.1625','L.1725','L.2025','L.2526*','L.2626*'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2','#0D9488'],note:'L.2025 cerro en 13.22%. Lotes activos (*): 2526 en 3.19% (sem 8) y 2626 en 0.73% (sem 3).'},
   rent: {label:'Arriendo mensual (M COP)',data:[1.0,0.88,1.14,1.71,0.72,0.99],labels:['L.1525','L.1625','L.1725','L.2025','L.2526','L.2626'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2','#0D9488'],note:'El arriendo llego a $1.71M/mes en L.2025; los lotes activos bajaron a $720K y $990K/mes.'},
   meds: {label:'Medicamentos (M COP)',data:[1.65,2.52,0.26,5.75,0,0],labels:['L.1525','L.1625','L.1725','L.2025','L.2526','L.2626'],colors:['#378ADD','#1D9E75','#BA7517','#D4537E','#7E57C2','#0D9488'],note:'Medicamentos L.2025 ($5.75M) fueron 4x el promedio. Lotes activos: $0 a la fecha.'}
@@ -1449,7 +1432,7 @@ const MP_STATS = {
   '1625': {pollitas:4400, mort_total:137, mort_pct:3.11, peso_final:1322, peso_guia:1300, cumpl:1.7, uniformidad:86.3, semanas:16, evento:'Sem 10: frio (44 aves)'},
   '1725': {pollitas:5750, mort_total:94, mort_pct:1.63, peso_final:1376, peso_guia:1380, cumpl:-0.25, uniformidad:90.0, semanas:17, evento:'Sin eventos criticos'},
   '2025': {pollitas:7600, mort_total:1005, mort_pct:13.22, peso_final:1294, peso_guia:1330, cumpl:-2.7, uniformidad:86.0, semanas:18, evento:'Sem 10-14: brote (745 aves)'},
-  '2526': {pollitas:3200, mort_total:130, mort_pct:4.06, peso_final:1168, peso_guia:1170, cumpl:-0.2, uniformidad:91.0, semanas:17, evento:'Sem 1: 54 aves; Sem 5: 12 ahogadas', activo:true}, // @@L2526_MPSTATS@@
+  '2526': {pollitas:3200, mort_total:130, mort_pct:4.06, peso_final:1168, peso_guia:1170, cumpl:-0.2, uniformidad:91.0, semanas:17, evento:'Cierre limpio: 4.06% mort., peso en guia'},
   '2626': {pollitas:4000, extra:400, mort_total:95, mort_pct:2.16, peso_final:1114, peso_guia:1118, cumpl:-0.3, uniformidad:90.7, semanas:13, evento:'Sin eventos criticos', activo:true}, // @@L2626_MPSTATS@@
 };
 
@@ -1579,7 +1562,7 @@ function buildProy12() {
   if(charts.proy12) charts.proy12.destroy();
   const months = ['Jul','Ago','Sep','Oct','Nov','Dic','Ene','Feb','Mar','Abr','May','Jun'];
   // Cifras NETAS para la sociedad: 65% de la utilidad bruta (35% socio operador)
-  const s = 66.62;      // utilidad neta acumulada real a jul 2026
+  const s = 77.34;      // utilidad neta acumulada (socio 2) con el L.2526 liquidado
   const NETO = 0.65;    // participacion de la sociedad desde el L.2025
 
   if(proy12View === 'acum') {
@@ -1598,8 +1581,8 @@ function buildProy12() {
     document.getElementById('note-p12').textContent = '2 galpones en paralelo, ~5 lotes/ano, ingreso ~$525M/ano. Utilidad NETA sociedad (65% de la bruta; margen sobre ingresos).';
   } else {
     const anualBruta = 525*0.15; // ~78.8M brutos/ano en escenario base
-    const s1 = Array.from({length:12},(_,i)=>+(17.13+anualBruta*0.35/11*i).toFixed(1));
-    const s2 = Array.from({length:12},(_,i)=>+(66.62+anualBruta*NETO/11*i).toFixed(1));
+    const s1 = Array.from({length:12},(_,i)=>+(22.90+anualBruta*0.35/11*i).toFixed(1));
+    const s2 = Array.from({length:12},(_,i)=>+(77.34+anualBruta*NETO/11*i).toFixed(1));
     charts.proy12 = new Chart(document.getElementById('chartProy12'), {
       type:'line',
       data:{labels:months,datasets:[
@@ -1754,7 +1737,7 @@ const CONSUMO_LOTES = {
   '1625':{label:'L.1625',color:'#1D9E75',pollitas:4420,kg_sem:[440,640,840,880,1040,1040,1260,1360,1440,1520,1720,1820,1900,1000,1040,1120],gr_ave:[14.3,20.9,27.4,28.8,34.5,36.8,44.6,48.3,51.1,54.6,61.8,65.4,null,74.0,77.1,83.0],peso_real:[72.3,114.6,171.4,244.8,335.4,417.8,524.5,631.2,738.8,854.3,976,1055.3,1146.7,1224.5,1322.4,null],peso_guia:[70,125,190,265,360,460,560,670,780,890,990,1080,1160,1230,1300,1370],mort:[15,6,5,8,10,20,8,8,3,44,2,2,1,3,2,0],consumo_total:19060,utilidad:18154359,mortalidad_pct:7.2},
   '1725':{label:'L.1725',color:'#BA7517',pollitas:5700,kg_sem:[440,680,1000,1320,1440,1680,1760,1960,2120,2320,2440,2480,2600,2640,2720,2800,200],gr_ave:[11.0,17.0,25.0,33.1,36.1,43.0,45.1,50.5,54.7,59.9,63.0,66.6,70.6,71.7,73.9,76.2,null],peso_real:[63.6,110.3,196.5,273.7,355.8,468.4,553.7,651.6,754.8,837.7,943,1051.3,1138,1207,1303,1376.5,null],peso_guia:[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380,1468],mort:[27,8,4,6,3,5,2,3,4,3,3,2,7,4,4,5,4],consumo_total:30600,utilidad:30270955,mortalidad_pct:5.1},
   '2025':{label:'L.2025',color:'#D4537E',pollitas:7600,kg_sem:[600,840,1240,1520,1840,2120,2520,2720,2920,3080,2960,3160,3280,3360,3280,3360,1880,800],gr_ave:[11.3,16.0,23.6,29.0,35.2,40.6,48.2,52.5,56.4,59.9,58.5,64.7,68.6,71.8,71.0,73.1,76.2,null],peso_real:[81.3,131.0,195.0,261.4,355.3,448.6,552.4,632.2,723.5,822.5,903.0,973.3,1056.0,1130.0,1118.0,1294.0,null,null],peso_guia:[75.0,130.0,195.0,275.0,367.0,475.0,583.0,685.0,782.0,874.0,961.0,1043.0,1123.0,1197.0,1264.0,1330.0,1400.0,1475.0],mort:[46,33,24,16,9,6,4,8,11,50,110,256,142,153,84,33,15,5],consumo_total:41480,utilidad:14117416,mortalidad_pct:13.22}, // @@L2025_CONSUMO@@
-  '2526':{label:'L.2526',color:'#7E57C2',pollitas:3200,kg_sem:[260,360,440,680,840,920,940,1020,1040,1120,1160,1200,1240,1280,1320,1400,600],gr_ave:[11.8,16.4,20.1,31.1,38.6,42.4,43.3,47.0,48.0,51.8,53.7,55.6,57.6,59.5,61.4,65.1,null],peso_real:[66.2,115.4,177.7,247.4,336.2,418.7,502.5,597.0,683.4,786.3,873.5,948.4,1028.4,1098.4,1168.0,null,null],peso_guia:[65,115,180,250,330,420,510,600,690,790,880,960,1030,1100,1170,1210,1250,1280],mort:[54,11,4,4,16,8,3,2,3,4,4,3,6,3,2,2,1],consumo_total:15820,utilidad:null,mortalidad_pct:4.06,activo:true}, // @@L2526_CONSUMO@@
+  '2526':{label:'L.2526',color:'#7E57C2',pollitas:3200,kg_sem:[260,360,440,680,840,920,940,1020,1040,1120,1160,1200,1240,1280,1320,1400,600],gr_ave:[11.8,16.4,20.1,31.1,38.6,42.4,43.3,47.0,48.0,51.8,53.7,55.6,57.6,59.5,61.4,65.1,null],peso_real:[66.2,115.4,177.7,247.4,336.2,418.7,502.5,597.0,683.4,786.3,873.5,948.4,1028.4,1098.4,1168.0,null,null],peso_guia:[65,115,180,250,330,420,510,600,690,790,880,960,1030,1100,1170,1210,1250,1280],mort:[54,11,4,4,16,8,3,2,3,4,4,3,6,3,2,2,1],consumo_total:15820,utilidad:16486269,mortalidad_pct:4.06},
   '2626':{label:'L.2626',color:'#0D9488',pollitas:4000,kg_sem:[340,520,800,1000,1140,1300,1400,1520,1620,1680,1760,1920,1960],gr_ave:[11.1,17.0,26.1,32.7,37.4,42.8,46.2,50.2,56.2,58.3,61.2,66.8,68.2],peso_real:[69.0,117.4,194.7,278.4,365.6,465.3,560.0,651.5,747.7,831.3,932.3,1025.7,1114.5],peso_guia:[67,115,203,295,390,485,575,665,758,848,940,1030,1118,1205,1293,1380,1468,1550],mort:[18,7,4,3,12,19,5,3,7,4,6,3,4],consumo_total:16960,utilidad:null,mortalidad_pct:2.16,activo:true}, // @@L2626_CONSUMO@@
 };
 const C_METRICS = {
