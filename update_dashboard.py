@@ -448,6 +448,13 @@ def main():
     # ediciones hechas desde otra maquina o directamente en GitHub)
     if not args.dry_run:
         try:
+            # Si una corrida anterior dejo index.html sin confirmar (p.ej. se cayo la
+            # red justo antes del commit), el rebase falla y el tablero se queda atras
+            # corrida tras corrida. Se confirma primero lo pendiente.
+            if git("status", "--porcelain", "index.html"):
+                git("add", "index.html")
+                git("commit", "-m", f"Auto-update {datetime.now():%Y-%m-%d} (pendiente de una corrida anterior)")
+                log("Se confirmo un index.html que habia quedado pendiente de una corrida anterior.")
             git("pull", "--rebase", "origin", "main")
             git("push", "origin", "main")  # empuja commits pendientes de runs anteriores
         except RuntimeError as e:
