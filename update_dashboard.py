@@ -68,6 +68,10 @@ SECTION_GROUP = {
     "DIVERSOS": "Costos comunes",
     "ADECUACIONES": "Costos comunes",
 }
+# Semana en que se vende. Un lote que ya la alcanzo esta TERMINADO: deja de
+# recibir semanas nuevas porque se acabo el ciclo, no porque nadie digite.
+SEM_VENTA = 17
+
 GROUPS = ["Pollitas", "Alimento", "Medicamentos", "Vacunas",
           "Arrendamiento", "Servicios", "Fletes y otros", "Costos comunes"]
 
@@ -485,7 +489,8 @@ def main():
         for m in faltantes:
             log(f"AVISO: marcador {m} no encontrado en index.html")
         corte_lote = nacimiento + timedelta(days=cl["semanas"] * 7 - 1)
-        corte_max = max(corte_max, corte_lote) if corte_max else corte_lote
+        if cl["semanas"] < SEM_VENTA:          # terminado != desactualizado
+            corte_max = max(corte_max, corte_lote) if corte_max else corte_lote
         log(f"Lote {lote}: sem {cl['semanas']}, mort {cl['mort_pct']:.2f}%, "
             f"peso {cl['peso_final']}g, gastos ${ga['grand_total']:,}")
         verificar(consolidado, f"L.{lote}", f"UTILIDAD {lote}", ga["grand_total"], alertas)
@@ -510,6 +515,11 @@ def main():
             datos["lote"] = lote
             datos["galpon"] = pc.get("galpon")
             pereira[lote] = datos
+            # Pereira tambien dice que tan frescos estan los datos: antes solo
+            # miraba Tulua, y con el 2626 terminado la alerta sonaba en falso.
+            if datos["semanas"] and datos["semanas"] < SEM_VENTA:
+                c_p = date.fromisoformat(pc["nacimiento"]) + timedelta(days=datos["semanas"] * 7 - 1)
+                corte_max = max(corte_max, c_p) if corte_max else c_p
             log(f"Pereira {lote}: sem {datos['semanas']}, {datos['saldo']:,} aves, "
                 f"mort {datos['mort_pct']}%, invertido ${datos['invertido']:,}")
             suma_sem = sum(sum(v) for v in (datos.get("gastos_sem") or {}).values())
